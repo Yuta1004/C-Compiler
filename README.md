@@ -6,4 +6,5 @@
 
 ## Dir
 
-empty
+- machine-and-assembly
+    - 機械語とアセンブリ
