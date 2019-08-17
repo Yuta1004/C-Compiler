@@ -1,8 +1,8 @@
 #!/bin/bash
 
 try() {
-    expected="$1"
-    input="$2"
+    input="$1"
+    expected="$2"
 
     ./cc.o "$input" > tmp.s
     gcc -o tmp.o tmp.s
@@ -20,6 +20,8 @@ try() {
 try 0 0
 try 124 124
 try 200 200
+try 1+2+3+4+5+6 21
+try 1+10+30+40-60 21
 
 echo "OK!"
 exit 0
