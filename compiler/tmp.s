@@ -3,8 +3,9 @@
 
 main:
         mov rax, 1
-        add rax, 10
-        add rax, 30
-        add rax, 40
-        sub rax, 60
+        add rax, 2
+        add rax, 50
+        add rax, 80
+        sub rax, 29
+        add rax, 39
         ret
