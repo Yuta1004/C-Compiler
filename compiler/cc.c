@@ -26,7 +26,7 @@ int main(int argc, char** argv){
             continue;
         }
 
-        fprintf(stderr, "[ERROR] Syntax error %s\n", p);
+        fprintf(stderr, "[ERROR] Syntax error \'%c\'\n", *p);
         exit(1);
     }
 
