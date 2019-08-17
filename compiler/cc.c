@@ -24,6 +24,7 @@ struct Token {
 
 /* グローバル変数 */
 Token *token;
+char *user_input;
 
 /* 関数群 */
 // エラー出力関数
@@ -33,6 +34,19 @@ void error(char *fmt, ...){
     vfprintf(stderr, fmt, vargs);
     fprintf(stderr, "\n");
     exit(1);
+}
+
+//  エラー出力関数(詳細版)
+void error_at(char *location, char *fmt, ...){
+    va_list vargs;
+    va_start(vargs, fmt);
+
+    int err_pos = location - user_input;
+    fprintf(stderr, "%s\n", user_input);
+    fprintf(stderr, "%*s", err_pos, "");
+    fprintf(stderr, "^\t");
+    vfprintf(stderr, fmt, vargs);
+    fprintf(stderr, "\n\n");
 }
 
 // トークンが期待する文字かチェックする
@@ -52,8 +66,7 @@ void expect(char op){
     if(token->kind == TOKEN_RESERVED && token->str[0] == op){
         token = token->next;
     } else {
-        error("[ERROR] トークンが要求と異なります。\n\tRequest : %c\n\tToken : %s\n",
-              op, token->str);
+        error_at(token->str, "トークンが要求と異なります");
     }
 }
 
@@ -65,7 +78,7 @@ int expect_number(){
         token = token->next;
         return val;
     } else {
-        error("[ERROR] トークンに数字が要求されました。\n\tToken : %c", token->str[0]);
+        error_at(token->str, "トークンに数字が要求されました");
     }
 }
 
@@ -109,7 +122,7 @@ Token *tokenize(char *p){
             continue;
         }
 
-        error("[ERROR] トークナイズに失敗しました。 \'%c\'", *p);
+        error_at(p, "トークナイズに失敗しました");
     }
 
     new_token(TOKEN_EOF, cur, NULL);
@@ -123,7 +136,8 @@ int main(int argc, char** argv){
         return 0;
     }
 
-   token = tokenize(argv[1]);
+    user_input = argv[1];
+    token = tokenize(argv[1]);
 
     printf(".intel_syntax   noprefix\n");
     printf(".global         main\n");
@@ -142,7 +156,7 @@ int main(int argc, char** argv){
             continue;
         }
 
-        error("[ERROR] 構文エラー \'%c\'\n", token->str[0]);
+        error_at(token->str, "構文エラー");
         exit(1);
     }
 
