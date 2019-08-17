@@ -1,7 +1,11 @@
-GCC = gcc -g -static
+GCC = gcc
+GCC_OPT = gcc -g -static
 
 build:
-	$(GCC) -o cc.o cc.c
+	$(GCC_OPT) -o cc.o cc.c
+
+build-tmp:
+	$(GCC) -o tmp.o tmp.s
 
 test:
 	./test.sh
