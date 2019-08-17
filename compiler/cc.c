@@ -5,6 +5,7 @@
 #include <stdarg.h>
 #include <string.h>
 
+/* 型定義 */
 typedef enum {
     TOKEN_RESERVED,     // 記号
     TOKEN_NUM,          // 数字
@@ -13,6 +14,7 @@ typedef enum {
 
 typedef struct Token Token;
 
+/* 構造体 */
 struct Token {
     TokenKind kind;     // トークンの種類
     Token *next;        // 次のトークンのポインタ
@@ -20,9 +22,10 @@ struct Token {
     char *str;          // トークン文字列
 };
 
-// 読んでいるToken
+/* グローバル変数 */
 Token *token;
 
+/* 関数群 */
 // エラー出力関数
 void error(char *fmt, ...){
     va_list vargs;
