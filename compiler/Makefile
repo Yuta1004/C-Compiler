@@ -1,4 +1,4 @@
-GCC = cc -g -static
+GCC = gcc -g -static
 
 build:
 	$(GCC) -o cc.o cc.c
