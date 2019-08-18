@@ -43,6 +43,11 @@ struct Node {
 Token *token;
 char *user_input;
 
+/* プロトタイプ宣言 */
+Node *expr();
+Node *mul();
+Node *term();
+
 /* 関数群 */
 // エラー出力関数
 void error(char *fmt, ...){
@@ -127,7 +132,8 @@ Token *tokenize(char *p){
         }
 
         // "+", "-"
-        if(*p == '+' || *p == '-'){
+        if(*p == '+' || *p == '-' || *p == '*' || *p == '/' ||
+            *p == '(' || *p == ')'){
             cur = new_token(TOKEN_RESERVED, cur, p++);
             continue;
         }
@@ -169,9 +175,9 @@ Node *expr(){
     Node *node = mul();
 
     while(true) {
-        if(consume("+")) {
+        if(consume('+')) {
             node = new_node(ND_ADD, node, mul());
-        } else if(consume("-")) {
+        } else if(consume('-')) {
             node = new_node(ND_SUB, node, mul());
         } else {
             return node;
@@ -185,9 +191,9 @@ Node *mul(){
     Node *node = term();
 
     while(true) {
-        if(consume("*")) {
+        if(consume('*')) {
             node = new_node(ND_MUL, node, term());
-        } else if(consume("/")) {
+        } else if(consume('/')) {
             node = new_node(ND_DIV, node, term());
         } else {
             return node;
@@ -198,13 +204,47 @@ Node *mul(){
 // 構文解析3
 // term = num | "(" expr ")"
 Node *term(){
-    if(consume("(")) {
+    if(consume('(')) {
         Node *node = expr();
-        expect(")");
+        expect(')');
         return node;
     }
 
     return new_num_node(expect_number());
+}
+
+// 構文木 to アセンブリ
+void gen_asm(Node *node){
+    if(node->kind == ND_NUM) {
+        printf("        push %d\n", node->val);
+        return;
+    }
+
+    gen_asm(node->left);
+    gen_asm(node->right);
+
+    printf("        pop rdi\n");
+    printf("        pop rax\n");
+
+    switch(node->kind){
+    case ND_ADD:
+        printf("        add rax, rdi\n");
+        break;
+    case ND_SUB:
+        printf("        sub rax, rdi\n");
+        break;
+    case ND_MUL:
+        printf("        imul rax, rdi\n");
+        break;
+    case ND_DIV:
+        printf("        cqo\n");        // raxレジスタをrdxと合わせた128bitに拡張
+        printf("        idiv rdi\n");   // rax / rsiの結果 (余りはrdx)
+        break;
+    default:
+        error("[ERROR] 構文木解析エラー");
+    }
+
+    printf("        push rax\n");
 }
 
 int main(int argc, char** argv){
@@ -213,30 +253,24 @@ int main(int argc, char** argv){
         return 0;
     }
 
+    // トークナイズ
     user_input = argv[1];
     token = tokenize(argv[1]);
 
+    // 構文木生成
+    Node *node_top = expr();
+
+    // ヘッダー
     printf(".intel_syntax   noprefix\n");
     printf(".global         main\n");
     printf("\n");
     printf("main:\n");
-    printf("        mov rax, %d\n", expect_number());
 
-    while(!at_eof()){
-        // 足し算, 引き算
-        if(consume('+')){
-            printf("        add rax, %d\n", expect_number());
-            continue;
-        }
-        if(consume('-')){
-            printf("        sub rax, %d\n", expect_number());
-            continue;
-        }
+    // アセンブリ出力
+    gen_asm(node_top);
 
-        error_at(token->str, "構文エラー");
-        exit(1);
-    }
-
+    // フッター
+    printf("        pop rax\n");
     printf("        ret\n");
     return 0;
 }
