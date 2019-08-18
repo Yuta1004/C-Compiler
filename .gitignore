@@ -1,6 +1,8 @@
 test1
 test2
 cc
-tmp
+
+tmp.o
+tmp.s
 
 *.o
