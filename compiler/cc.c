@@ -47,6 +47,7 @@ char *user_input;
 Node *expr();
 Node *mul();
 Node *term();
+Node *unary();
 
 /* 関数群 */
 // エラー出力関数
@@ -186,15 +187,15 @@ Node *expr(){
 }
 
 // 構文解析2
-// mul = term ("*" tern | "-" term)*
+// mul = unary ("*" unary | "-" unary)*
 Node *mul(){
-    Node *node = term();
+    Node *node = unary();
 
     while(true) {
         if(consume('*')) {
-            node = new_node(ND_MUL, node, term());
+            node = new_node(ND_MUL, node, unary());
         } else if(consume('/')) {
-            node = new_node(ND_DIV, node, term());
+            node = new_node(ND_DIV, node, unary());
         } else {
             return node;
         }
@@ -212,6 +213,17 @@ Node *term(){
 
     return new_num_node(expect_number());
 }
+
+// 構文解析4
+// unary = ("+" | "-")? term
+Node *unary(){
+    if(consume('-')) {
+        return new_node(ND_SUB, new_num_node(0), term());
+    }
+
+    return term();
+}
+
 
 // 構文木 to アセンブリ
 void gen_asm(Node *node){
