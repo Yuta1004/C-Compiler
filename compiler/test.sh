@@ -10,9 +10,9 @@ try() {
     actual="$?"
 
     if [ "$actual" == "$expected" ]; then
-        echo "input: $input => output: $actual"
+        echo "input: $input , output: $actual"
     else
-        echo "input: $input => output: $actual ... expect: $expected"
+        echo "input: $input , output: $actual ... expect: $expected"
         exit 1
     fi
 }
