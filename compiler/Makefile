@@ -8,6 +8,7 @@ build-tmp:
 	$(GCC) -o tmp.o tmp.s
 
 test:
+	make build
 	./test.sh
 
 clean:
