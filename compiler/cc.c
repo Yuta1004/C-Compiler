@@ -18,9 +18,7 @@ typedef enum {
     ND_EQ,              // ==
     ND_NEQ,             // !=
     ND_UPPERL,          // >
-    ND_UPPERR,          // <
     ND_UPPEREQL,        // >=
-    ND_UPPEREQR,        // <=
     ND_ADD,             // +
     ND_SUB,             // -
     ND_MUL,             // *
@@ -217,14 +215,15 @@ Node *equality(){
 Node *relational(){
     Node *node = add();
 
+    // <, <= は両辺入れ替えて >, >= と同じように扱う(発想の勝利)
     if(consume(">")) {
         node = new_node(ND_UPPERL, node, add());
     } else if(consume(">=")) {
         node = new_node(ND_UPPEREQL, node, add());
     } else if(consume("<")) {
-        node = new_node(ND_UPPERR, node, add());
+        node = new_node(ND_UPPERL, add(), node);
     } else if(consume("<=")) {
-        node = new_node(ND_UPPEREQR, node, add());
+        node = new_node(ND_UPPEREQL, add(), node);
     } else {
         return node;
     }
