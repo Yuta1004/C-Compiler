@@ -15,6 +15,12 @@ typedef enum {
 typedef struct Token Token;
 
 typedef enum {
+    ND_EQ,              // ==
+    ND_NEQ,             // !=
+    ND_UPPERL,          // >
+    ND_UPPERR,          // <
+    ND_UPPEREQL,        // >=
+    ND_UPPEREQR,        // <=
     ND_ADD,             // +
     ND_SUB,             // -
     ND_MUL,             // *
@@ -46,9 +52,12 @@ char *user_input;
 
 /* プロトタイプ宣言 */
 Node *expr();
+Node *equality();
+Node *relational();
+Node *add();
 Node *mul();
-Node *term();
 Node *unary();
+Node *primary();
 
 /* 関数群 */
 // エラー出力関数
@@ -184,8 +193,46 @@ Node *new_num_node(int val){
 }
 
 // 構文解析1
-// expr = mul ("+" mul | "-" mul)*
+// expr = equality
 Node *expr(){
+    return equality();
+}
+
+// 構文解析2
+// equality = relational ("==" relational | "!=" relational)*
+Node *equality(){
+    Node *node = relational();
+
+    if(consume("==")) {
+        node = new_node(ND_EQ, node, relational());
+    } else if(consume("!=")) {
+        node = new_node(ND_NEQ, node, relational());
+    } else {
+        return node;
+    }
+}
+
+// 構文解析3
+// relational = add (">" add | ">=" add | "<" add | "<=" add)*
+Node *relational(){
+    Node *node = add();
+
+    if(consume(">")) {
+        node = new_node(ND_UPPERL, node, add());
+    } else if(consume(">=")) {
+        node = new_node(ND_UPPEREQL, node, add());
+    } else if(consume("<")) {
+        node = new_node(ND_UPPERR, node, add());
+    } else if(cousume("<=")) {
+        node = new_node(ND_UPPEREQR, node, add());
+    } else {
+        return node;
+    }
+}
+
+// 構文解析4
+// add = mul ("+" mul | "-" mul)*
+Node *add(){
     Node *node = mul();
 
     while(true) {
@@ -199,7 +246,7 @@ Node *expr(){
     }
 }
 
-// 構文解析2
+// 構文解析5
 // mul = unary ("*" unary | "-" unary)*
 Node *mul(){
     Node *node = unary();
@@ -215,8 +262,18 @@ Node *mul(){
     }
 }
 
-// 構文解析3
-// term = num | "(" expr ")"
+// 構文解析6
+// unary = ("+" | "-")? term
+Node *unary(){
+    if(consume("-")) {
+        return new_node(ND_SUB, new_num_node(0), primary());
+    }
+
+    return term();
+}
+
+// 構文解析7
+// primary = num | "(" expr ")"
 Node *term(){
     if(consume("(")) {
         Node *node = expr();
@@ -226,17 +283,6 @@ Node *term(){
 
     return new_num_node(expect_number());
 }
-
-// 構文解析4
-// unary = ("+" | "-")? term
-Node *unary(){
-    if(consume("-")) {
-        return new_node(ND_SUB, new_num_node(0), term());
-    }
-
-    return term();
-}
-
 
 // 構文木 to アセンブリ
 void gen_asm(Node *node){
