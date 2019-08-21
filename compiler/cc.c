@@ -310,6 +310,26 @@ void gen_asm(Node *node){
         printf("        cqo\n");        // raxレジスタをrdxと合わせた128bitに拡張
         printf("        idiv rdi\n");   // rax / rsiの結果 (余りはrdx)
         break;
+    case ND_EQ:
+        printf("        cmp rdi, rax\n");   // rdiとraxを比較 -> 結果はフラグレジスタへ
+        printf("        sete al\n");        // 比較結果(==)をalに入れる(raxの下位8ビットにあたるレジスタ)
+        printf("        movzb rax, al\n");  // raxレジスタの上位56ビットをゼロクリア
+        break;
+    case ND_NEQ:
+        printf("        cmp rdi, rax\n");
+        printf("        setne al\n");       // 比較結果(!=)をalに入れる
+        printf("        movzb rax, al\n");
+        break;
+    case ND_UPPERL:
+        printf("        cmp rdi, rax\n");
+        printf("        setl al\n");        // 比較結果(>)をalに入れる
+        printf("        movzb rax, al\n");
+        break;
+    case ND_UPPEREQL:
+        printf("        cmp rdi, rax\n");
+        printf("        setle al\n");       // 比較結果(>=)をalに入れる
+        printf("        movzb rax, al\n");
+        break;
     default:
         error("[ERROR] 構文木解析エラー");
     }
