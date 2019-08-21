@@ -1,7 +1,7 @@
 GCC=gcc
-CFLAGS=-std=c11 -g -static
-SRCS=$(wildcard *.c)
-OBJS=$(SRCS:.c=.o)
+CFLAGS=-std=c11 -g -static      # Cコンパイラ引数
+SRCS=$(wildcard *.c)			# ソースリスト wildcardで拡張子がcのファイルのみを選択
+OBJS=$(SRCS:.c=.o)				# .cを.oに置換
 
 yncc: $(OBJS)
 	$(GCC) -o yncc $(OBJS) $(LDFLAGS)
