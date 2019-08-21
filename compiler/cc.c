@@ -30,6 +30,7 @@ struct Token {
     Token *next;        // 次のトークンのポインタ
     int val;            // 値
     char *str;          // トークン文字列
+    int len;            // トークン文字列の長さ
 };
 
 struct Node {
@@ -74,8 +75,9 @@ void error_at(char *location, char *fmt, ...){
 
 // トークンが期待する文字かチェックする
 // もし期待する文字なら1つトークンを進める
-bool consume(char op){
-    if(token->kind == TOKEN_RESERVED && token->str[0] == op){
+bool consume(char *op){
+    if(token->kind == TOKEN_RESERVED && strlen(op) == token->len &&
+            memcmp(token->str, op, token->len) == 0){
         token = token->next;
         return true;
     } else {
@@ -85,8 +87,9 @@ bool consume(char op){
 
 // トークンが期待する文字かチェックする
 // もし期待する文字出なかった場合エラーを投げる
-void expect(char op){
-    if(token->kind == TOKEN_RESERVED && token->str[0] == op){
+void expect(char *op){
+    if(token->kind == TOKEN_RESERVED && strlen(op) == token->len &&
+            memcmp(token->str, op, token->len) == 0){
         token = token->next;
     } else {
         error_at(token->str, "トークンが要求と異なります");
@@ -132,10 +135,20 @@ Token *tokenize(char *p){
             continue;
         }
 
+        // ">=", "<=", "==", "!="
+        if(memcmp(p, "<=", 2) == 0 || memcmp(p, ">=", 2) == 0 ||
+           memcmp(p, "==", 2) == 0 || memcmp(p, "!=", 2) == 0){
+            cur = new_token(TOKEN_RESERVED, cur, p);
+            cur->len = 2;
+            p += 2;
+            continue;
+        }
+
         // "+", "-"
         if(*p == '+' || *p == '-' || *p == '*' || *p == '/' ||
-            *p == '(' || *p == ')'){
+           *p == '(' || *p == ')' || *p == '>' || *p == '<'){
             cur = new_token(TOKEN_RESERVED, cur, p++);
+            cur->len = 1;
             continue;
         }
 
@@ -176,9 +189,9 @@ Node *expr(){
     Node *node = mul();
 
     while(true) {
-        if(consume('+')) {
+        if(consume("+")) {
             node = new_node(ND_ADD, node, mul());
-        } else if(consume('-')) {
+        } else if(consume("-")) {
             node = new_node(ND_SUB, node, mul());
         } else {
             return node;
@@ -192,9 +205,9 @@ Node *mul(){
     Node *node = unary();
 
     while(true) {
-        if(consume('*')) {
+        if(consume("*")) {
             node = new_node(ND_MUL, node, unary());
-        } else if(consume('/')) {
+        } else if(consume("/")) {
             node = new_node(ND_DIV, node, unary());
         } else {
             return node;
@@ -205,9 +218,9 @@ Node *mul(){
 // 構文解析3
 // term = num | "(" expr ")"
 Node *term(){
-    if(consume('(')) {
+    if(consume("(")) {
         Node *node = expr();
-        expect(')');
+        expect(")");
         return node;
     }
 
@@ -217,7 +230,7 @@ Node *term(){
 // 構文解析4
 // unary = ("+" | "-")? term
 Node *unary(){
-    if(consume('-')) {
+    if(consume("-")) {
         return new_node(ND_SUB, new_num_node(0), term());
     }
 
