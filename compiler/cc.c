@@ -145,8 +145,8 @@ Token *tokenize(char *p){
         }
 
         // ">=", "<=", "==", "!="
-        if(memcmp(p, "<=", 2) == 0 || memcmp(p, ">=", 2) == 0 ||
-           memcmp(p, "==", 2) == 0 || memcmp(p, "!=", 2) == 0){
+        if(strncmp(p, "<=", 2) == 0 || strncmp(p, ">=", 2) == 0 ||
+           strncmp(p, "==", 2) == 0 || strncmp(p, "!=", 2) == 0){
             cur = new_token(TOKEN_RESERVED, cur, p);
             cur->len = 2;
             p += 2;
@@ -223,7 +223,7 @@ Node *relational(){
         node = new_node(ND_UPPEREQL, node, add());
     } else if(consume("<")) {
         node = new_node(ND_UPPERR, node, add());
-    } else if(cousume("<=")) {
+    } else if(consume("<=")) {
         node = new_node(ND_UPPEREQR, node, add());
     } else {
         return node;
@@ -269,12 +269,12 @@ Node *unary(){
         return new_node(ND_SUB, new_num_node(0), primary());
     }
 
-    return term();
+    return primary();
 }
 
 // 構文解析7
 // primary = num | "(" expr ")"
-Node *term(){
+Node *primary(){
     if(consume("(")) {
         Node *node = expr();
         expect(")");
