@@ -1,15 +1,17 @@
-GCC = gcc
-GCC_OPT = gcc -g -static
+GCC=gcc
+CFLAGS=-std=c11 -g -static
+SRCS=$(wildcard *.c)
+OBJS=$(SRCS:.c=.o)
 
-build:
-	$(GCC_OPT) -o cc.o cc.c
+yncc: $(OBJS)
+	$(GCC) -o yncc $(OBJS) $(LDFLAGS)
 
-build-tmp:
-	$(GCC) -o tmp.o tmp.s
+$(OBJS): yncc.h
 
-test:
-	make build
+test: yncc
 	./test.sh
 
 clean:
-	rm -f *.o
+	rm -f yncc *.o *~ tmp*
+
+.PHONY: test clean

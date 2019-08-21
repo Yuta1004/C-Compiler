@@ -4,9 +4,9 @@ try() {
     input="$1"
     expected="$2"
 
-    ./cc.o "$input" > tmp.s
-    gcc -o tmp.o tmp.s
-    ./tmp.o
+    ./yncc "$input" > tmp.s
+    gcc -o tmp tmp.s
+    ./tmp
     actual="$?"
 
     if [ "$actual" == "$expected" ]; then
