@@ -4,15 +4,15 @@ try() {
     input="$1"
     expected="$2"
 
-    ./cc.o "$input" > tmp.s
-    gcc -o tmp.o tmp.s
-    ./tmp.o
+    ./yncc "$input" > tmp.s
+    gcc -o tmp tmp.s
+    ./tmp
     actual="$?"
 
     if [ "$actual" == "$expected" ]; then
-        echo "input: $input => output: $actual"
+        echo "input: $input , output: $actual"
     else
-        echo "input: $input => output: $actual ... expect: $expected"
+        echo "input: $input , output: $actual ... expect: $expected"
         exit 1
     fi
 }
@@ -30,6 +30,11 @@ try "1+2-3*4/5+(1*2*3*4)" 25
 try "-3+30" 27
 try "-3*10+(5/5*100)" 70
 try "-(10+20)+50" 20
+try "10+20+30 == 30+20+10" 1
+try "100/5 > 30" 0
+try "1/1+10-10 >= 0" 1
+try "20*100 < 30000" 1
+try "1 <= 0" 0
 
 echo "OK!"
 exit 0

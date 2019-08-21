@@ -1,14 +1,17 @@
-GCC = gcc
-GCC_OPT = gcc -g -static
+GCC=gcc
+CFLAGS=-std=c11 -g -static      # Cコンパイラ引数
+SRCS=$(wildcard *.c)			# ソースリスト wildcardで拡張子がcのファイルのみを選択
+OBJS=$(SRCS:.c=.o)				# .cを.oに置換
 
-build:
-	$(GCC_OPT) -o cc.o cc.c
+yncc: $(OBJS)
+	$(GCC) -o yncc $(OBJS) $(LDFLAGS)
 
-build-tmp:
-	$(GCC) -o tmp.o tmp.s
+$(OBJS): yncc.h
 
-test:
+test: yncc
 	./test.sh
 
 clean:
-	rm -f *.o
+	rm -f yncc *.o *~ tmp*
+
+.PHONY: test clean
