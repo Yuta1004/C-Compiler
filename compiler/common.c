@@ -23,4 +23,5 @@ void error_at(char *location, char *fmt, ...){
     fprintf(stderr, "^\t");
     vfprintf(stderr, fmt, vargs);
     fprintf(stderr, "\n\n");
+    exit(1);
 }
