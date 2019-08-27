@@ -5,6 +5,9 @@
 #include "yncc.h"
 
 /* プロトタイプ宣言 */
+Node *program();
+Node *stmt();
+Node *assign();
 Node *equality();
 Node *relational();
 Node *add();
@@ -83,6 +86,14 @@ bool consume(char *op){
     }
 }
 
+// 次のトークンを返す
+// トークンの位置は1進む
+Token *consume_ident(){
+    Token *tmp = token;
+    token = token->next;
+    return tmp;
+}
+
 // トークンが期待する文字かチェックする
 // もし期待する文字出なかった場合エラーを投げる
 void expect(char *op){
@@ -129,12 +140,41 @@ Node *new_num_node(int val){
 }
 
 // 構文解析1
-// expr = equality
-Node *expr(){
-    return equality();
+// program = stmt*
+Node *program(){
+    int idx = 0;
+    for(; !at_eof(); ++ idx){
+        code[idx] = stmt();
+    }
+    code[idx] = NULL;
 }
 
 // 構文解析2
+// stmt = expr ";"
+Node *stmt(){
+    Node *node = expr();
+    expect(";");
+    return node;
+}
+
+// 構文解析3
+// expr = assign
+Node *expr(){
+    return assign();
+}
+
+// 構文解析4
+// assign = equality ("=" assign)
+Node *assign(){
+    Node *node = equality();
+    if(consume("=")){
+        node = new_node(ND_ASSIGN, node, assign());
+    } else {
+        return node;
+    }
+}
+
+// 構文解析5
 // equality = relational ("==" relational | "!=" relational)*
 Node *equality(){
     Node *node = relational();
@@ -148,7 +188,7 @@ Node *equality(){
     }
 }
 
-// 構文解析3
+// 構文解析6
 // relational = add (">" add | ">=" add | "<" add | "<=" add)*
 Node *relational(){
     Node *node = add();
@@ -167,7 +207,7 @@ Node *relational(){
     }
 }
 
-// 構文解析4
+// 構文解析7
 // add = mul ("+" mul | "-" mul)*
 Node *add(){
     Node *node = mul();
@@ -183,7 +223,7 @@ Node *add(){
     }
 }
 
-// 構文解析5
+// 構文解析8
 // mul = unary ("*" unary | "-" unary)*
 Node *mul(){
     Node *node = unary();
@@ -199,7 +239,7 @@ Node *mul(){
     }
 }
 
-// 構文解析6
+// 構文解析9
 // unary = ("+" | "-")? term
 Node *unary(){
     if(consume("-")) {
@@ -209,12 +249,20 @@ Node *unary(){
     return primary();
 }
 
-// 構文解析7
-// primary = num | "(" expr ")"
+// 構文解析10
+// primary = num | ident | "(" expr ")"
 Node *primary(){
     if(consume("(")) {
         Node *node = expr();
         expect(")");
+        return node;
+    }
+
+    Token *next_token = consume_ident();
+    if(next_token){
+        Node *node = calloc(1, sizeof(Node));
+        node->kind = ND_LVER;
+        node->offset = (next_token->str[0] - 'a' + 1) * 8;
         return node;
     }
 

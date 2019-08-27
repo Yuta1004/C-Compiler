@@ -20,6 +20,8 @@ typedef enum {
     ND_SUB,             // -
     ND_MUL,             // *
     ND_DIV,             // /
+    ND_ASSIGN,          // =
+    ND_LVER,           // ローカル変数
     ND_NUM,             // 数字
 } NodeKind;
 
@@ -39,11 +41,13 @@ struct Node {
     Node *left;         // 左辺ノードのポインタ
     Node *right;        // 右辺ノードのポインタ
     int val;            // 数字ノードだった時、その値
+    int offset;         // ローカル変数ノードだった時、そのオフセット
 };
 
 /* グローバル変数 */
 Token *token;
 char *user_input;
+Node *code[100];
 
 /* common.c */
 void error(char *fmt, ...);
@@ -51,7 +55,7 @@ void error_at(char *location, char *fmt, ...);
 
 /* parce.c */
 Token *tokenize();
-Node *expr();
+Node *program();
 
 /* codegen.c */
 void gen_asm();
