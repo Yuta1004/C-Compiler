@@ -51,6 +51,12 @@ Token *tokenize(char *p){
             continue;
         }
 
+        // 識別子(a~z)
+        if('a' <= *p && *p <= 'z'){
+            cur = new_token(TOKEN_IDENT, cur, p++);
+            continue;
+        }
+
         // 数字
         if(isdigit(*p)){
             cur = new_token(TOKEN_NUM, cur, p);
