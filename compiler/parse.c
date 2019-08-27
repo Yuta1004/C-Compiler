@@ -49,7 +49,8 @@ Token *tokenize(char *p){
 
         // "+", "-"
         if(*p == '+' || *p == '-' || *p == '*' || *p == '/' ||
-           *p == '(' || *p == ')' || *p == '>' || *p == '<'){
+           *p == '(' || *p == ')' || *p == '>' || *p == '<' ||
+           *p == ';' || *p == '='){
             cur = new_token(TOKEN_RESERVED, cur, p++);
             cur->len = 1;
             continue;
@@ -58,13 +59,6 @@ Token *tokenize(char *p){
         // 識別子(a~z)
         if('a' <= *p && *p <= 'z'){
             cur = new_token(TOKEN_IDENT, cur, p++);
-            continue;
-        }
-
-        // ;
-        if(';' == *p){
-            cur = new_token(TOKEN_RESERVED, cur, p++);
-            cur->len = 1;
             continue;
         }
 
