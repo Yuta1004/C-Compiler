@@ -94,12 +94,16 @@ bool consume(char *op){
     }
 }
 
-// 次のトークンを返す
-// トークンの位置は1進む
+// トークンが識別子かどかチェックする
+// もしそうなら1つトークンを進める
 Token *consume_ident(){
-    Token *tmp = token;
-    token = token->next;
-    return tmp;
+    if(token->kind == TOKEN_IDENT){
+        Token *tmp = token;
+        token = token->next;
+        return tmp;
+    } else {
+        return NULL;
+    }
 }
 
 // トークンが期待する文字かチェックする
@@ -267,7 +271,7 @@ Node *primary(){
     }
 
     Token *next_token = consume_ident();
-    if(next_token){
+    if(next_token != NULL){
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_LVER;
         node->offset = (next_token->str[0] - 'a' + 1) * 8;
