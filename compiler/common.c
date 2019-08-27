@@ -30,3 +30,11 @@ void error_at(char *location, char *fmt, ...){
     fprintf(stderr, "\n\n");
     exit(1);
 }
+
+// 文字がトークンを構成出来るか調べる
+int is_alnum(char chr){
+    return ('a' <= chr && chr <= 'z') ||
+           ('A' <= chr && chr <= 'Z') ||
+           ('1' <= chr && chr <= '9') ||
+           (chr == '_');
+}

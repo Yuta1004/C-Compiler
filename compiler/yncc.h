@@ -62,6 +62,7 @@ LVar *locals;
 /* common.c */
 void error(char *fmt, ...);
 void error_at(char *location, char *fmt, ...);
+int is_alnum(char chr);
 
 /* parce.c */
 Token *tokenize();
