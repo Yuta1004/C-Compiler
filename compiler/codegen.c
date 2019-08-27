@@ -4,10 +4,37 @@
 #include <string.h>
 #include "yncc.h"
 
+// 左辺値コンパイル
+void gen_lval(Node *node){
+    if(node->kind != ND_LVER){
+        error("左辺値が変数ではありません");
+    }
+
+    printf("        mov rax, rbp\n");
+    printf("        sub rax, %d\n", node->offset);
+    printf("        push rax\n");
+    return;
+}
+
 // 構文木 to アセンブリ
 void gen_asm(Node *node){
-    if(node->kind == ND_NUM) {
+    switch(node->kind){
+    case ND_NUM:
         printf("        push %d\n", node->val);
+        return;
+    case ND_LVER:   // 右辺に左辺値が出てきた場合
+        gen_lval(node);
+        printf("        pop rax\n");
+        printf("        mov rax, [rax]\n");
+        printf("        push rax\n");
+        return;
+    case ND_ASSIGN:
+        gen_lval(node->left);                   // [a] = 9 + 1  : LEFT
+        gen_asm(node->right);                   // a = [9 + 1]  : RIGHT
+        printf("        pop rdi\n");            // RIGHT
+        printf("        pop rax\n");            // LEFT
+        printf("        mov [rax], rdi\n");     // [LEFT] = RIGHT
+        printf("        push rdi\n");           // a=b=c=8 が出来るように右辺値をスタックに残しておく
         return;
     }
 

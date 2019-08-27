@@ -20,13 +20,20 @@ int main(int argc, char** argv){
     printf("\n");
     printf("main:\n");
 
+    // ローカル変数領域確保
+    printf("        push rbp\n");
+    printf("        mov rbp, rsp\n");
+    printf("        add rsp, %d\n", 8*26);
+
     // アセンブリ出力
     for(int idx = 0; code[idx] != NULL; ++ idx){
         gen_asm(code[idx]);
+        printf("        pop rax\n");    // 式の最終的な値を取り出す
     }
 
     // フッター
-    printf("        pop rax\n");
+    printf("        mov rsp, rbp\n");
+    printf("        pop rbp\n");
     printf("        ret\n");
     return 0;
 }
