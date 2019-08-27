@@ -56,9 +56,17 @@ Token *tokenize(char *p){
             continue;
         }
 
-        // 識別子(a~z)
-        if('a' <= *p && *p <= 'z'){
+        // 識別子
+        if(('a' <= *p && *p <= 'z') || ('A' <= *p && *p <= 'Z')){
             cur = new_token(TOKEN_IDENT, cur, p++);
+            int len = 0;
+            while(('a' <= *(p+len) && *(p+len) <= 'z') ||
+                  ('A' <= *(p+len) && *(p+len) <= 'Z') ||
+                  *(p+len) == '_'){
+                ++ len;
+            }
+            cur->len = len;
+            p += len;
             continue;
         }
 
