@@ -58,6 +58,14 @@ Token *tokenize(char *p){
             continue;
         }
 
+        // return
+        if(strncmp(p, "return", 6) == 0 && !is_alnum(*(p+6))){
+            cur = new_token(TOKEN_RETURN, cur, p);
+            cur->len = 6;
+            p += 6;
+            continue;
+        }
+
         // 識別子
         if(('a' <= *p && *p <= 'z') || ('A' <= *p && *p <= 'Z')){
             cur = new_token(TOKEN_IDENT, cur, p);
@@ -166,8 +174,17 @@ void program(){
 }
 
 // 構文解析2
-// stmt = expr ";"
+// stmt = expr ";" | "return" expr ";"
 Node *stmt(){
+    if(token->kind == TOKEN_RETURN){
+        token = token->next;
+        Node *node = calloc(1, sizeof(Node));
+        node->kind = ND_RETURN;
+        node->left = expr();
+        expect(";");
+        return node;
+    }
+
     Node *node = expr();
     expect(";");
     return node;
