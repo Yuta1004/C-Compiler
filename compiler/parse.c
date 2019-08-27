@@ -64,6 +64,7 @@ Token *tokenize(char *p){
         // ;
         if(';' == *p){
             cur = new_token(TOKEN_RESERVED, cur, p++);
+            cur->len = 1;
             continue;
         }
 
