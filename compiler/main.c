@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "yncc.h"
 
 int main(int argc, char** argv){
@@ -9,10 +10,11 @@ int main(int argc, char** argv){
 
     // トークナイズ
     user_input = argv[1];
+    locals = calloc(1, sizeof(LVar));
     token = tokenize(argv[1]);
 
     // 構文木生成
-    Node *node_top = expr();
+    program();
 
     // ヘッダー
     printf(".intel_syntax   noprefix\n");
@@ -20,11 +22,20 @@ int main(int argc, char** argv){
     printf("\n");
     printf("main:\n");
 
+    // ローカル変数領域確保
+    printf("        push rbp\n");
+    printf("        mov rbp, rsp\n");
+    printf("        add rsp, %d\n", 8*30);
+
     // アセンブリ出力
-    gen_asm(node_top);
+    for(int idx = 0; code[idx] != NULL; ++ idx){
+        gen_asm(code[idx]);
+        printf("        pop rax\n");    // 式の最終的な値を取り出す
+    }
 
     // フッター
-    printf("        pop rax\n");
+    printf("        mov rsp, rbp\n");
+    printf("        pop rbp\n");
     printf("        ret\n");
     return 0;
 }

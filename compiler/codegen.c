@@ -4,168 +4,49 @@
 #include <string.h>
 #include "yncc.h"
 
-/* プロトタイプ宣言 */
-Node *equality();
-Node *relational();
-Node *add();
-Node *mul();
-Node *unary();
-Node *primary();
-
-// トークンが期待する文字かチェックする
-// もし期待する文字なら1つトークンを進める
-bool consume(char *op){
-    if(token->kind == TOKEN_RESERVED && strlen(op) == token->len &&
-            memcmp(token->str, op, token->len) == 0){
-        token = token->next;
-        return true;
-    } else {
-        return false;
-    }
-}
-
-// トークンが期待する文字かチェックする
-// もし期待する文字出なかった場合エラーを投げる
-void expect(char *op){
-    if(token->kind == TOKEN_RESERVED && strlen(op) == token->len &&
-            memcmp(token->str, op, token->len) == 0){
-        token = token->next;
-    } else {
-        error_at(token->str, "トークンが要求と異なります");
-    }
-}
-
-// トークンが数字かチェックする
-// 数字ならその数を、そうでなければエラーを投げる
-int expect_number(){
-    if(token->kind == TOKEN_NUM){
-        int val = token->val;
-        token = token->next;
-        return val;
-    } else {
-        error_at(token->str, "トークンに数字が要求されました");
-    }
-}
-
-// EOFチェック
-bool at_eof(){
-    return token->kind == TOKEN_EOF;
-}
-
-// ノード生成
-Node *new_node(NodeKind kind, Node *left, Node *right){
-    Node *node = calloc(1, sizeof(Node));
-    node->kind = kind;
-    node->left = left;
-    node->right = right;
-    return node;
-}
-
-// 数字ノード生成
-Node *new_num_node(int val){
-    Node *node = calloc(1, sizeof(Node));
-    node->kind = ND_NUM;
-    node->val = val;
-    return node;
-}
-
-// 構文解析1
-// expr = equality
-Node *expr(){
-    return equality();
-}
-
-// 構文解析2
-// equality = relational ("==" relational | "!=" relational)*
-Node *equality(){
-    Node *node = relational();
-
-    if(consume("==")) {
-        node = new_node(ND_EQ, node, relational());
-    } else if(consume("!=")) {
-        node = new_node(ND_NEQ, node, relational());
-    } else {
-        return node;
-    }
-}
-
-// 構文解析3
-// relational = add (">" add | ">=" add | "<" add | "<=" add)*
-Node *relational(){
-    Node *node = add();
-
-    // <, <= は両辺入れ替えて >, >= と同じように扱う(発想の勝利)
-    if(consume(">")) {
-        node = new_node(ND_UPPERL, node, add());
-    } else if(consume(">=")) {
-        node = new_node(ND_UPPEREQL, node, add());
-    } else if(consume("<")) {
-        node = new_node(ND_UPPERL, add(), node);
-    } else if(consume("<=")) {
-        node = new_node(ND_UPPEREQL, add(), node);
-    } else {
-        return node;
-    }
-}
-
-// 構文解析4
-// add = mul ("+" mul | "-" mul)*
-Node *add(){
-    Node *node = mul();
-
-    while(true) {
-        if(consume("+")) {
-            node = new_node(ND_ADD, node, mul());
-        } else if(consume("-")) {
-            node = new_node(ND_SUB, node, mul());
-        } else {
-            return node;
-        }
-    }
-}
-
-// 構文解析5
-// mul = unary ("*" unary | "-" unary)*
-Node *mul(){
-    Node *node = unary();
-
-    while(true) {
-        if(consume("*")) {
-            node = new_node(ND_MUL, node, unary());
-        } else if(consume("/")) {
-            node = new_node(ND_DIV, node, unary());
-        } else {
-            return node;
-        }
-    }
-}
-
-// 構文解析6
-// unary = ("+" | "-")? term
-Node *unary(){
-    if(consume("-")) {
-        return new_node(ND_SUB, new_num_node(0), primary());
+// 左辺値コンパイル
+void gen_lval(Node *node){
+    if(node->kind != ND_LVER){
+        error("左辺値が変数ではありません");
     }
 
-    return primary();
-}
-
-// 構文解析7
-// primary = num | "(" expr ")"
-Node *primary(){
-    if(consume("(")) {
-        Node *node = expr();
-        expect(")");
-        return node;
-    }
-
-    return new_num_node(expect_number());
+    printf("        mov rax, rbp\n");
+    printf("        sub rax, %d\n", node->offset);
+    printf("        push rax\n");
+    return;
 }
 
 // 構文木 to アセンブリ
 void gen_asm(Node *node){
-    if(node->kind == ND_NUM) {
+    // 変数, 値
+    switch(node->kind){
+    case ND_NUM:
         printf("        push %d\n", node->val);
+        return;
+    case ND_LVER:   // 右辺に左辺値が出てきた場合
+        gen_lval(node);
+        printf("        pop rax\n");
+        printf("        mov rax, [rax]\n");
+        printf("        push rax\n");
+        return;
+    case ND_ASSIGN:
+        gen_lval(node->left);                   // [a] = 9 + 1  : LEFT
+        gen_asm(node->right);                   // a = [9 + 1]  : RIGHT
+        printf("        pop rdi\n");            // RIGHT
+        printf("        pop rax\n");            // LEFT
+        printf("        mov [rax], rdi\n");     // [LEFT] = RIGHT
+        printf("        push rdi\n");           // a=b=c=8 が出来るように右辺値をスタックに残しておく
+        return;
+    }
+
+    // 予約語
+    switch(node->kind){
+    case ND_RETURN:
+        gen_asm(node->left);
+        printf("        pop rax\n");
+        printf("        mov rsp, rbp\n");
+        printf("        pop rbp\n");
+        printf("        ret\n");
         return;
     }
 

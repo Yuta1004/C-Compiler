@@ -5,6 +5,8 @@
 typedef enum {
     TOKEN_RESERVED,     // 記号
     TOKEN_NUM,          // 数字
+    TOKEN_IDENT,        // 識別子
+    TOKEN_RETURN,       // return(予約語)
     TOKEN_EOF,          // EOF
 } TokenKind;
 
@@ -19,10 +21,15 @@ typedef enum {
     ND_SUB,             // -
     ND_MUL,             // *
     ND_DIV,             // /
+    ND_ASSIGN,          // =
+    ND_LVER,            // ローカル変数
+    ND_RETURN,          // return(予約語)
     ND_NUM,             // 数字
 } NodeKind;
 
 typedef struct Node Node;
+
+typedef struct LVar LVar;
 
 /* 構造体 */
 struct Token {
@@ -38,21 +45,32 @@ struct Node {
     Node *left;         // 左辺ノードのポインタ
     Node *right;        // 右辺ノードのポインタ
     int val;            // 数字ノードだった時、その値
+    int offset;         // ローカル変数ノードだった時、そのオフセット
+};
+
+struct LVar {
+    LVar *next;     // 次のLVar
+    char *name;     // 変数名
+    int len;        // 長さ
+    int offset;     // RBPからのオフセット
 };
 
 /* グローバル変数 */
 Token *token;
 char *user_input;
+Node *code[100];
+LVar *locals;
 
 /* common.c */
 void error(char *fmt, ...);
 void error_at(char *location, char *fmt, ...);
+int is_alnum(char chr);
 
 /* parce.c */
 Token *tokenize();
+void program();
 
 /* codegen.c */
-Node *expr();
 void gen_asm();
 
 #endif // YNCC_H

@@ -1,9 +1,22 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
 #include "yncc.h"
 
+/* プロトタイプ宣言 */
+void program();
+Node *stmt();
+Node *expr();
+Node *assign();
+Node *equality();
+Node *relational();
+Node *add();
+Node *mul();
+Node *unary();
+Node *primary();
+LVar *find_lvar(Token *request);
 
 // 新しいトークンを作成してcurに繋げる
 Token *new_token(TokenKind kind, Token *cur, char *str){
@@ -38,9 +51,32 @@ Token *tokenize(char *p){
 
         // "+", "-"
         if(*p == '+' || *p == '-' || *p == '*' || *p == '/' ||
-           *p == '(' || *p == ')' || *p == '>' || *p == '<'){
+           *p == '(' || *p == ')' || *p == '>' || *p == '<' ||
+           *p == ';' || *p == '='){
             cur = new_token(TOKEN_RESERVED, cur, p++);
             cur->len = 1;
+            continue;
+        }
+
+        // return
+        if(strncmp(p, "return", 6) == 0 && !is_alnum(*(p+6))){
+            cur = new_token(TOKEN_RETURN, cur, p);
+            cur->len = 6;
+            p += 6;
+            continue;
+        }
+
+        // 識別子
+        if(('a' <= *p && *p <= 'z') || ('A' <= *p && *p <= 'Z')){
+            cur = new_token(TOKEN_IDENT, cur, p);
+            int len = 0;
+            while(('a' <= *(p+len) && *(p+len) <= 'z') ||
+                  ('A' <= *(p+len) && *(p+len) <= 'Z') ||
+                  *(p+len) == '_'){
+                ++ len;
+            }
+            cur->len = len;
+            p += len;
             continue;
         }
 
@@ -56,4 +92,234 @@ Token *tokenize(char *p){
 
     new_token(TOKEN_EOF, cur, NULL);
     return head.next;
+}
+
+// トークンが期待する文字かチェックする
+// もし期待する文字なら1つトークンを進める
+bool consume(char *op){
+    if(token->kind == TOKEN_RESERVED && strlen(op) == token->len &&
+            memcmp(token->str, op, token->len) == 0){
+        token = token->next;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// トークンが識別子かどかチェックする
+// もしそうなら1つトークンを進める
+Token *consume_ident(){
+    if(token->kind == TOKEN_IDENT){
+        Token *tmp = token;
+        token = token->next;
+        return tmp;
+    } else {
+        return NULL;
+    }
+}
+
+// トークンが期待する文字かチェックする
+// もし期待する文字出なかった場合エラーを投げる
+void expect(char *op){
+    if(token->kind == TOKEN_RESERVED && strlen(op) == token->len &&
+            memcmp(token->str, op, token->len) == 0){
+        token = token->next;
+    } else {
+        error_at(token->str, "トークンが要求と異なります");
+    }
+}
+
+// トークンが数字かチェックする
+// 数字ならその数を、そうでなければエラーを投げる
+int expect_number(){
+    if(token->kind == TOKEN_NUM){
+        int val = token->val;
+        token = token->next;
+        return val;
+    } else {
+        error_at(token->str, "トークンに数字が要求されました");
+    }
+}
+
+// EOFチェック
+bool at_eof(){
+    return token->kind == TOKEN_EOF;
+}
+
+// ノード生成
+Node *new_node(NodeKind kind, Node *left, Node *right){
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = kind;
+    node->left = left;
+    node->right = right;
+    return node;
+}
+
+// 数字ノード生成
+Node *new_num_node(int val){
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = ND_NUM;
+    node->val = val;
+    return node;
+}
+
+// 構文解析1
+// program = stmt*
+void program(){
+    int idx = 0;
+    for(; !at_eof(); ++ idx){
+        code[idx] = stmt();
+    }
+    code[idx] = NULL;
+}
+
+// 構文解析2
+// stmt = expr ";" | "return" expr ";"
+Node *stmt(){
+    if(token->kind == TOKEN_RETURN){
+        token = token->next;
+        Node *node = calloc(1, sizeof(Node));
+        node->kind = ND_RETURN;
+        node->left = expr();
+        expect(";");
+        return node;
+    }
+
+    Node *node = expr();
+    expect(";");
+    return node;
+}
+
+// 構文解析3
+// expr = assign
+Node *expr(){
+    return assign();
+}
+
+// 構文解析4
+// assign = equality ("=" assign)
+Node *assign(){
+    Node *node = equality();
+    if(consume("=")){
+        node = new_node(ND_ASSIGN, node, assign());
+    } else {
+        return node;
+    }
+}
+
+// 構文解析5
+// equality = relational ("==" relational | "!=" relational)*
+Node *equality(){
+    Node *node = relational();
+
+    if(consume("==")) {
+        node = new_node(ND_EQ, node, relational());
+    } else if(consume("!=")) {
+        node = new_node(ND_NEQ, node, relational());
+    } else {
+        return node;
+    }
+}
+
+// 構文解析6
+// relational = add (">" add | ">=" add | "<" add | "<=" add)*
+Node *relational(){
+    Node *node = add();
+
+    // <, <= は両辺入れ替えて >, >= と同じように扱う(発想の勝利)
+    if(consume(">")) {
+        node = new_node(ND_UPPERL, node, add());
+    } else if(consume(">=")) {
+        node = new_node(ND_UPPEREQL, node, add());
+    } else if(consume("<")) {
+        node = new_node(ND_UPPERL, add(), node);
+    } else if(consume("<=")) {
+        node = new_node(ND_UPPEREQL, add(), node);
+    } else {
+        return node;
+    }
+}
+
+// 構文解析7
+// add = mul ("+" mul | "-" mul)*
+Node *add(){
+    Node *node = mul();
+
+    while(true) {
+        if(consume("+")) {
+            node = new_node(ND_ADD, node, mul());
+        } else if(consume("-")) {
+            node = new_node(ND_SUB, node, mul());
+        } else {
+            return node;
+        }
+    }
+}
+
+// 構文解析8
+// mul = unary ("*" unary | "-" unary)*
+Node *mul(){
+    Node *node = unary();
+
+    while(true) {
+        if(consume("*")) {
+            node = new_node(ND_MUL, node, unary());
+        } else if(consume("/")) {
+            node = new_node(ND_DIV, node, unary());
+        } else {
+            return node;
+        }
+    }
+}
+
+// 構文解析9
+// unary = ("+" | "-")? term
+Node *unary(){
+    if(consume("-")) {
+        return new_node(ND_SUB, new_num_node(0), primary());
+    }
+
+    return primary();
+}
+
+// 構文解析10
+// primary = num | ident | "(" expr ")"
+Node *primary(){
+    if(consume("(")) {
+        Node *node = expr();
+        expect(")");
+        return node;
+    }
+
+    Token *next_token = consume_ident();
+    if(next_token){
+        Node *node = calloc(1, sizeof(Node));
+        node->kind = ND_LVER;
+
+        LVar *result = find_lvar(next_token);       // 変数登録済みか確認
+        if(result != NULL){
+            node->offset = result->offset;
+        } else {
+            LVar *lvar = calloc(1, sizeof(LVar));
+            lvar->next = locals;
+            lvar->name = next_token->str;
+            lvar->len = next_token->len;
+            lvar->offset = locals->offset + 8;
+            node->offset = lvar->offset;
+            locals = lvar;
+        }
+        return node;
+    }
+
+    return new_num_node(expect_number());
+}
+
+// ローカル変数検索
+LVar *find_lvar(Token *request){
+    for(LVar *var = locals; var; var = var->next){
+        if(var->len == request->len && strncmp(var->name, request->str, request->len) == 0){
+            return var;
+        }
+    }
+    return NULL;
 }
