@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "yncc.h"
 
 int main(int argc, char** argv){
@@ -9,6 +10,7 @@ int main(int argc, char** argv){
 
     // トークナイズ
     user_input = argv[1];
+    locals = calloc(1, sizeof(LVar));
     token = tokenize(argv[1]);
 
     // 構文木生成
@@ -23,7 +25,7 @@ int main(int argc, char** argv){
     // ローカル変数領域確保
     printf("        push rbp\n");
     printf("        mov rbp, rsp\n");
-    printf("        add rsp, %d\n", 8*26);
+    printf("        add rsp, %d\n", 8*30);
 
     // アセンブリ出力
     for(int idx = 0; code[idx] != NULL; ++ idx){

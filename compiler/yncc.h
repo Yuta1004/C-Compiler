@@ -27,6 +27,8 @@ typedef enum {
 
 typedef struct Node Node;
 
+typedef struct LVar LVar;
+
 /* 構造体 */
 struct Token {
     TokenKind kind;     // トークンの種類
@@ -44,10 +46,18 @@ struct Node {
     int offset;         // ローカル変数ノードだった時、そのオフセット
 };
 
+struct LVar {
+    LVar *next;     // 次のLVar
+    char *name;     // 変数名
+    int len;        // 長さ
+    int offset;     // RBPからのオフセット
+};
+
 /* グローバル変数 */
 Token *token;
 char *user_input;
 Node *code[100];
+LVar *locals;
 
 /* common.c */
 void error(char *fmt, ...);

@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
@@ -15,6 +16,7 @@ Node *add();
 Node *mul();
 Node *unary();
 Node *primary();
+LVar *find_lvar(Token *request);
 
 // 新しいトークンを作成してcurに繋げる
 Token *new_token(TokenKind kind, Token *cur, char *str){
@@ -58,7 +60,7 @@ Token *tokenize(char *p){
 
         // 識別子
         if(('a' <= *p && *p <= 'z') || ('A' <= *p && *p <= 'Z')){
-            cur = new_token(TOKEN_IDENT, cur, p++);
+            cur = new_token(TOKEN_IDENT, cur, p);
             int len = 0;
             while(('a' <= *(p+len) && *(p+len) <= 'z') ||
                   ('A' <= *(p+len) && *(p+len) <= 'Z') ||
@@ -273,12 +275,34 @@ Node *primary(){
     }
 
     Token *next_token = consume_ident();
-    if(next_token != NULL){
+    if(next_token){
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_LVER;
-        node->offset = (next_token->str[0] - 'a' + 1) * 8;
+
+        LVar *result = find_lvar(next_token);       // 変数登録済みか確認
+        if(result != NULL){
+            node->offset = result->offset;
+        } else {
+            LVar *lvar = calloc(1, sizeof(LVar));
+            lvar->next = locals;
+            lvar->name = next_token->str;
+            lvar->len = next_token->len;
+            lvar->offset = locals->offset + 8;
+            node->offset = lvar->offset;
+            locals = lvar;
+        }
         return node;
     }
 
     return new_num_node(expect_number());
+}
+
+// ローカル変数検索
+LVar *find_lvar(Token *request){
+    for(LVar *var = locals; var; var = var->next){
+        if(var->len == request->len && strncmp(var->name, request->str, request->len) == 0){
+            return var;
+        }
+    }
+    return NULL;
 }

@@ -37,6 +37,11 @@ try "20*100 < 30000;" 1
 try "1 <= 0;" 0
 try "a = 1; b = 2; c = 3; a = b*c/a; d = a+b+c;" 11
 try "a = 10; b = 20; c = a*b; d = (c+100)/(e=10); d-e;" 20
+try "one = 1; two = 2; sum = one + two;" 3
+try "a_result = 1204; b_result = 1004; ret_value = a_result - b_result;" 200
+try "a = 10; b = 20; tmp = a; a = b; b = tmp; a;" 20
+try "a = 10; b = 20; tmp = a; a = b; b = tmp; b;" 10
+
 
 echo "OK!"
 exit 0
