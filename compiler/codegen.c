@@ -18,6 +18,7 @@ void gen_lval(Node *node){
 
 // 構文木 to アセンブリ
 void gen_asm(Node *node){
+    // 変数, 値
     switch(node->kind){
     case ND_NUM:
         printf("        push %d\n", node->val);
@@ -35,6 +36,17 @@ void gen_asm(Node *node){
         printf("        pop rax\n");            // LEFT
         printf("        mov [rax], rdi\n");     // [LEFT] = RIGHT
         printf("        push rdi\n");           // a=b=c=8 が出来るように右辺値をスタックに残しておく
+        return;
+    }
+
+    // 予約語
+    switch(node->kind){
+    case ND_RETURN:
+        gen_asm(node->left);
+        printf("        pop rax\n");
+        printf("        mov rsp, rbp\n");
+        printf("        pop rbp\n");
+        printf("        ret\n");
         return;
     }
 

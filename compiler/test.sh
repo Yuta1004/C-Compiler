@@ -35,12 +35,13 @@ try "100/5 > 30;" 0
 try "1/1+10-10 >= 0;" 1
 try "20*100 < 30000;" 1
 try "1 <= 0;" 0
-try "a = 1; b = 2; c = 3; a = b*c/a; d = a+b+c;" 11
-try "a = 10; b = 20; c = a*b; d = (c+100)/(e=10); d-e;" 20
-try "one = 1; two = 2; sum = one + two;" 3
-try "a_result = 1204; b_result = 1004; ret_value = a_result - b_result;" 200
-try "a = 10; b = 20; tmp = a; a = b; b = tmp; a;" 20
-try "a = 10; b = 20; tmp = a; a = b; b = tmp; b;" 10
+try "a = 1; b = 2; c = 3; a = b*c/a; d = a+b+c; return d;" 11
+try "a = 10; b = 20; c = a*b; d = (c+100)/(e=10); return d-e;" 20
+try "one = 1; two = 2; sum = one + two; return sum;" 3
+try "a_result = 1204; b_result = 1004; ret_value = a_result - b_result; return ret_value;" 200
+try "a = 10; b = 20; tmp = a; a = b; b = tmp; return a;" 20
+try "a = 10; b = 20; tmp = a; a = b; b = tmp; return b;" 10
+try "seven = 7; eleven = 11; seven_eleven = seven + eleven; return seven_eleven;" 18
 
 
 echo "OK!"
