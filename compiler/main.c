@@ -12,7 +12,7 @@ int main(int argc, char** argv){
     token = tokenize(argv[1]);
 
     // 構文木生成
-    Node *node_top = program();
+    program();
 
     // ヘッダー
     printf(".intel_syntax   noprefix\n");
@@ -21,7 +21,9 @@ int main(int argc, char** argv){
     printf("main:\n");
 
     // アセンブリ出力
-    gen_asm(node_top);
+    for(int idx = 0; code[idx] != NULL; ++ idx){
+        gen_asm(code[idx]);
+    }
 
     // フッター
     printf("        pop rax\n");

@@ -5,7 +5,7 @@
 #include "yncc.h"
 
 /* プロトタイプ宣言 */
-Node *program();
+void program();
 Node *stmt();
 Node *expr();
 Node *assign();
@@ -149,7 +149,7 @@ Node *new_num_node(int val){
 
 // 構文解析1
 // program = stmt*
-Node *program(){
+void program(){
     int idx = 0;
     for(; !at_eof(); ++ idx){
         code[idx] = stmt();

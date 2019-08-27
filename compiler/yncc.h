@@ -55,7 +55,7 @@ void error_at(char *location, char *fmt, ...);
 
 /* parce.c */
 Token *tokenize();
-Node *program();
+void program();
 
 /* codegen.c */
 void gen_asm();
