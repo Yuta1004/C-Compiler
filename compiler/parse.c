@@ -60,6 +60,12 @@ Token *tokenize(char *p){
             continue;
         }
 
+        // ;
+        if(';' == *p){
+            cur = new_token(TOKEN_RESERVED, cur, p++);
+            continue;
+        }
+
         // 数字
         if(isdigit(*p)){
             cur = new_token(TOKEN_NUM, cur, p);
