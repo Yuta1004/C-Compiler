@@ -12,7 +12,7 @@ int main(int argc, char** argv){
     token = tokenize(argv[1]);
 
     // 構文木生成
-    Node *node_top = expr();
+    Node *node_top = program();
 
     // ヘッダー
     printf(".intel_syntax   noprefix\n");

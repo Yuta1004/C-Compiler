@@ -7,6 +7,7 @@
 /* プロトタイプ宣言 */
 Node *program();
 Node *stmt();
+Node *expr();
 Node *assign();
 Node *equality();
 Node *relational();
