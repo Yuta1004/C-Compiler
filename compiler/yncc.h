@@ -50,9 +50,9 @@ void error_at(char *location, char *fmt, ...);
 
 /* parce.c */
 Token *tokenize();
+Node *expr();
 
 /* codegen.c */
-Node *expr();
 void gen_asm();
 
 #endif // YNCC_H
