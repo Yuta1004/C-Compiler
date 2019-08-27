@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <string.h>
 #include "yncc.h"
 
 // エラー出力関数
@@ -16,6 +17,10 @@ void error(char *fmt, ...){
 void error_at(char *location, char *fmt, ...){
     va_list vargs;
     va_start(vargs, fmt);
+
+    if(location == NULL){
+        location = user_input + strlen(user_input);
+    }
 
     int err_pos = location - user_input;
     fprintf(stderr, "%s\n", user_input);
