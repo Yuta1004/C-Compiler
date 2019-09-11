@@ -60,6 +60,14 @@ Token *tokenize(char *p){
             continue;
         }
 
+        // else
+        if(strncmp(p, "else", 4) == 0 && !is_alnum(*(p+4))){
+            cur = new_token(TOKEN_ELSE, cur, p);
+            cur->len = 4;
+            p += 4;
+            continue;
+        }
+
         // 識別子
         if(('a' <= *p && *p <= 'z') || ('A' <= *p && *p <= 'Z')){
             cur = new_token(TOKEN_IDENT, cur, p);

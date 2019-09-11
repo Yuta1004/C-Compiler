@@ -48,14 +48,16 @@ Node *stmt(){
         expect("(");
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_IF;
-        node->left = expr();
+        Node *condition = expr();
         expect(")");
 
         // stmt
-        node->left->left = stmt();
+        node->left = stmt();
+        node->left->left = condition;
 
-        // else stmt ;
-        if(consume("else")) {
+        // else stmt
+        if(token->kind == TOKEN_ELSE) {
+            token = token->next;
             node->right = stmt();
         }
         return node;

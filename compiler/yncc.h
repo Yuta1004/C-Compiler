@@ -8,6 +8,7 @@ typedef enum {
     TOKEN_IDENT,        // 識別子
     TOKEN_RETURN,       // return(予約語)
     TOKEN_IF,           // if(予約語)
+    TOKEN_ELSE,         // else(予約語)
     TOKEN_EOF,          // EOF
 } TokenKind;
 
@@ -62,6 +63,7 @@ Token *token;
 char *user_input;
 Node *code[100];
 LVar *locals;
+int label_numbers;
 
 /* common.c */
 void error(char *fmt, ...);
