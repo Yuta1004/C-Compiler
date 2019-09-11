@@ -29,7 +29,9 @@ void program(){
 }
 
 // 構文解析2
-// stmt = expr ";" | "return" expr ";"
+// stmt = expr ";"
+//        | "return" expr ";"
+//        | "if" "(" expr ")" stmt ("else" stmt)?
 Node *stmt(){
     if(token->kind == TOKEN_RETURN){
         token = token->next;
@@ -37,6 +39,25 @@ Node *stmt(){
         node->kind = ND_RETURN;
         node->left = expr();
         expect(";");
+        return node;
+    }
+
+    if(token->kind == TOKEN_IF) {
+        // if ( expr )
+        token = token->next;
+        expect("(");
+        Node *node = calloc(1, sizeof(Node));
+        node->kind = ND_IF;
+        node->left = expr();
+        expect(")");
+
+        // stmt
+        node->left->left = stmt();
+
+        // else stmt ;
+        if(consume("else")) {
+            node->right = stmt();
+        }
         return node;
     }
 
@@ -52,7 +73,7 @@ Node *expr(){
 }
 
 // 構文解析4
-// assign = equality ("=" assign)
+// assign = equality ("=" assign)?
 Node *assign(){
     Node *node = equality();
     if(consume("=")){
