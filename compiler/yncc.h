@@ -66,8 +66,23 @@ void error(char *fmt, ...);
 void error_at(char *location, char *fmt, ...);
 int is_alnum(char chr);
 
-/* parce.c */
+/* tokenize.c */
+#include <stdbool.h>
 Token *tokenize();
+
+/* token.c */
+bool at_eof();
+int expect_number();
+bool consume(char *op);
+void expect(char *op);
+bool consume(char *op);
+Token *consume_ident();
+
+/* node.c */
+Node *new_node(NodeKind kind, Node *left, Node *right);
+Node *new_num_node(int val);
+
+/* parse.c */
 void program();
 
 /* codegen.c */
