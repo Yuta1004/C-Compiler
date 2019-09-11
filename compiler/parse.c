@@ -18,151 +18,6 @@ Node *unary();
 Node *primary();
 LVar *find_lvar(Token *request);
 
-// 新しいトークンを作成してcurに繋げる
-Token *new_token(TokenKind kind, Token *cur, char *str){
-    Token *tok = calloc(1, sizeof(Token));     // Tokenサイズのメモリを1区間要求する(with ゼロクリア)
-    tok->kind = kind;
-    tok->str = str;
-    cur->next = tok;
-    return tok;
-}
-
-// 文字列をトークナイズして返す
-Token *tokenize(char *p){
-    Token head;
-    head.next = NULL;
-    Token *cur = &head;
-
-    while(*p){
-        // スペース
-        if(isspace(*p)){
-            ++ p;
-            continue;
-        }
-
-        // ">=", "<=", "==", "!="
-        if(strncmp(p, "<=", 2) == 0 || strncmp(p, ">=", 2) == 0 ||
-           strncmp(p, "==", 2) == 0 || strncmp(p, "!=", 2) == 0){
-            cur = new_token(TOKEN_RESERVED, cur, p);
-            cur->len = 2;
-            p += 2;
-            continue;
-        }
-
-        // "+", "-"
-        if(*p == '+' || *p == '-' || *p == '*' || *p == '/' ||
-           *p == '(' || *p == ')' || *p == '>' || *p == '<' ||
-           *p == ';' || *p == '='){
-            cur = new_token(TOKEN_RESERVED, cur, p++);
-            cur->len = 1;
-            continue;
-        }
-
-        // return
-        if(strncmp(p, "return", 6) == 0 && !is_alnum(*(p+6))){
-            cur = new_token(TOKEN_RETURN, cur, p);
-            cur->len = 6;
-            p += 6;
-            continue;
-        }
-
-        // 識別子
-        if(('a' <= *p && *p <= 'z') || ('A' <= *p && *p <= 'Z')){
-            cur = new_token(TOKEN_IDENT, cur, p);
-            int len = 0;
-            while(('a' <= *(p+len) && *(p+len) <= 'z') ||
-                  ('A' <= *(p+len) && *(p+len) <= 'Z') ||
-                  *(p+len) == '_'){
-                ++ len;
-            }
-            cur->len = len;
-            p += len;
-            continue;
-        }
-
-        // 数字
-        if(isdigit(*p)){
-            cur = new_token(TOKEN_NUM, cur, p);
-            cur->val = strtol(p, &p, 10);
-            continue;
-        }
-
-        error_at(p, "トークナイズに失敗しました");
-    }
-
-    new_token(TOKEN_EOF, cur, NULL);
-    return head.next;
-}
-
-// トークンが期待する文字かチェックする
-// もし期待する文字なら1つトークンを進める
-bool consume(char *op){
-    if(token->kind == TOKEN_RESERVED && strlen(op) == token->len &&
-            memcmp(token->str, op, token->len) == 0){
-        token = token->next;
-        return true;
-    } else {
-        return false;
-    }
-}
-
-// トークンが識別子かどかチェックする
-// もしそうなら1つトークンを進める
-Token *consume_ident(){
-    if(token->kind == TOKEN_IDENT){
-        Token *tmp = token;
-        token = token->next;
-        return tmp;
-    } else {
-        return NULL;
-    }
-}
-
-// トークンが期待する文字かチェックする
-// もし期待する文字出なかった場合エラーを投げる
-void expect(char *op){
-    if(token->kind == TOKEN_RESERVED && strlen(op) == token->len &&
-            memcmp(token->str, op, token->len) == 0){
-        token = token->next;
-    } else {
-        error_at(token->str, "トークンが要求と異なります");
-    }
-}
-
-// トークンが数字かチェックする
-// 数字ならその数を、そうでなければエラーを投げる
-int expect_number(){
-    if(token->kind == TOKEN_NUM){
-        int val = token->val;
-        token = token->next;
-        return val;
-    } else {
-        error_at(token->str, "トークンに数字が要求されました");
-    }
-}
-
-// EOFチェック
-bool at_eof(){
-    return token->kind == TOKEN_EOF;
-}
-
-// ノード生成
-Node *new_node(NodeKind kind, Node *left, Node *right){
-    Node *node = calloc(1, sizeof(Node));
-    node->kind = kind;
-    node->left = left;
-    node->right = right;
-    return node;
-}
-
-// 数字ノード生成
-Node *new_num_node(int val){
-    Node *node = calloc(1, sizeof(Node));
-    node->kind = ND_NUM;
-    node->val = val;
-    return node;
-}
-
 // 構文解析1
 // program = stmt*
 void program(){
@@ -174,7 +29,9 @@ void program(){
 }
 
 // 構文解析2
-// stmt = expr ";" | "return" expr ";"
+// stmt = expr ";"
+//        | "return" expr ";"
+//        | "if" "(" expr ")" stmt ("else" stmt)?
 Node *stmt(){
     if(token->kind == TOKEN_RETURN){
         token = token->next;
@@ -182,6 +39,27 @@ Node *stmt(){
         node->kind = ND_RETURN;
         node->left = expr();
         expect(";");
+        return node;
+    }
+
+    if(token->kind == TOKEN_IF) {
+        // if ( expr )
+        token = token->next;
+        expect("(");
+        Node *node = calloc(1, sizeof(Node));
+        node->kind = ND_IF;
+        node->left = expr();
+        node->right = calloc(1, sizeof(Node));
+        expect(")");
+
+        // stmt
+        node->right->left = stmt();
+
+        // else stmt
+        if(token->kind == TOKEN_ELSE) {
+            token = token->next;
+            node->right->right = stmt();
+        }
         return node;
     }
 
@@ -197,7 +75,7 @@ Node *expr(){
 }
 
 // 構文解析4
-// assign = equality ("=" assign)
+// assign = equality ("=" assign)?
 Node *assign(){
     Node *node = equality();
     if(consume("=")){

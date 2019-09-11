@@ -7,6 +7,8 @@ typedef enum {
     TOKEN_NUM,          // 数字
     TOKEN_IDENT,        // 識別子
     TOKEN_RETURN,       // return(予約語)
+    TOKEN_IF,           // if(予約語)
+    TOKEN_ELSE,         // else(予約語)
     TOKEN_EOF,          // EOF
 } TokenKind;
 
@@ -24,6 +26,7 @@ typedef enum {
     ND_ASSIGN,          // =
     ND_LVER,            // ローカル変数
     ND_RETURN,          // return(予約語)
+    ND_IF,              // if(予約語)
     ND_NUM,             // 数字
 } NodeKind;
 
@@ -60,14 +63,30 @@ Token *token;
 char *user_input;
 Node *code[100];
 LVar *locals;
+int label_numbers;
 
 /* common.c */
 void error(char *fmt, ...);
 void error_at(char *location, char *fmt, ...);
 int is_alnum(char chr);
 
-/* parce.c */
+/* tokenize.c */
+#include <stdbool.h>
 Token *tokenize();
+
+/* token.c */
+bool at_eof();
+int expect_number();
+bool consume(char *op);
+void expect(char *op);
+bool consume(char *op);
+Token *consume_ident();
+
+/* node.c */
+Node *new_node(NodeKind kind, Node *left, Node *right);
+Node *new_num_node(int val);
+
+/* parse.c */
 void program();
 
 /* codegen.c */
