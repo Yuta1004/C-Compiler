@@ -42,7 +42,11 @@ try "a_result = 1204; b_result = 1004; ret_value = a_result - b_result; return r
 try "a = 10; b = 20; tmp = a; a = b; b = tmp; return a;" 20
 try "a = 10; b = 20; tmp = a; a = b; b = tmp; return b;" 10
 try "seven = 7; eleven = 11; seven_eleven = seven + eleven; return seven_eleven;" 18
-
+try "return a=b=10;" 10
+try "a = 10; b = 30; if(a == 10) return b;" 30
+try "a = 10; b = 10; if(a == b) return 20; else return 100;" 20
+try "a = 10; b = 10; if(a != b) return 20; else return 100;" 100
+try "result = 0; if (1) if (1) if (0) result = result + 10; else if(1) result = result + 20; else result = result + 30; else result = result + 40; return result;" 20
 
 echo "OK!"
 exit 0

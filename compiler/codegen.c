@@ -4,6 +4,7 @@
 #include <string.h>
 #include "yncc.h"
 
+
 // 左辺値コンパイル
 void gen_lval(Node *node){
     if(node->kind != ND_LVER){
@@ -18,6 +19,9 @@ void gen_lval(Node *node){
 
 // 構文木 to アセンブリ
 void gen_asm(Node *node){
+    if(node == NULL) return;
+    int tmp_label_numbers = label_numbers;
+
     // 変数, 値
     switch(node->kind){
     case ND_NUM:
@@ -47,6 +51,20 @@ void gen_asm(Node *node){
         printf("        mov rsp, rbp\n");
         printf("        pop rbp\n");
         printf("        ret\n");
+        return;
+    case ND_IF:
+        label_numbers ++;
+        gen_asm(node->left);
+        printf("        pop rax\n");
+        printf("        cmp rax, 1\n");
+        printf("        jne __if_else_%d\n", tmp_label_numbers);
+        gen_asm(node->right->left);
+        printf("        pop rax\n");
+        printf("        jmp __if_end_%d\n", tmp_label_numbers);
+        printf("__if_else_%d:\n", tmp_label_numbers);
+        gen_asm(node->right->right);
+        printf("        pop rax\n");
+        printf("__if_end_%d:\n", tmp_label_numbers);
         return;
     }
 
