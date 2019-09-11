@@ -7,6 +7,7 @@ typedef enum {
     TOKEN_NUM,          // 数字
     TOKEN_IDENT,        // 識別子
     TOKEN_RETURN,       // return(予約語)
+    TOKEN_IF,           // if(予約語)
     TOKEN_EOF,          // EOF
 } TokenKind;
 
@@ -24,6 +25,7 @@ typedef enum {
     ND_ASSIGN,          // =
     ND_LVER,            // ローカル変数
     ND_RETURN,          // return(予約語)
+    ND_IF,              // if(予約語)
     ND_NUM,             // 数字
 } NodeKind;
 

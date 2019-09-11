@@ -52,6 +52,14 @@ Token *tokenize(char *p){
             continue;
         }
 
+        // if
+        if(strncmp(p, "if", 2) == 0 && !is_alnum(*(p+2))){
+            cur = new_token(TOKEN_IF, cur, p);
+            cur->len = 2;
+            p += 2;
+            continue;
+        }
+
         // 識別子
         if(('a' <= *p && *p <= 'z') || ('A' <= *p && *p <= 'Z')){
             cur = new_token(TOKEN_IDENT, cur, p);
