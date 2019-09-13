@@ -11,3 +11,17 @@
 
 - compiler
     - コンパイラ本体
+
+## Commands
+
+```
+// Run
+cd compiler
+make
+./yncc "return 0;"
+echo $?
+
+// Test
+cd compiler
+make test
+```
