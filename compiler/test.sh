@@ -5,7 +5,7 @@ try() {
     expected="$2"
 
     ./yncc "$input" > tmp.s
-    gcc -o tmp tmp.s
+    gcc -O0 -g -o tmp tmp.s
     ./tmp
     actual="$?"
 
