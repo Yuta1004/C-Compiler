@@ -57,12 +57,12 @@ void gen_asm(Node *node){
         gen_asm(node->left);
         printf("        pop rax\n");
         printf("        cmp rax, 1\n");
-        printf("        jne __if_else_%d\n", tmp_label_numbers);
+        printf("        jne .L__if_else_%d\n", tmp_label_numbers);
         gen_asm(node->right->left);
-        printf("        jmp __if_end_%d\n", tmp_label_numbers);
-        printf("__if_else_%d:\n", tmp_label_numbers);
+        printf("        jmp .L__if_end_%d\n", tmp_label_numbers);
+        printf(".L__if_else_%d:\n", tmp_label_numbers);
         gen_asm(node->right->right);
-        printf("__if_end_%d:\n", tmp_label_numbers);
+        printf(".L__if_end_%d:\n", tmp_label_numbers);
         return;
     }
 
