@@ -22,17 +22,19 @@ void gen_asm(Node *node){
     if(node == NULL) return;
     int tmp_label = label;
 
-    // 変数, 値
+    // 変数, 値, ブロック
     switch(node->kind){
     case ND_NUM:
         printf("        push %d\n", node->val);
         return;
+
     case ND_LVER:   // 右辺に左辺値が出てきた場合
         gen_lval(node);
         printf("        pop rax\n");
         printf("        mov rax, [rax]\n");
         printf("        push rax\n");
         return;
+
     case ND_ASSIGN:
         gen_lval(node->left);                   // [a] = 9 + 1  : LEFT
         gen_asm(node->right);                   // a = [9 + 1]  : RIGHT
@@ -40,6 +42,15 @@ void gen_asm(Node *node){
         printf("        pop rax\n");            // LEFT
         printf("        mov [rax], rdi\n");     // [LEFT] = RIGHT
         printf("        push rdi\n");           // a=b=c=8 が出来るように右辺値をスタックに残しておく
+        return;
+
+    case ND_BLOCK:;
+        Node *block_node = node->block_next_node;   // ブロック連結リストのノードを持つ
+        while(block_node != NULL) {
+            gen_asm(block_node);
+            printf("        pop rax\n");
+            block_node = block_node->block_next_node;
+        }
         return;
     }
 
