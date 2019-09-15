@@ -123,6 +123,12 @@ void gen_asm(Node *node){
         printf("        idiv rdi\n");   // rax / rsiの結果 (余りはrdx)
         break;
 
+    case ND_DIV_REMAIN:
+        printf("        cqo\n");
+        printf("        idiv rdi\n");
+        printf("        mov rax, rdx\n");
+        break;
+
     case ND_EQ:
         printf("        cmp rdi, rax\n");   // rdiとraxを比較 -> 結果はフラグレジスタへ
         printf("        sete al\n");        // 比較結果(==)をalに入れる(raxの下位8ビットにあたるレジスタ)
