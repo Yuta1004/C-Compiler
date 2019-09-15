@@ -49,11 +49,12 @@ struct Token {
 };
 
 struct Node {
-    NodeKind kind;      // ノードの種類
-    Node *left;         // 左辺ノードのポインタ
-    Node *right;        // 右辺ノードのポインタ
-    int val;            // 数字ノードだった時、その値
-    int offset;         // ローカル変数ノードだった時、そのオフセット
+    NodeKind kind;              // ノードの種類
+    Node *left;                 // 左辺ノードのポインタ
+    Node *right;                // 右辺ノードのポインタ
+    Node *block_next_node;      // ブロックノードだった時、その次のノード
+    int val;                    // 数字ノードだった時、その値
+    int offset;                 // ローカル変数ノードだった時、そのオフセット
 };
 
 struct LVar {
