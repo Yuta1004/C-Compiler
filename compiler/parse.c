@@ -226,8 +226,9 @@ Node *unary(){
 }
 
 // 構文解析10
-// primary = num | ident | "(" expr ")"
+// primary = num | ident ("(" ")")? | "(" expr ")"
 Node *primary(){
+    // "(" expr ")"
     if(consume("(")) {
         Node *node = expr();
         expect(")");
@@ -236,9 +237,19 @@ Node *primary(){
 
     Token *next_token = consume_ident();
     if(next_token){
-        Node *node = calloc(1, sizeof(Node));
-        node->kind = ND_LVER;
+        // 関数呼び出し
+        if(consume("(")) {
+            expect(")");
+            Node *node = calloc(1, sizeof(Node));
+            node->kind = ND_FUNC;
+            node->name = (char*)malloc((next_token->len+1) * sizeof(char));
+            strncpy(node->name, next_token->str, next_token->len+1);
+            node->name[next_token->len+1] = '\0';
+            return node;
+        }
 
+        // 変数
+        Node *node = calloc(1, sizeof(Node));
         LVar *result = find_lvar(next_token);       // 変数登録済みか確認
         if(result != NULL){
             node->offset = result->offset;
@@ -251,6 +262,7 @@ Node *primary(){
             node->offset = lvar->offset;
             locals = lvar;
         }
+        node->kind = ND_LVER;
         return node;
     }
 
