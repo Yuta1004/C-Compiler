@@ -22,7 +22,7 @@ void gen_asm(Node *node){
     if(node == NULL) return;
     int tmp_label = label;
 
-    // 変数, 値, ブロック
+    // 変数, 値, ブロック, 関数呼び出し
     switch(node->kind){
     case ND_NUM:
         printf("        push %d\n", node->val);
@@ -51,6 +51,14 @@ void gen_asm(Node *node){
             printf("        pop rax\n");
             block_node = block_node->block_next_node;
         }
+        return;
+
+    case ND_FUNC:
+        printf("        mov r15, rsp\n");
+        printf("        and rsp, 0xffffffffffff0000\n");
+        printf("        call %s\n", node->f_name);
+        printf("        mov rsp, r15\n");
+        printf("        push rax\n");
         return;
     }
 
