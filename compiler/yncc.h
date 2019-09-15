@@ -25,6 +25,7 @@ typedef enum {
     ND_SUB,             // -
     ND_MUL,             // *
     ND_DIV,             // /
+    ND_DIV_REMAIN,      // %
     ND_ASSIGN,          // =
     ND_LVER,            // ローカル変数
     ND_RETURN,          // return
