@@ -36,6 +36,7 @@ try "100/5 > 30;" 0
 try "1/1+10-10 >= 0;" 1
 try "20*100 < 30000;" 1
 try "1 <= 0;" 0
+try "10 % 3;" 1
 
 # variable
 echo -e "\e[1m\nVariable\e[m"
@@ -66,6 +67,8 @@ try "num = 0; for(; num < 100; ) num = num + 1; return num;" 100
 try "a = 0; for(;;) if(a == 10) return a; else a = a + 1;" 10
 try "a = 0; for(;; a = a + 1) if(a == 10) return a;" 10
 try "sum = 0; for(n = 1; n <= 10; n = n + 1) sum = sum + n; return sum;" 55
+try "sum = 0; for(n = 0; n <= 20; n = n + 2) sum = sum + n; return sum;" 110
+try "sum = 0; for(n = 1; n <= 20; n = n + 1) if(n % 2 == 0) sum = sum + n; return sum;" 110
 
 echo ""
 exit 0
