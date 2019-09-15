@@ -66,14 +66,14 @@ void gen_asm(Node *node){
         return;
     case ND_WHILE:
         label_numbers ++;
-        printf(".L__while_start_%d:\n", label_numbers);
+        printf(".L__while_start_%d:\n", tmp_label_numbers);
         gen_asm(node->left);
         printf("        pop rax\n");
         printf("        cmp rax, 1\n");
-        printf("        jne .L__while_end_%d\n", label_numbers);
+        printf("        jne .L__while_end_%d\n", tmp_label_numbers);
         gen_asm(node->right);
-        printf("        jmp .L__while_start_%d\n", label_numbers);
-        printf(".L__while_end_%d:\n", label_numbers);
+        printf("        jmp .L__while_start_%d\n", tmp_label_numbers);
+        printf(".L__while_end_%d:\n", tmp_label_numbers);
         return;
     }
 
