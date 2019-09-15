@@ -43,7 +43,7 @@ Node *stmt(){
     }
 
     if(token->kind == TOKEN_IF) {
-        // if ( expr )
+        // if ( expr ) stmt
         token = token->next;
         expect("(");
         Node *node = calloc(1, sizeof(Node));
@@ -51,8 +51,6 @@ Node *stmt(){
         node->left = expr();
         node->right = calloc(1, sizeof(Node));
         expect(")");
-
-        // stmt
         node->right->left = stmt();
 
         // else stmt
