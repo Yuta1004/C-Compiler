@@ -59,9 +59,11 @@ void gen_asm(Node *node){
         printf("        cmp rax, 1\n");
         printf("        jne .L__if_else_%d\n", tmp_label_numbers);
         gen_asm(node->right->left);
+        printf("        pop rax\n");
         printf("        jmp .L__if_end_%d\n", tmp_label_numbers);
         printf(".L__if_else_%d:\n", tmp_label_numbers);
         gen_asm(node->right->right);
+        printf("        pop rax\n");
         printf(".L__if_end_%d:\n", tmp_label_numbers);
         return;
     case ND_WHILE:
@@ -72,6 +74,7 @@ void gen_asm(Node *node){
         printf("        cmp rax, 1\n");
         printf("        jne .L__while_end_%d\n", tmp_label_numbers);
         gen_asm(node->right);
+        printf("        pop rax\n");
         printf("        jmp .L__while_start_%d\n", tmp_label_numbers);
         printf(".L__while_end_%d:\n", tmp_label_numbers);
         return;
@@ -84,7 +87,9 @@ void gen_asm(Node *node){
         printf("        cmp rax, 1\n");
         printf("        jne .L__for_end_%d\n", tmp_label_numbers);
         gen_asm(node->right->left->right);
+        printf("        pop rax\n");
         gen_asm(node->right->right);
+        printf("        pop rax\n");
         printf("        jmp .L__for_start_%d\n", tmp_label_numbers);
         printf(".L__for_end_%d:\n", tmp_label_numbers);
         return;
