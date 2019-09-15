@@ -48,6 +48,11 @@ try "a = 10; b = 10; if(a == b) return 20; else return 100;" 20
 try "a = 10; b = 10; if(a != b) return 20; else return 100;" 100
 try "result = 0; if (1) if (1) if (0) result = result + 10; else if(1) result = result + 20; else result = result + 30; else result = result + 40; return result;" 20
 try "num = 0; while(num < 10) num = num + 1; return num;" 10
+try "num = 0; for(i = 0; i < 200; i = i + 1) num = num + 1; return num;" 200
+try "num = 0; for(; num < 100; ) num = num + 1; return num;" 100
+try "a = 0; for(;;) if(a == 10) return a; else a = a + 1;" 10
+try "a = 0; for(;; a = a + 1) if(a == 10) return a;" 10
+try "sum = 0; for(n = 1; n <= 10; n = n + 1) sum = sum + n; return sum;" 55
 
 echo "OK!"
 exit 0

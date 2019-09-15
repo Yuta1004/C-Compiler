@@ -88,7 +88,6 @@ Node *stmt(){
             node->left = expr();
             expect(";");
         }
-
         // expr? ; <Condition>
         if(!consume(";")) {
             node->right->left->left = expr();
@@ -96,7 +95,6 @@ Node *stmt(){
         } else {
             node->right->left->left = new_num_node(1);
         }
-
         // expr? ; <Next>
         if(!consume(")")) {
             node->right->right = expr();
