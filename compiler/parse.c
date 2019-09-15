@@ -30,8 +30,10 @@ void program(){
 
 // 構文解析2
 // stmt = expr ";"
+//        | "{" stmt* "}"
 //        | "return" expr ";"
 //        | "if" "(" expr ")" stmt ("else" stmt)?
+//        | "while" "(" expr ")" stmt
 Node *stmt(){
     if(token->kind == TOKEN_RETURN){
         token = token->next;
@@ -42,8 +44,25 @@ Node *stmt(){
         return node;
     }
 
+    // Block
+    if(consume("{")) {
+        Node *node = calloc(1, sizeof(Node));
+        node->kind = ND_BLOCK;
+
+        // stmt*
+        Node *now_node = node;
+        while(!consume("}")) {
+            Node *new_node = stmt();
+            now_node->block_next_node = new_node;
+            now_node = new_node;
+        }
+        now_node->block_next_node = calloc(1, sizeof(Node));
+        return node;
+    }
+
+    // if
     if(token->kind == TOKEN_IF) {
-        // if ( expr )
+        // if ( expr ) stmt
         token = token->next;
         expect("(");
         Node *node = calloc(1, sizeof(Node));
@@ -51,8 +70,6 @@ Node *stmt(){
         node->left = expr();
         node->right = calloc(1, sizeof(Node));
         expect(")");
-
-        // stmt
         node->right->left = stmt();
 
         // else stmt
@@ -60,6 +77,52 @@ Node *stmt(){
             token = token->next;
             node->right->right = stmt();
         }
+        return node;
+    }
+
+    // while
+    if(token->kind == TOKEN_WHILE) {
+        // while ( expr ) stmt
+        token = token->next;
+        expect("(");
+        Node *node = calloc(1, sizeof(Node));
+        node->kind = ND_WHILE;
+        node->left = expr();
+        expect(")");
+        node->right = stmt();
+        return node;
+    }
+
+    // for
+    if(token->kind == TOKEN_FOR) {
+        // for (
+        token = token->next;
+        Node *node = calloc(1, sizeof(Node));
+        node->right = calloc(1, sizeof(Node));
+        node->right->left = calloc(1, sizeof(Node));
+        node->kind = ND_FOR;
+        expect("(");
+
+        // expr? ; <Init>
+        if(!consume(";")) {
+            node->left = expr();
+            expect(";");
+        }
+        // expr? ; <Condition>
+        if(!consume(";")) {
+            node->right->left->left = expr();
+            expect(";");
+        } else {
+            node->right->left->left = new_num_node(1);
+        }
+        // expr? ; <Next>
+        if(!consume(")")) {
+            node->right->right = expr();
+            expect(")");
+        }
+
+        // stmt
+        node->right->left->right = stmt();
         return node;
     }
 
@@ -144,6 +207,8 @@ Node *mul(){
             node = new_node(ND_MUL, node, unary());
         } else if(consume("/")) {
             node = new_node(ND_DIV, node, unary());
+        } else if(consume("%")) {
+            node = new_node(ND_DIV_REMAIN, node, unary());
         } else {
             return node;
         }
@@ -161,8 +226,9 @@ Node *unary(){
 }
 
 // 構文解析10
-// primary = num | ident | "(" expr ")"
+// primary = num | ident ("(" ")")? | "(" expr ")"
 Node *primary(){
+    // "(" expr ")"
     if(consume("(")) {
         Node *node = expr();
         expect(")");
@@ -171,9 +237,19 @@ Node *primary(){
 
     Token *next_token = consume_ident();
     if(next_token){
-        Node *node = calloc(1, sizeof(Node));
-        node->kind = ND_LVER;
+        // 関数呼び出し
+        if(consume("(")) {
+            expect(")");
+            Node *node = calloc(1, sizeof(Node));
+            node->kind = ND_FUNC;
+            node->f_name = (char*)malloc(next_token->len * sizeof(char));
+            strncpy(node->f_name, next_token->str, next_token->len);
+            node->f_name[next_token->len] = '\0';
+            return node;
+        }
 
+        // 変数
+        Node *node = calloc(1, sizeof(Node));
         LVar *result = find_lvar(next_token);       // 変数登録済みか確認
         if(result != NULL){
             node->offset = result->offset;
@@ -186,6 +262,7 @@ Node *primary(){
             node->offset = lvar->offset;
             locals = lvar;
         }
+        node->kind = ND_LVER;
         return node;
     }
 

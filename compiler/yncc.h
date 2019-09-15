@@ -6,9 +6,11 @@ typedef enum {
     TOKEN_RESERVED,     // 記号
     TOKEN_NUM,          // 数字
     TOKEN_IDENT,        // 識別子
-    TOKEN_RETURN,       // return(予約語)
-    TOKEN_IF,           // if(予約語)
-    TOKEN_ELSE,         // else(予約語)
+    TOKEN_RETURN,       // return
+    TOKEN_IF,           // if
+    TOKEN_ELSE,         // else
+    TOKEN_WHILE,        // while
+    TOKEN_FOR,          // for
     TOKEN_EOF,          // EOF
 } TokenKind;
 
@@ -23,10 +25,15 @@ typedef enum {
     ND_SUB,             // -
     ND_MUL,             // *
     ND_DIV,             // /
+    ND_DIV_REMAIN,      // %
     ND_ASSIGN,          // =
     ND_LVER,            // ローカル変数
-    ND_RETURN,          // return(予約語)
-    ND_IF,              // if(予約語)
+    ND_FUNC,            // 関数
+    ND_BLOCK,           // ブロック
+    ND_RETURN,          // return
+    ND_IF,              // if
+    ND_WHILE,           // while
+    ND_FOR,             // for
     ND_NUM,             // 数字
 } NodeKind;
 
@@ -44,11 +51,13 @@ struct Token {
 };
 
 struct Node {
-    NodeKind kind;      // ノードの種類
-    Node *left;         // 左辺ノードのポインタ
-    Node *right;        // 右辺ノードのポインタ
-    int val;            // 数字ノードだった時、その値
-    int offset;         // ローカル変数ノードだった時、そのオフセット
+    NodeKind kind;              // ノードの種類
+    Node *left;                 // 左辺ノードのポインタ
+    Node *right;                // 右辺ノードのポインタ
+    Node *block_next_node;      // ブロックノードだった時、その次のノード
+    int val;                    // 数字ノードだった時、その値
+    int offset;                 // ローカル変数ノードだった時、そのオフセット
+    char *f_name;                 // 関数ノードだった時、その名前
 };
 
 struct LVar {
@@ -63,7 +72,7 @@ Token *token;
 char *user_input;
 Node *code[100];
 LVar *locals;
-int label_numbers;
+int label;
 
 /* common.c */
 void error(char *fmt, ...);

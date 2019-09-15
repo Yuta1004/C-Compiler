@@ -38,7 +38,8 @@ Token *tokenize(char *p){
         // "+", "-"
         if(*p == '+' || *p == '-' || *p == '*' || *p == '/' ||
            *p == '(' || *p == ')' || *p == '>' || *p == '<' ||
-           *p == ';' || *p == '='){
+           *p == ';' || *p == '=' || *p == '%' || *p == '{' ||
+           *p == '}'){
             cur = new_token(TOKEN_RESERVED, cur, p++);
             cur->len = 1;
             continue;
@@ -65,6 +66,22 @@ Token *tokenize(char *p){
             cur = new_token(TOKEN_ELSE, cur, p);
             cur->len = 4;
             p += 4;
+            continue;
+        }
+
+        // while
+        if(strncmp(p, "while", 5) == 0 && !is_alnum(*(p+5))){
+            cur = new_token(TOKEN_WHILE, cur, p);
+            cur->len = 5;
+            p += 5;
+            continue;
+        }
+
+        // for
+        if(strncmp(p, "for", 3) == 0 && !is_alnum(*(p+3))){
+            cur = new_token(TOKEN_FOR ,cur, p);
+            cur->len = 3;
+            p += 3;
             continue;
         }
 
