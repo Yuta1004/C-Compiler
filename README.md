@@ -1,6 +1,6 @@
 # C-compiler
 
-## Site
+## Reference
 
 [低レイヤを知りたい人のためのCコンパイラ作成入門](https://www.sigbus.info/compilerbook)
 
@@ -11,3 +11,17 @@
 
 - compiler
     - コンパイラ本体
+
+## Commands
+
+```
+// Run
+cd compiler
+make
+./yncc "return 0;"
+echo $?
+
+// Test
+cd compiler
+make test
+```
