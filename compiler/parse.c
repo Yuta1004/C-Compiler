@@ -74,6 +74,36 @@ Node *stmt(){
         return node;
     }
 
+    if(token->kind == TOKEN_FOR) {
+        // for (
+        token = token->next;
+        Node *node = calloc(1, sizeof(Node));
+        node->right = calloc(1, sizeof(Node));
+        node->right->left = calloc(1, sizeof(Node));
+        node->kind = ND_FOR;
+        expect("(");
+
+        // expr? ; <Init>
+        if(!consume(";")) {
+            node->left = expr();
+            expect(";");
+        }
+        // expr? ; <Condition>
+        if(!consume(";")) {
+            node->right->left->left = expr();
+            expect(";");
+        }
+        // expr? ; <Next>
+        if(!consume(")")) {
+            node->right->right = expr();
+            expect(")");
+        }
+
+        // stmt
+        node->right->left->right = stmt();
+        return node;
+    }
+
     Node *node = expr();
     expect(";");
     return node;
