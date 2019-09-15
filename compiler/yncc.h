@@ -28,6 +28,7 @@ typedef enum {
     ND_DIV_REMAIN,      // %
     ND_ASSIGN,          // =
     ND_LVER,            // ローカル変数
+    ND_FUNC,            // 関数
     ND_BLOCK,           // ブロック
     ND_RETURN,          // return
     ND_IF,              // if
@@ -56,6 +57,7 @@ struct Node {
     Node *block_next_node;      // ブロックノードだった時、その次のノード
     int val;                    // 数字ノードだった時、その値
     int offset;                 // ローカル変数ノードだった時、そのオフセット
+    char *name;                 // 関数ノードだった時、その名前
 };
 
 struct LVar {
