@@ -67,6 +67,7 @@ Node *stmt(){
         token = token->next;
         expect("(");
         Node *node = calloc(1, sizeof(Node));
+        node->kind = ND_WHILE;
         node->left = expr();
         expect(")");
         node->right = stmt();
