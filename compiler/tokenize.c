@@ -68,6 +68,14 @@ Token *tokenize(char *p){
             continue;
         }
 
+        // while
+        if(strncmp(p, "while", 5) == 0 && !is_alnum(*(p+5))){
+            cur = new_token(TOKEN_WHILE, cur, p);
+            cur->len = 5;
+            p += 5;
+            continue;
+        }
+
         // 識別子
         if(('a' <= *p && *p <= 'z') || ('A' <= *p && *p <= 'Z')){
             cur = new_token(TOKEN_IDENT, cur, p);
