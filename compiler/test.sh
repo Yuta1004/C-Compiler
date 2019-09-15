@@ -10,13 +10,14 @@ try() {
     actual="$?"
 
     if [ "$actual" == "$expected" ]; then
-        echo "input: $input , output: $actual"
+        echo -e "\e[32mSuccess\e[m $input"
     else
-        echo "input: $input , output: $actual ... expect: $expected"
-        exit 1
+        echo -e "\e[1;31mFail    input: $input => output: $actual ... expect: $expected\e[m"
     fi
 }
 
+# exprssion
+echo -e "\e[1m\nExprssion\e[m"
 try "0;" 0
 try "124;" 124
 try "200;" 200
@@ -35,6 +36,9 @@ try "100/5 > 30;" 0
 try "1/1+10-10 >= 0;" 1
 try "20*100 < 30000;" 1
 try "1 <= 0;" 0
+
+# variable
+echo -e "\e[1m\nVariable\e[m"
 try "a = 1; b = 2; c = 3; a = b*c/a; d = a+b+c; return d;" 11
 try "a = 10; b = 20; c = a*b; d = (c+100)/(e=10); return d-e;" 20
 try "one = 1; two = 2; sum = one + two; return sum;" 3
@@ -43,16 +47,25 @@ try "a = 10; b = 20; tmp = a; a = b; b = tmp; return a;" 20
 try "a = 10; b = 20; tmp = a; a = b; b = tmp; return b;" 10
 try "seven = 7; eleven = 11; seven_eleven = seven + eleven; return seven_eleven;" 18
 try "return a=b=10;" 10
+
+# if
+echo -e "\e[1m\nif\e[m"
 try "a = 10; b = 30; if(a == 10) return b;" 30
 try "a = 10; b = 10; if(a == b) return 20; else return 100;" 20
 try "a = 10; b = 10; if(a != b) return 20; else return 100;" 100
 try "result = 0; if (1) if (1) if (0) result = result + 10; else if(1) result = result + 20; else result = result + 30; else result = result + 40; return result;" 20
+
+# while
+echo -e "\e[1m\nwhile\e[m"
 try "num = 0; while(num < 10) num = num + 1; return num;" 10
+
+# for
+echo -e "\e[1m\nfor\e[m"
 try "num = 0; for(i = 0; i < 200; i = i + 1) num = num + 1; return num;" 200
 try "num = 0; for(; num < 100; ) num = num + 1; return num;" 100
 try "a = 0; for(;;) if(a == 10) return a; else a = a + 1;" 10
 try "a = 0; for(;; a = a + 1) if(a == 10) return a;" 10
 try "sum = 0; for(n = 1; n <= 10; n = n + 1) sum = sum + n; return sum;" 55
 
-echo "OK!"
+echo ""
 exit 0
