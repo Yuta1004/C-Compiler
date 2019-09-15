@@ -32,6 +32,7 @@ void program(){
 // stmt = expr ";"
 //        | "return" expr ";"
 //        | "if" "(" expr ")" stmt ("else" stmt)?
+//        | "while" "(" expr ")" stmt
 Node *stmt(){
     if(token->kind == TOKEN_RETURN){
         token = token->next;
@@ -58,6 +59,17 @@ Node *stmt(){
             token = token->next;
             node->right->right = stmt();
         }
+        return node;
+    }
+
+    if(token->kind == TOKEN_WHILE) {
+        // while ( expr ) stmt
+        token = token->next;
+        expect("(");
+        Node *node = calloc(1, sizeof(Node));
+        node->left = expr();
+        expect(")");
+        node->right = stmt();
         return node;
     }
 

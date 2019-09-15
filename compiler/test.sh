@@ -47,6 +47,7 @@ try "a = 10; b = 30; if(a == 10) return b;" 30
 try "a = 10; b = 10; if(a == b) return 20; else return 100;" 20
 try "a = 10; b = 10; if(a != b) return 20; else return 100;" 100
 try "result = 0; if (1) if (1) if (0) result = result + 10; else if(1) result = result + 20; else result = result + 30; else result = result + 40; return result;" 20
+try "num = 0; while(num < 10) num = num + 1; return num;" 10
 
 echo "OK!"
 exit 0
