@@ -10,6 +10,7 @@ typedef enum {
     TOKEN_IF,           // if
     TOKEN_ELSE,         // else
     TOKEN_WHILE,        // while
+    TOKEN_FOR,          // for
     TOKEN_EOF,          // EOF
 } TokenKind;
 
@@ -29,6 +30,7 @@ typedef enum {
     ND_RETURN,          // return
     ND_IF,              // if
     ND_WHILE,           // while
+    ND_FOR,             // for
     ND_NUM,             // 数字
 } NodeKind;
 
