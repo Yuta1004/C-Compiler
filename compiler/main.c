@@ -23,9 +23,11 @@ int main(int argc, char** argv){
     printf("main:\n");
 
     // ローカル変数領域確保
+    int lvar_cnt = 0;
+    for(LVar *tmp = locals; tmp->next != NULL; ++ lvar_cnt){ tmp = tmp->next; }
     printf("        push rbp\n");
     printf("        mov rbp, rsp\n");
-    printf("        add rsp, %d\n", 8*30);
+    printf("        add rsp, %d\n", 8*(lvar_cnt+20));
 
     // アセンブリ出力
     label = 0;
