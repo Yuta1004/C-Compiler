@@ -30,6 +30,7 @@ void program(){
 
 // 構文解析2
 // stmt = expr ";"
+//        | "{" stmt* "}"
 //        | "return" expr ";"
 //        | "if" "(" expr ")" stmt ("else" stmt)?
 //        | "while" "(" expr ")" stmt
@@ -43,6 +44,23 @@ Node *stmt(){
         return node;
     }
 
+    // Block
+    if(consume("{")) {
+        Node *node = calloc(1, sizeof(Node));
+        node->kind = ND_BLOCK;
+
+        // stmt*
+        Node *now_node = node;
+        while(!consume("}")) {
+            Node *new_node = stmt();
+            now_node->block_next_node = new_node;
+            now_node = new_node;
+        }
+        now_node->block_next_node = calloc(1, sizeof(Node));
+        return node;
+    }
+
+    // if
     if(token->kind == TOKEN_IF) {
         // if ( expr ) stmt
         token = token->next;
@@ -62,6 +80,7 @@ Node *stmt(){
         return node;
     }
 
+    // while
     if(token->kind == TOKEN_WHILE) {
         // while ( expr ) stmt
         token = token->next;
@@ -74,6 +93,7 @@ Node *stmt(){
         return node;
     }
 
+    // for
     if(token->kind == TOKEN_FOR) {
         // for (
         token = token->next;
