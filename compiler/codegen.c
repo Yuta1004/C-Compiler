@@ -52,6 +52,7 @@ void gen_asm(Node *node){
         printf("        pop rbp\n");
         printf("        ret\n");
         return;
+
     case ND_IF:
         label_numbers ++;
         gen_asm(node->left);
@@ -66,6 +67,7 @@ void gen_asm(Node *node){
         printf("        pop rax\n");
         printf(".L__if_end_%d:\n", tmp_label_numbers);
         return;
+
     case ND_WHILE:
         label_numbers ++;
         printf(".L__while_start_%d:\n", tmp_label_numbers);
@@ -78,6 +80,7 @@ void gen_asm(Node *node){
         printf("        jmp .L__while_start_%d\n", tmp_label_numbers);
         printf(".L__while_end_%d:\n", tmp_label_numbers);
         return;
+
     case ND_FOR:
         label_numbers ++;
         gen_asm(node->left);
@@ -101,40 +104,49 @@ void gen_asm(Node *node){
     printf("        pop rdi\n");
     printf("        pop rax\n");
 
+    // 式
     switch(node->kind){
     case ND_ADD:
         printf("        add rax, rdi\n");
         break;
+
     case ND_SUB:
         printf("        sub rax, rdi\n");
         break;
+
     case ND_MUL:
         printf("        imul rax, rdi\n");
         break;
+
     case ND_DIV:
         printf("        cqo\n");        // raxレジスタをrdxと合わせた128bitに拡張
         printf("        idiv rdi\n");   // rax / rsiの結果 (余りはrdx)
         break;
+
     case ND_EQ:
         printf("        cmp rdi, rax\n");   // rdiとraxを比較 -> 結果はフラグレジスタへ
         printf("        sete al\n");        // 比較結果(==)をalに入れる(raxの下位8ビットにあたるレジスタ)
         printf("        movzb rax, al\n");  // raxレジスタの上位56ビットをゼロクリア
         break;
+
     case ND_NEQ:
         printf("        cmp rdi, rax\n");
         printf("        setne al\n");       // 比較結果(!=)をalに入れる
         printf("        movzb rax, al\n");
         break;
+
     case ND_UPPERL:
         printf("        cmp rdi, rax\n");
         printf("        setl al\n");        // 比較結果(>)をalに入れる
         printf("        movzb rax, al\n");
         break;
+
     case ND_UPPEREQL:
         printf("        cmp rdi, rax\n");
         printf("        setle al\n");       // 比較結果(>=)をalに入れる
         printf("        movzb rax, al\n");
         break;
+
     default:
         error("[ERROR] 構文木解析エラー");
     }
