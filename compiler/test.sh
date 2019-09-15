@@ -5,7 +5,7 @@ try() {
     expected="$2"
 
     ./yncc "$input" > tmp.s
-    gcc -O0 -g -o tmp tmp.s
+    gcc -O0 -g -o tmp tmp.s test_func.o
     ./tmp
     actual="$?"
 
@@ -75,6 +75,11 @@ echo -e "\e[1m\nblock\e[m"
 try "cnt = 0; for(; cnt < 10;){ cnt = cnt + 1; } return cnt;" 10
 try "a = 1; b = 1; for(cnt = 0; cnt < 10; cnt = cnt + 1){ tmp = a; a = b; b = tmp + b; } return b;" 144
 try "result = 0; if(1){ if(1){ if(1){ result = result + 1; result = result + 2;} result = result + 3;} result = result + 4;} return result;" 10
+
+# function
+echo -e "\e[1m\ncall function\e[m"
+try "return funcA();" 0
+try "a = funcA() + 10; b = 20; return a+b;" 30
 
 
 echo ""
