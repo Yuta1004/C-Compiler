@@ -67,7 +67,7 @@ Token *token;
 char *user_input;
 Node *code[100];
 LVar *locals;
-int label_numbers;
+int label;
 
 /* common.c */
 void error(char *fmt, ...);

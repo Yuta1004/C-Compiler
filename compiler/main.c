@@ -28,7 +28,7 @@ int main(int argc, char** argv){
     printf("        add rsp, %d\n", 8*30);
 
     // アセンブリ出力
-    label_numbers = 0;
+    label = 0;
     for(int idx = 0; code[idx] != NULL; ++ idx){
         gen_asm(code[idx]);
         printf("        pop rax\n");    // 式の最終的な値を取り出す

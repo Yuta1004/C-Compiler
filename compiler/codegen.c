@@ -20,7 +20,7 @@ void gen_lval(Node *node){
 // 構文木 to アセンブリ
 void gen_asm(Node *node){
     if(node == NULL) return;
-    int tmp_label_numbers = label_numbers;
+    int tmp_label = label;
 
     // 変数, 値
     switch(node->kind){
@@ -54,47 +54,47 @@ void gen_asm(Node *node){
         return;
 
     case ND_IF:
-        label_numbers ++;
+        label ++;
         gen_asm(node->left);
         printf("        pop rax\n");
         printf("        cmp rax, 1\n");
-        printf("        jne .L__if_else_%d\n", tmp_label_numbers);
+        printf("        jne .L__if_else_%d\n", tmp_label);
         gen_asm(node->right->left);
         printf("        pop rax\n");
-        printf("        jmp .L__if_end_%d\n", tmp_label_numbers);
-        printf(".L__if_else_%d:\n", tmp_label_numbers);
+        printf("        jmp .L__if_end_%d\n", tmp_label);
+        printf(".L__if_else_%d:\n", tmp_label);
         gen_asm(node->right->right);
         printf("        pop rax\n");
-        printf(".L__if_end_%d:\n", tmp_label_numbers);
+        printf(".L__if_end_%d:\n", tmp_label);
         return;
 
     case ND_WHILE:
-        label_numbers ++;
-        printf(".L__while_start_%d:\n", tmp_label_numbers);
+        label ++;
+        printf(".L__while_start_%d:\n", tmp_label);
         gen_asm(node->left);
         printf("        pop rax\n");
         printf("        cmp rax, 1\n");
-        printf("        jne .L__while_end_%d\n", tmp_label_numbers);
+        printf("        jne .L__while_end_%d\n", tmp_label);
         gen_asm(node->right);
         printf("        pop rax\n");
-        printf("        jmp .L__while_start_%d\n", tmp_label_numbers);
-        printf(".L__while_end_%d:\n", tmp_label_numbers);
+        printf("        jmp .L__while_start_%d\n", tmp_label);
+        printf(".L__while_end_%d:\n", tmp_label);
         return;
 
     case ND_FOR:
-        label_numbers ++;
+        label ++;
         gen_asm(node->left);
-        printf(".L__for_start_%d:\n", tmp_label_numbers);
+        printf(".L__for_start_%d:\n", tmp_label);
         gen_asm(node->right->left->left);
         printf("        pop rax\n");
         printf("        cmp rax, 1\n");
-        printf("        jne .L__for_end_%d\n", tmp_label_numbers);
+        printf("        jne .L__for_end_%d\n", tmp_label);
         gen_asm(node->right->left->right);
         printf("        pop rax\n");
         gen_asm(node->right->right);
         printf("        pop rax\n");
-        printf("        jmp .L__for_start_%d\n", tmp_label_numbers);
-        printf(".L__for_end_%d:\n", tmp_label_numbers);
+        printf("        jmp .L__for_start_%d\n", tmp_label);
+        printf(".L__for_end_%d:\n", tmp_label);
         return;
     }
 
