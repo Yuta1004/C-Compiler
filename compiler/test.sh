@@ -70,5 +70,12 @@ try "sum = 0; for(n = 1; n <= 10; n = n + 1) sum = sum + n; return sum;" 55
 try "sum = 0; for(n = 0; n <= 20; n = n + 2) sum = sum + n; return sum;" 110
 try "sum = 0; for(n = 1; n <= 20; n = n + 1) if(n % 2 == 0) sum = sum + n; return sum;" 110
 
+# block
+echo -e "\e[1m\nblock\e[m"
+try "cnt = 0; for(; cnt < 10;){ cnt = cnt + 1; } return cnt;" 10
+try "a = 1; b = 1; for(cnt = 0; cnt < 10; cnt = cnt + 1){ tmp = a; a = b; b = tmp + b; } return b;" 144
+try "result = 0; if(1){ if(1){ if(1){ result = result + 1; result = result + 2;} result = result + 3;} result = result + 4;} return result;" 10
+
+
 echo ""
 exit 0
