@@ -30,3 +30,8 @@ int funcF(int a, int b, int c, int d, int e, int f){
     printf("called funcF => %d, %d, %d, %d, %d, %d\n", a, b, c, d, e, f);
     return a + b + c + d + e + f;
 }
+
+int print(int num){
+    printf("%d\n", num);
+    return 0;
+}
