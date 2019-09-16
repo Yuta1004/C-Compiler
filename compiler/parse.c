@@ -248,11 +248,15 @@ Node *primary(){
             node->f_name[next_token->len] = '\0';
 
             // 引数
-            node->args = calloc(6, sizeof(int));
+            node->args = calloc(6, sizeof(Node));
             for(int idx = 0; idx < 6; ++ idx) {
-                Token *arg_token = consume_number();
-                if(arg_token){
-                    node->args[idx] = arg_token->val;
+                Token *bef_token = token;
+                Token *arg_token_num = consume_number();
+                Token *arg_token_ident = consume_ident();
+                if(arg_token_num){
+                    token = bef_token;
+                    node->args[idx] = primary();
+                    token = bef_token->next;
                 }
                 if(!consume(",")){
                     break;
