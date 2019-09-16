@@ -88,6 +88,8 @@ try "funcD(1, 2, 3, 4, 5, 6);" 0
 try "funcD(10, 20, 30, 40, 50, 60);" 0
 try "funcE(1, 3, 5, 7);" 0
 try "return funcF(8, 5, 9, 4, 7, 1);" 34
+try "sum = funcF(1, 2, 3, 4, 5, 6); print(sum); return 0;" 0
+try "sum = 0; for(num = 1; num <= 10; num = num + 1){ sum = sum + num; print(sum); } return 0;" 0
 
 
 echo ""
