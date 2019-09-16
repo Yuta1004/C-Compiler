@@ -57,7 +57,8 @@ struct Node {
     Node *block_next_node;      // ブロックノードだった時、その次のノード
     int val;                    // 数字ノードだった時、その値
     int offset;                 // ローカル変数ノードだった時、そのオフセット
-    char *f_name;                 // 関数ノードだった時、その名前
+    char *f_name;               // 関数ノードだった時、その名前
+    Node **args;                  // 関数ノードだった時、その引数
 };
 
 struct LVar {
@@ -90,6 +91,7 @@ bool consume(char *op);
 void expect(char *op);
 bool consume(char *op);
 Token *consume_ident();
+Token *consume_number();
 
 /* node.c */
 Node *new_node(NodeKind kind, Node *left, Node *right);

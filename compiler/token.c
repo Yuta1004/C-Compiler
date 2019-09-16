@@ -28,6 +28,18 @@ Token *consume_ident(){
     }
 }
 
+// トークンが数字かチェックする
+// もしそうなら1つトークンを進める
+Token *consume_number(){
+    if(token->kind == TOKEN_NUM){
+        Token *tmp = token;
+        token = token->next;
+        return tmp;
+    } else {
+        return NULL;
+    }
+}
+
 // トークンが期待する文字かチェックする
 // もし期待する文字出なかった場合エラーを投げる
 void expect(char *op){
@@ -35,7 +47,7 @@ void expect(char *op){
             memcmp(token->str, op, token->len) == 0){
         token = token->next;
     } else {
-        error_at(token->str, "トークンが要求と異なります");
+        error_at(token->str, "トークンが要求と異なります -> %s", op);
     }
 }
 

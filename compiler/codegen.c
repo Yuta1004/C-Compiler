@@ -53,11 +53,23 @@ void gen_asm(Node *node){
         }
         return;
 
-    case ND_FUNC:
+    case ND_FUNC:;
+        printf("        push rdi\n");                                       // rdi, rsi
+        printf("        push rsi\n");
+        char *arg_regs[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};        //　引数
+        for(int idx = 0; idx < 6; ++ idx) {
+            if(node->args[idx]) {
+                gen_asm(node->args[idx]);
+                printf("        pop rax\n");
+                printf("        mov %s, rax\n", arg_regs[idx]);
+            }
+        }
         printf("        mov r15, rsp\n");
-        printf("        and rsp, 0xffffffffffff0000\n");
+        printf("        and rsp, 0xffffffffffff0000\n");                    // アライメント
         printf("        call %s\n", node->f_name);
         printf("        mov rsp, r15\n");
+        printf("        pop rsi\n");
+        printf("        pop rdi\n");
         printf("        push rax\n");
         return;
     }

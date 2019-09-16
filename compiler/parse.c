@@ -34,6 +34,7 @@ void program(){
 //        | "return" expr ";"
 //        | "if" "(" expr ")" stmt ("else" stmt)?
 //        | "while" "(" expr ")" stmt
+//        | "for" "(" expr? ";" expr? ";" expr? ")"
 Node *stmt(){
     if(token->kind == TOKEN_RETURN){
         token = token->next;
@@ -226,7 +227,7 @@ Node *unary(){
 }
 
 // 構文解析10
-// primary = num | ident ("(" ")")? | "(" expr ")"
+// primary = num | ident ("(" (num ","?)* ")")? | "(" expr ")"
 Node *primary(){
     // "(" expr ")"
     if(consume("(")) {
@@ -239,12 +240,29 @@ Node *primary(){
     if(next_token){
         // 関数呼び出し
         if(consume("(")) {
-            expect(")");
+            // 関数名
             Node *node = calloc(1, sizeof(Node));
             node->kind = ND_FUNC;
             node->f_name = (char*)malloc(next_token->len * sizeof(char));
             strncpy(node->f_name, next_token->str, next_token->len);
             node->f_name[next_token->len] = '\0';
+
+            // 引数
+            node->args = calloc(6, sizeof(Node));
+            for(int idx = 0; idx < 6; ++ idx) {
+                Token *bef_token = token;
+                Token *arg_token_num = consume_number();
+                Token *arg_token_ident = consume_ident();
+                if(arg_token_num){
+                    token = bef_token;
+                    node->args[idx] = primary();
+                    token = bef_token->next;
+                }
+                if(!consume(",")){
+                    break;
+                }
+            }
+            expect(")");
             return node;
         }
 
