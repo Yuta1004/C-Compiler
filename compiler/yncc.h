@@ -58,7 +58,7 @@ struct Node {
     int val;                    // 数字ノードだった時、その値
     int offset;                 // ローカル変数ノードだった時、そのオフセット
     char *f_name;               // 関数ノードだった時、その名前
-    int *args;                  // 関数ノードだった時、その引数
+    Node **args;                  // 関数ノードだった時、その引数
 };
 
 struct LVar {
