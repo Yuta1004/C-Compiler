@@ -54,10 +54,20 @@ void gen_asm(Node *node){
         return;
 
     case ND_FUNC:
+        printf("        push rdi\n");
+        printf("        push rsi\n");
+        printf("        mov rdi, %d\n", node->args[0]);
+        printf("        mov rsi, %d\n", node->args[1]);
+        printf("        mov rdx, %d\n", node->args[2]);
+        printf("        mov rcx, %d\n", node->args[3]);
+        printf("        mov r8, %d\n", node->args[4]);
+        printf("        mov r9, %d\n", node->args[5]);
         printf("        mov r15, rsp\n");
         printf("        and rsp, 0xffffffffffff0000\n");
         printf("        call %s\n", node->f_name);
         printf("        mov rsp, r15\n");
+        printf("        pop rsi\n");
+        printf("        pop rdi\n");
         printf("        push rax\n");
         return;
     }
