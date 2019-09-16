@@ -34,6 +34,7 @@ void program(){
 //        | "return" expr ";"
 //        | "if" "(" expr ")" stmt ("else" stmt)?
 //        | "while" "(" expr ")" stmt
+//        | "for" "(" expr? ";" expr? ";" expr? ")"
 Node *stmt(){
     if(token->kind == TOKEN_RETURN){
         token = token->next;
