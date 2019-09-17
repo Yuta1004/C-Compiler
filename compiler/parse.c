@@ -242,7 +242,7 @@ Node *primary(){
         if(consume("(")) {
             // 関数名
             Node *node = calloc(1, sizeof(Node));
-            node->kind = ND_FUNC;
+            node->kind = ND_CALL_FUNC;
             node->f_name = (char*)malloc(next_token->len * sizeof(char));
             strncpy(node->f_name, next_token->str, next_token->len);
             node->f_name[next_token->len] = '\0';

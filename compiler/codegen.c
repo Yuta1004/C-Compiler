@@ -53,7 +53,7 @@ void gen_asm(Node *node){
         }
         return;
 
-    case ND_FUNC:;
+    case ND_CALL_FUNC:;
         printf("        push rdi\n");                                       // rdi, rsi
         printf("        push rsi\n");
         char *arg_regs[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};        //　引数

@@ -28,7 +28,7 @@ typedef enum {
     ND_DIV_REMAIN,      // %
     ND_ASSIGN,          // =
     ND_LVER,            // ローカル変数
-    ND_FUNC,            // 関数
+    ND_CALL_FUNC,       // 関数呼び出し
     ND_BLOCK,           // ブロック
     ND_RETURN,          // return
     ND_IF,              // if
