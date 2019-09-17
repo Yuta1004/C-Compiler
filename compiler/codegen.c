@@ -22,7 +22,7 @@ void gen_asm(Node *node){
     if(node == NULL) return;
     int tmp_label = label;
 
-    // 変数, 値, ブロック, 関数呼び出し
+    // 変数, 値, ブロック, 関数定義, 関数呼び出し
     switch(node->kind){
     case ND_NUM:
         printf("        push %d\n", node->val);
@@ -53,7 +53,26 @@ void gen_asm(Node *node){
         }
         return;
 
-    case ND_CALL_FUNC:;
+    case ND_FUNC:{
+        printf("\n");
+        printf("%s:\n", node->f_name);
+        printf("        push rbp\n");
+        printf("        mov rbp, rsp\n");
+        printf("        add rsp, %d\n", 8*20);
+        char *arg_regs[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+        for(int idx = 0; idx < 6; ++ idx) {
+            if(node->args[idx]){
+                printf("        mov [rbp-%d], %s\n", idx*8+8, arg_regs[idx]);
+            }
+        }
+        gen_asm(node->left);
+        printf("        mov rsp, rbp\n");
+        printf("        pop rbp\n");
+        printf("        ret\n\n");
+        return;
+    }
+
+    case ND_CALL_FUNC:{
         printf("        push rdi\n");                                       // rdi, rsi
         printf("        push rsi\n");
         char *arg_regs[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};        //　引数
@@ -72,6 +91,7 @@ void gen_asm(Node *node){
         printf("        pop rdi\n");
         printf("        push rax\n");
         return;
+    }
     }
 
     // 予約語
