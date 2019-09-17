@@ -119,6 +119,7 @@ void gen_asm(Node *node){
         gen_asm(node->right->right);
         printf("        pop rax\n");
         printf(".L__if_end_%d:\n", tmp_label);
+        printf("        push 0\n");
         return;
 
     case ND_WHILE:
@@ -132,6 +133,7 @@ void gen_asm(Node *node){
         printf("        pop rax\n");
         printf("        jmp .L__while_start_%d\n", tmp_label);
         printf(".L__while_end_%d:\n", tmp_label);
+        printf("        push 0\n");
         return;
 
     case ND_FOR:
@@ -149,6 +151,7 @@ void gen_asm(Node *node){
         printf("        pop rax\n");
         printf("        jmp .L__for_start_%d\n", tmp_label);
         printf(".L__for_end_%d:\n", tmp_label);
+        printf("        push 0\n");
         return;
     }
 
