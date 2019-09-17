@@ -27,6 +27,8 @@ typedef enum {
     ND_DIV,             // /
     ND_DIV_REMAIN,      // %
     ND_ASSIGN,          // =
+    ND_ADDR,            // &()
+    ND_DEREF,           // *()
     ND_LVER,            // ローカル変数
     ND_FUNC,            // 関数
     ND_CALL_FUNC,       // 関数呼び出し
