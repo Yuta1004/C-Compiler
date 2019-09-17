@@ -91,6 +91,15 @@ try "main(){ return funcF(8, 5, 9, 4, 7, 1); }" 34
 try "main(){ sum = funcF(1, 2, 3, 4, 5, 6); print(sum); return 0; }" 0
 try "main(){ sum = 0; for(num = 1; num <= 10; num = num + 1){ sum = sum + num; print(sum); } return 0; }" 0
 
+# define function
+echo -e "\e[1m\ndefine function\e[m"
+try "main(){ return sum(1, 2); } sum(a, b){ return a+b; }" 3
+try "main(){ result = sum(10, 20); return result - 15; }  sum(a, b){ return a+b; }" 15
+try "main(){ a = 10; b = 20; result = sum(a, b); return result - 15; }  sum(a, b){ return a+b; }" 15
+try "main(){ a = 10; b = 20; result = sum(a, b); return result; } sum(a, b){ return a+b; }" 30
+try "main(){ ans = 0; for(idx = 1; idx <= 10; idx = idx + 1){ ans = sum(ans, idx); } return ans; } sum(a, b){ return a+b; }" 55
+try "main(){ return mul(sum(1, 2), sum(3, 4)); } sum(a, b){ return a+b; } mul(a, b){ return a*b; }" 21
+try "main(){ return sum(sum(sum(1, 2), sum(3, 4)), sum(sum(5, 6), sum(7, 8))); } sum(a, b){ return a+b; }" 36
 
 echo ""
 exit 0
