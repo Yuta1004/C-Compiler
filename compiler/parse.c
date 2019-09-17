@@ -98,7 +98,7 @@ Node *stmt(){
             now_node->block_next_node = new_node;
             now_node = new_node;
         }
-        now_node->block_next_node = calloc(1, sizeof(Node));
+        now_node->block_next_node = NULL;
         return node;
     }
 
