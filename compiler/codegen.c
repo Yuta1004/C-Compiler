@@ -75,7 +75,7 @@ void gen_asm(Node *node){
                 printf("        mov [rbp-%d], %s\n", idx*8+8, arg_regs[idx]);
             }
         }
-        gen_asm(node->left);
+        gen_asm_with_pop(node->left);
         printf("        mov rax, 0\n");
         printf("        mov rsp, rbp\n");
         printf("        pop rbp\n");
