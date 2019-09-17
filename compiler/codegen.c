@@ -76,6 +76,7 @@ void gen_asm(Node *node){
             }
         }
         gen_asm(node->left);
+        printf("        mov rax, 0\n");
         printf("        mov rsp, rbp\n");
         printf("        pop rbp\n");
         printf("        pop rbx\n");

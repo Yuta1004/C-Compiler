@@ -19,25 +19,25 @@ try() {
 
 # exprssion
 echo -e "\e[1m\nExprssion\e[m"
-try "main(){ 0 ; }" 0
-try "main(){ 124; }" 124
-try "main(){ 200; }" 200
-try "main(){ 1+2+3+4+5+6; }" 21
-try "main(){ 1+10+30+40-60; }" 21
-try "main(){ 12 - 4 + 10 + 4; }" 22
-try "main(){ 1204 - 1004; }" 200
-try "main(){ 1 + 2 + 50 + 80 - 29 + 39; }" 143
-try "main(){ 10*(2+3+4+5+6)/5-(3+7); }" 30
-try "main(){ 1+2-3*4/5+(1*2*3*4); }" 25
-try "main(){ -3+30; }" 27
-try "main(){ -3*10+(5/5*100); }" 70
-try "main(){ -(10+20)+50; }" 20
-try "main(){ 10+20+30 == 30+20+10; }" 1
-try "main(){ 100/5 > 30; }" 0
-try "main(){ 1/1+10-10 >= 0; }" 1
-try "main(){ 20*100 < 30000; }" 1
-try "main(){ 1 <= 0; }" 0
-try "main(){ 10 % 3; }" 1
+try "main(){ return 0; }" 0
+try "main(){ return 124; }" 124
+try "main(){ return 200; }" 200
+try "main(){ return 1+2+3+4+5+6; }" 21
+try "main(){ return 1+10+30+40-60; }" 21
+try "main(){ return 12 - 4 + 10 + 4; }" 22
+try "main(){ return 1204 - 1004; }" 200
+try "main(){ return 1 + 2 + 50 + 80 - 29 + 39; }" 143
+try "main(){ return 10*(2+3+4+5+6)/5-(3+7); }" 30
+try "main(){ return 1+2-3*4/5+(1*2*3*4); }" 25
+try "main(){ return -3+30; }" 27
+try "main(){ return -3*10+(5/5*100); }" 70
+try "main(){ return -(10+20)+50; }" 20
+try "main(){ return 10+20+30 == 30+20+10; }" 1
+try "main(){ return 100/5 > 30; }" 0
+try "main(){ return 1/1+10-10 >= 0; }" 1
+try "main(){ return 20*100 < 30000; }" 1
+try "main(){ return 1 <= 0; }" 0
+try "main(){ return 10 % 3; }" 1
 
 # variable
 echo -e "\e[1m\nVariable\e[m"
@@ -65,7 +65,7 @@ try "main(){ num = 0; while(num < 10) num = num + 1; return num; }" 10
 echo -e "\e[1m\nfor\e[m"
 try "main(){ num = 0; for(i = 0; i < 200; i = i + 1) num = num + 1; return num; }" 200
 try "main(){ num = 0; for(; num < 100; ) num = num + 1; return num; }" 100
-try "main(){ a = 0; for(;;) if(a == 10) return a; else a = a + 1; }" 10
+try "main(){ a = 0; for(;;) if(a == 10) return a; else a = a + 1; return a; }" 10
 try "main(){ a = 0; for(;; a = a + 1) if(a == 10) return a; }" 10
 try "main(){ sum = 0; for(n = 1; n <= 10; n = n + 1) sum = sum + n; return sum; }" 55
 try "main(){ sum = 0; for(n = 0; n <= 20; n = n + 2) sum = sum + n; return sum; }" 110
