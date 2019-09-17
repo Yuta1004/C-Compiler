@@ -17,6 +17,15 @@ void gen_lval(Node *node){
     return;
 }
 
+// 構文木 to アセンブリ (with <pop rax>)
+void gen_asm(Node *node);
+void gen_asm_with_pop(Node *node) {
+    gen_asm(node);
+    if(node != NULL) {
+        printf("        pop rax\n");
+    }
+}
+
 // 構文木 to アセンブリ
 void gen_asm(Node *node){
     if(node == NULL) return;
@@ -47,8 +56,7 @@ void gen_asm(Node *node){
     case ND_BLOCK:;
         Node *block_node = node->block_next_node;   // ブロック連結リストのノードを持つ
         while(block_node != NULL) {
-            gen_asm(block_node);
-            printf("        pop rax\n");
+            gen_asm_with_pop(block_node);
             block_node = block_node->block_next_node;
         }
         printf("        push rax\n");
@@ -67,7 +75,6 @@ void gen_asm(Node *node){
             }
         }
         gen_asm(node->left);
-        printf("        pop rax\n");
         printf("        mov rsp, rbp\n");
         printf("        pop rbp\n");
         printf("        ret\n\n");
@@ -80,8 +87,7 @@ void gen_asm(Node *node){
         char *arg_regs[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};        //　引数
         for(int idx = 0; idx < 6; ++ idx) {
             if(node->args[idx]) {
-                gen_asm(node->args[idx]);
-                printf("        pop rax\n");
+                gen_asm_with_pop(node->args[idx]);
                 printf("        mov %s, rax\n", arg_regs[idx]);
             }
         }
@@ -99,8 +105,7 @@ void gen_asm(Node *node){
     // 予約語
     switch(node->kind){
     case ND_RETURN:
-        gen_asm(node->left);
-        printf("        pop rax\n");
+        gen_asm_with_pop(node->left);
         printf("        mov rsp, rbp\n");
         printf("        pop rbp\n");
         printf("        ret\n");
@@ -108,16 +113,13 @@ void gen_asm(Node *node){
 
     case ND_IF:
         label ++;
-        gen_asm(node->left);
-        printf("        pop rax\n");
+        gen_asm_with_pop(node->left);
         printf("        cmp rax, 1\n");
         printf("        jne .L__if_else_%d\n", tmp_label);
-        gen_asm(node->right->left);
-        printf("        pop rax\n");
+        gen_asm_with_pop(node->right->left);
         printf("        jmp .L__if_end_%d\n", tmp_label);
         printf(".L__if_else_%d:\n", tmp_label);
-        gen_asm(node->right->right);
-        printf("        pop rax\n");
+        gen_asm_with_pop(node->right->right);
         printf(".L__if_end_%d:\n", tmp_label);
         printf("        push 0\n");
         return;
@@ -125,12 +127,10 @@ void gen_asm(Node *node){
     case ND_WHILE:
         label ++;
         printf(".L__while_start_%d:\n", tmp_label);
-        gen_asm(node->left);
-        printf("        pop rax\n");
+        gen_asm_with_pop(node->left);
         printf("        cmp rax, 1\n");
         printf("        jne .L__while_end_%d\n", tmp_label);
-        gen_asm(node->right);
-        printf("        pop rax\n");
+        gen_asm_with_pop(node->right);
         printf("        jmp .L__while_start_%d\n", tmp_label);
         printf(".L__while_end_%d:\n", tmp_label);
         printf("        push 0\n");
@@ -138,17 +138,13 @@ void gen_asm(Node *node){
 
     case ND_FOR:
         label ++;
-        gen_asm(node->left);
-        printf("        pop rax\n");
+        gen_asm_with_pop(node->left);
         printf(".L__for_start_%d:\n", tmp_label);
-        gen_asm(node->right->left->left);
-        printf("        pop rax\n");
+        gen_asm_with_pop(node->right->left->left);
         printf("        cmp rax, 1\n");
         printf("        jne .L__for_end_%d\n", tmp_label);
-        gen_asm(node->right->left->right);
-        printf("        pop rax\n");
-        gen_asm(node->right->right);
-        printf("        pop rax\n");
+        gen_asm_with_pop(node->right->left->right);
+        gen_asm_with_pop(node->right->right);
         printf("        jmp .L__for_start_%d\n", tmp_label);
         printf(".L__for_end_%d:\n", tmp_label);
         printf("        push 0\n");
