@@ -88,8 +88,8 @@ try "main(){ funcD(1, 2, 3, 4, 5, 6); }" 0
 try "main(){ funcD(10, 20, 30, 40, 50, 60); }" 0
 try "main(){ funcE(1, 3, 5, 7); }" 0
 try "main(){ return funcF(8, 5, 9, 4, 7, 1); }" 34
-try "main(){ sum = funcF(1, 2, 3, 4, 5, 6); print(sum); return 0; }" 0
-try "main(){ sum = 0; for(num = 1; num <= 10; num = num + 1){ sum = sum + num; print(sum); } return 0; }" 0
+try "main(){ sum = funcF(1, 2, 3, 4, 5, 6); print(1, sum); return 0; }" 0
+try "main(){ sum = 0; for(num = 1; num <= 10; num = num + 1){ sum = sum + num; print(1, sum); } return 0; }" 0
 
 # define function
 echo -e "\e[1m\ndefine function\e[m"
@@ -100,7 +100,12 @@ try "main(){ a = 10; b = 20; result = sum(a, b); return result; } sum(a, b){ ret
 try "main(){ ans = 0; for(idx = 1; idx <= 10; idx = idx + 1){ ans = sum(ans, idx); } return ans; } sum(a, b){ return a+b; }" 55
 try "main(){ return mul(sum(1, 2), sum(3, 4)); } sum(a, b){ return a+b; } mul(a, b){ return a*b; }" 21
 try "main(){ return sum(sum(sum(1, 2), sum(3, 4)), sum(sum(5, 6), sum(7, 8))); } sum(a, b){ return a+b; }" 36
-try "main(){ for(num = 1; num <= 10; num = num + 1){ print(fib(num)); }} fib(depth){ if(depth <= 2){ return 1; } else { return fib(depth-1) + fib(depth-2); }}" 0
+try "main(){ for(num = 1; num <= 10; num = num + 1){ print(1, fib(num)); }} fib(depth){ if(depth <= 2){ return 1; } else { return fib(depth-1) + fib(depth-2); }}" 0
+
+# pointer
+echo -e "\e[1m\npointer\e[m"
+try "main(){ a = 4; ap = &a; apv = *ap; print(2, ap, apv); return 0; }" 0
+
 
 echo ""
 exit 0
