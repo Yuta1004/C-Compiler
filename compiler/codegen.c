@@ -51,6 +51,7 @@ void gen_asm(Node *node){
             printf("        pop rax\n");
             block_node = block_node->block_next_node;
         }
+        printf("        push rax\n");
         return;
 
     case ND_FUNC:{
@@ -66,6 +67,7 @@ void gen_asm(Node *node){
             }
         }
         gen_asm(node->left);
+        printf("        pop rax\n");
         printf("        mov rsp, rbp\n");
         printf("        pop rbp\n");
         printf("        ret\n\n");
@@ -135,6 +137,7 @@ void gen_asm(Node *node){
     case ND_FOR:
         label ++;
         gen_asm(node->left);
+        printf("        pop rax\n");
         printf(".L__for_start_%d:\n", tmp_label);
         gen_asm(node->right->left->left);
         printf("        pop rax\n");
