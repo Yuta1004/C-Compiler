@@ -76,6 +76,7 @@ Node *func(){
 //        | "if" "(" expr ")" stmt ("else" stmt)?
 //        | "while" "(" expr ")" stmt
 //        | "for" "(" expr? ";" expr? ";" expr? ")"
+//        | "int" ident ";"
 Node *stmt(){
     if(token->kind == TOKEN_RETURN){
         token = token->next;
@@ -95,8 +96,10 @@ Node *stmt(){
         Node *now_node = node;
         while(!consume("}")) {
             Node *new_node = stmt();
-            now_node->block_next_node = new_node;
-            now_node = new_node;
+            if(new_node){
+                now_node->block_next_node = new_node;
+                now_node = new_node;
+            }
         }
         now_node->block_next_node = NULL;
         return node;
@@ -166,6 +169,14 @@ Node *stmt(){
         // stmt
         node->right->left->right = stmt();
         return node;
+    }
+
+    // Variable<int>
+    if(token->kind == TOKEN_INT) {
+        token = token->next;
+        regist_lvar(consume_ident());
+        expect(";");
+        return NULL;
     }
 
     Node *node = expr();
