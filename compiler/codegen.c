@@ -65,6 +65,7 @@ void gen_asm(Node *node){
     case ND_FUNC:{
         printf("\n");
         printf("%s:\n", node->f_name);
+        printf("        push rbx\n");
         printf("        push rbp\n");
         printf("        mov rbp, rsp\n");
         printf("        sub rsp, %d\n", 8*20);
@@ -77,6 +78,7 @@ void gen_asm(Node *node){
         gen_asm(node->left);
         printf("        mov rsp, rbp\n");
         printf("        pop rbp\n");
+        printf("        pop rbx\n");
         printf("        ret\n\n");
         return;
     }
@@ -91,10 +93,10 @@ void gen_asm(Node *node){
                 printf("        mov %s, rax\n", arg_regs[idx]);
             }
         }
-        printf("        mov r15, rsp\n");
+        printf("        mov rbx, rsp\n");
         printf("        and rsp, 0xfffffffffffffff0\n");                    // アライメント
         printf("        call %s\n", node->f_name);
-        printf("        mov rsp, r15\n");
+        printf("        mov rsp, rbx\n");
         printf("        pop rsi\n");
         printf("        pop rdi\n");
         printf("        push rax\n");
@@ -108,6 +110,7 @@ void gen_asm(Node *node){
         gen_asm_with_pop(node->left);
         printf("        mov rsp, rbp\n");
         printf("        pop rbp\n");
+        printf("        pop rbx\n");
         printf("        ret\n");
         return;
 
