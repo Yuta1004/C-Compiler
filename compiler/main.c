@@ -10,7 +10,6 @@ int main(int argc, char** argv){
 
     // トークナイズ
     user_input = argv[1];
-    locals = calloc(1, sizeof(LVar));
     token = tokenize(argv[1]);
 
     // 構文木生成
