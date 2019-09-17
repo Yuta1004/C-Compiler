@@ -7,6 +7,7 @@
 
 /* プロトタイプ宣言 */
 void program();
+Node *func();
 Node *stmt();
 Node *expr();
 Node *assign();
@@ -20,16 +21,54 @@ LVar *find_lvar(Token *request);
 LVar *regist_lvar(Token *request);
 
 // 構文解析1
-// program = stmt*
+// program = func*
 void program(){
     int idx = 0;
     for(; !at_eof(); ++ idx){
-        code[idx] = stmt();
+        code[idx] = func();
     }
     code[idx] = NULL;
 }
 
 // 構文解析2
+// func = ident "(" (ident ","?)* ")" "{" stmt* "}"
+Node *func(){
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = ND_FUNC;
+    free(locals);
+    locals = calloc(1, sizeof(LVar));
+
+    // 関数名
+    Token *f_name_token = consume_ident();
+    if(!f_name_token){
+        error("[ERROR] 関数定義が要求されました");
+    }
+    node->f_name = calloc(f_name_token->len, sizeof(char));
+    strncpy(node->f_name, f_name_token->str, f_name_token->len);
+
+    // 引数リスト
+    expect("(");
+    node->args = calloc(6, sizeof(Node));
+    for(int idx = 0; idx < 6; ++ idx) {
+        Token *arg_token = consume_ident();
+        if(arg_token && arg_token->str != NULL) {
+            LVar *lvar = regist_lvar(arg_token);
+            Node *arg_node = calloc(1, sizeof(Node));
+            node->kind = ND_LVER;
+            node->offset = lvar->offset;
+        }
+        if(!consume(",")){
+            break;
+        }
+    }
+    expect(")");
+
+    // 関数本体
+    node->left = stmt();
+    return node;
+}
+
+// 構文解析3
 // stmt = expr ";"
 //        | "{" stmt* "}"
 //        | "return" expr ";"
@@ -133,13 +172,13 @@ Node *stmt(){
     return node;
 }
 
-// 構文解析3
+// 構文解析4
 // expr = assign
 Node *expr(){
     return assign();
 }
 
-// 構文解析4
+// 構文解析5
 // assign = equality ("=" assign)?
 Node *assign(){
     Node *node = equality();
@@ -150,7 +189,7 @@ Node *assign(){
     }
 }
 
-// 構文解析5
+// 構文解析6
 // equality = relational ("==" relational | "!=" relational)*
 Node *equality(){
     Node *node = relational();
@@ -164,7 +203,7 @@ Node *equality(){
     }
 }
 
-// 構文解析6
+// 構文解析7
 // relational = add (">" add | ">=" add | "<" add | "<=" add)*
 Node *relational(){
     Node *node = add();
@@ -183,7 +222,7 @@ Node *relational(){
     }
 }
 
-// 構文解析7
+// 構文解析8
 // add = mul ("+" mul | "-" mul)*
 Node *add(){
     Node *node = mul();
@@ -199,7 +238,7 @@ Node *add(){
     }
 }
 
-// 構文解析8
+// 構文解析9
 // mul = unary ("*" unary | "-" unary)*
 Node *mul(){
     Node *node = unary();
@@ -217,7 +256,7 @@ Node *mul(){
     }
 }
 
-// 構文解析9
+// 構文解析10
 // unary = ("+" | "-")? term
 Node *unary(){
     if(consume("-")) {
@@ -227,7 +266,7 @@ Node *unary(){
     return primary();
 }
 
-// 構文解析10
+// 構文解析11
 // primary = num | ident ("(" (num ","?)* ")")? | "(" expr ")"
 Node *primary(){
     // "(" expr ")"
