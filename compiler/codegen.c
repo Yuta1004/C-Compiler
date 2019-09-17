@@ -31,7 +31,7 @@ void gen_asm(Node *node){
     if(node == NULL) return;
     int tmp_label = label;
 
-    // 変数, 値, ブロック, 関数定義, 関数呼び出し
+    // 変数, 値, ブロック, 関数定義, 関数呼び出し, ポインタ
     switch(node->kind){
     case ND_NUM:
         printf("        push %d\n", node->val);
@@ -103,6 +103,17 @@ void gen_asm(Node *node){
         printf("        push rax\n");
         return;
     }
+
+    case ND_ADDR:
+        gen_lval(node->left);
+        return;
+
+    case ND_DEREF:
+        gen_asm(node->left);
+        printf("        pop rax\n");
+        printf("        mov rax, [rax]\n");
+        printf("        push rax\n");
+        return;
     }
 
     // 予約語
