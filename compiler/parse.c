@@ -53,14 +53,14 @@ Node *func(){
     for(int idx = 0; idx < 6; ++ idx) {
         Token *int_token = consume_kind(TOKEN_INT);
         Token *arg_token = consume_ident();
-        if(int_token && arg_token && arg_token->str != NULL) {
+        if(int_token && arg_token && arg_token->str != NULL) {      // 引数があるかチェック
             LVar *lvar = regist_lvar(arg_token);
             Node *arg_node = calloc(1, sizeof(Node));
             arg_node->kind = ND_LVER;
             arg_node->offset = lvar->offset;
             node->args[idx] = arg_node;
         }
-        if(!consume(",")){
+        if(!consume(",")){                                          // , が無ければ続く引数は無いと判断する
             break;
         }
     }
