@@ -85,6 +85,14 @@ Token *tokenize(char *p){
             continue;
         }
 
+        // int
+        if(strncmp(p, "int", 3) == 0 && !is_alnum(*(p+3))){
+            cur = new_token(TOKEN_INT, cur, p);
+            cur->len = 3;
+            p += 3;
+            continue;
+        }
+
         // 識別子
         if(('a' <= *p && *p <= 'z') || ('A' <= *p && *p <= 'Z')){
             cur = new_token(TOKEN_IDENT, cur, p);
