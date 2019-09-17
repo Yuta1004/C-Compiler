@@ -40,6 +40,18 @@ Token *consume_number(){
     }
 }
 
+// トークンが指定された種類かチェックする
+// もしそうなら1つトークンを進める
+Token *consume_kind(TokenKind kind){
+    if(token->kind == kind){
+        Token *tmp = token;
+        token = token->next;
+        return tmp;
+    } else {
+        return NULL;
+    }
+}
+
 // トークンが期待する文字かチェックする
 // もし期待する文字出なかった場合エラーを投げる
 void expect(char *op){
@@ -60,6 +72,18 @@ int expect_number(){
         return val;
     } else {
         error_at(token->str, "トークンに数字が要求されました");
+    }
+}
+
+// トークンが指定された種類かチェックする
+// もしそうなら1つトークンを進める, そうでない場合エラーを投げる
+Token *expect_kind(TokenKind kind){
+    if(token->kind == kind){
+        Token *tmp = token;
+        token = token->next;
+        return tmp;
+    } else {
+        error("異なる種類のトークンが要求されました");
     }
 }
 

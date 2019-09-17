@@ -94,8 +94,10 @@ int expect_number();
 bool consume(char *op);
 void expect(char *op);
 bool consume(char *op);
+Token *expect_kind(TokenKind kind);
 Token *consume_ident();
 Token *consume_number();
+Token *consume_kind();
 
 /* node.c */
 Node *new_node(NodeKind kind, Node *left, Node *right);
