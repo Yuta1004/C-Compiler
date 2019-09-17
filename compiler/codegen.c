@@ -59,7 +59,7 @@ void gen_asm(Node *node){
         printf("%s:\n", node->f_name);
         printf("        push rbp\n");
         printf("        mov rbp, rsp\n");
-        printf("        add rsp, %d\n", 8*20);
+        printf("        sub rsp, %d\n", 8*20);
         char *arg_regs[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
         for(int idx = 0; idx < 6; ++ idx) {
             if(node->args[idx]){
@@ -86,7 +86,7 @@ void gen_asm(Node *node){
             }
         }
         printf("        mov r15, rsp\n");
-        printf("        and rsp, 0xffffffffffff0000\n");                    // アライメント
+        printf("        and rsp, 0xfffffffffffffff0\n");                    // アライメント
         printf("        call %s\n", node->f_name);
         printf("        mov rsp, r15\n");
         printf("        pop rsi\n");
