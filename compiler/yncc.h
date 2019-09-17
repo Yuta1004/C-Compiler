@@ -11,6 +11,7 @@ typedef enum {
     TOKEN_ELSE,         // else
     TOKEN_WHILE,        // while
     TOKEN_FOR,          // for
+    TOKEN_INT,          // int
     TOKEN_EOF,          // EOF
 } TokenKind;
 
