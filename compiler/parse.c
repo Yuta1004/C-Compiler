@@ -335,7 +335,10 @@ LVar *find_lvar(Token *request){
             return var;
         }
     }
-    return regist_lvar(request);
+
+    char *name = (char*)malloc(request->len*sizeof(char));
+    strncpy(name, request->str, request->len);
+    error("[ERROR] 定義されていない変数です => %s\n", name);
 }
 
 // ローカル変数登録
