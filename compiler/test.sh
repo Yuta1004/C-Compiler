@@ -105,7 +105,8 @@ try "main(){ for(num = 1; num <= 10; num = num + 1){ print(2, num, fib(num)); }}
 # pointer
 echo -e "\e[1m\npointer\e[m"
 try "main(){ a = 4; ap = &a; apv = *ap; print(2, ap, apv); return 0; }" 0
-
+try "main(){ x = 3; y = 5; z = &y + 8; zc = *z; print(1, zc); return zc; }" 3
+try "main(){ c = 1204; y = 1004; tmp = *(&y + 8); print(1, tmp); return 0;} " 0
 
 echo ""
 exit 0
