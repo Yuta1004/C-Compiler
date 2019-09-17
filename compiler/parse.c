@@ -54,8 +54,9 @@ Node *func(){
         if(arg_token && arg_token->str != NULL) {
             LVar *lvar = regist_lvar(arg_token);
             Node *arg_node = calloc(1, sizeof(Node));
-            node->kind = ND_LVER;
-            node->offset = lvar->offset;
+            arg_node->kind = ND_LVER;
+            arg_node->offset = lvar->offset;
+            node->args[idx] = arg_node;
         }
         if(!consume(",")){
             break;
