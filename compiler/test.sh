@@ -100,6 +100,7 @@ try "main(){ a = 10; b = 20; result = sum(a, b); return result; } sum(a, b){ ret
 try "main(){ ans = 0; for(idx = 1; idx <= 10; idx = idx + 1){ ans = sum(ans, idx); } return ans; } sum(a, b){ return a+b; }" 55
 try "main(){ return mul(sum(1, 2), sum(3, 4)); } sum(a, b){ return a+b; } mul(a, b){ return a*b; }" 21
 try "main(){ return sum(sum(sum(1, 2), sum(3, 4)), sum(sum(5, 6), sum(7, 8))); } sum(a, b){ return a+b; }" 36
+try "main(){ for(num = 1; num <= 10; num = num + 1){ print(fib(num)); }} fib(depth){ if(depth <= 2){ return 1; } else { return fib(depth-1) + fib(depth-2); }}" 0
 
 echo ""
 exit 0
