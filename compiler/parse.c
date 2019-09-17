@@ -268,7 +268,7 @@ Node *unary(){
 }
 
 // 構文解析11
-// primary = num | ident ("(" (num ","?)* ")")? | "(" expr ")"
+// primary = num | ident ("(" (expr ","?)* ")")? | "(" expr ")"
 Node *primary(){
     // "(" expr ")"
     if(consume("(")) {
@@ -294,7 +294,7 @@ Node *primary(){
                 Token *bef_token = token;
                 if(consume_number() || consume_ident()){
                     token = bef_token;
-                    node->args[idx] = primary();
+                    node->args[idx] = expr();
                 }
                 if(!consume(",")){
                     break;
