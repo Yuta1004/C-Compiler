@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdarg.h>
 
 
 int funcA(){
@@ -31,7 +32,13 @@ int funcF(int a, int b, int c, int d, int e, int f){
     return a + b + c + d + e + f;
 }
 
-int print(int num){
-    printf("%d\n", num);
+int print(int argc, ...){
+    va_list va;
+    va_start(va, argc);
+    for(int idx = 0; idx < argc; ++ idx) {
+        printf("%d ", va_arg(va, int));
+    }
+    printf("\n");
+    va_end(va);
     return 0;
 }
