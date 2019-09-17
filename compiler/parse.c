@@ -31,7 +31,7 @@ void program(){
 }
 
 // 構文解析2
-// func = ident "(" (ident ","?)* ")" "{" stmt* "}"
+// func = "int" ident "(" ("int" ident ","?)* ")" "{" stmt* "}"
 Node *func(){
     Node *node = calloc(1, sizeof(Node));
     node->kind = ND_FUNC;
@@ -39,6 +39,7 @@ Node *func(){
     locals = calloc(1, sizeof(LVar));
 
     // 関数名
+    expect_kind(TOKEN_INT);
     Token *f_name_token = consume_ident();
     if(!f_name_token){
         error("[ERROR] 関数定義が要求されました");
@@ -50,8 +51,9 @@ Node *func(){
     expect("(");
     node->args = calloc(6, sizeof(Node));
     for(int idx = 0; idx < 6; ++ idx) {
+        Token *int_token = consume_kind(TOKEN_INT);
         Token *arg_token = consume_ident();
-        if(arg_token && arg_token->str != NULL) {
+        if(int_token && arg_token && arg_token->str != NULL) {
             LVar *lvar = regist_lvar(arg_token);
             Node *arg_node = calloc(1, sizeof(Node));
             arg_node->kind = ND_LVER;
