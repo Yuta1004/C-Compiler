@@ -17,6 +17,7 @@ Node *mul();
 Node *unary();
 Node *primary();
 LVar *find_lvar(Token *request);
+LVar *regist_lvar(Token *request);
 
 // 構文解析1
 // program = stmt*
@@ -268,18 +269,8 @@ Node *primary(){
 
         // 変数
         Node *node = calloc(1, sizeof(Node));
-        LVar *result = find_lvar(next_token);       // 変数登録済みか確認
-        if(result != NULL){
-            node->offset = result->offset;
-        } else {
-            LVar *lvar = calloc(1, sizeof(LVar));
-            lvar->next = locals;
-            lvar->name = next_token->str;
-            lvar->len = next_token->len;
-            lvar->offset = locals->offset + 8;
-            node->offset = lvar->offset;
-            locals = lvar;
-        }
+        LVar *result = find_lvar(next_token);
+        node->offset = result->offset;
         node->kind = ND_LVER;
         return node;
     }
@@ -289,10 +280,22 @@ Node *primary(){
 
 // ローカル変数検索
 LVar *find_lvar(Token *request){
+    // 検索
     for(LVar *var = locals; var; var = var->next){
         if(var->len == request->len && strncmp(var->name, request->str, request->len) == 0){
             return var;
         }
     }
-    return NULL;
+    return regist_lvar(request);
+}
+
+// ローカル変数登録
+LVar *regist_lvar(Token *request){
+    LVar *lvar = calloc(1, sizeof(LVar));
+    lvar->next = locals;
+    lvar->name = request->str;
+    lvar->len = request->len;
+    lvar->offset = locals->offset + 8;
+    locals = lvar;
+    return lvar;
 }
