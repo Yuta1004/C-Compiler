@@ -290,7 +290,7 @@ Node *unary(){
 }
 
 // 構文解析11
-// primary = num | ident ("(" (expr ","?)* ")")? | "(" expr ")"
+// primary = "(" expr ") | ident ("(" (expr ","?)* ")") | num
 Node *primary(){
     // "(" expr ")"
     if(consume("(")) {
