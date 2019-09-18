@@ -107,6 +107,9 @@ echo -e "\e[1m\npointer\e[m"
 try "int main(){ int a; int ap; int apv; a = 4; ap = &a; apv = *ap; print(2, ap, apv); return 0; }" 0
 try "int main(){ int x; int y; int z; int zc; x = 3; y = 5; z = &y + 8; zc = *z; print(1, zc); return zc; }" 3
 try "int main(){ int c; int y; int tmp; c = 1204; y = 1004; tmp = *(&y + 8); print(1, tmp); return 0;} " 0
+try "int main(){ int a; int *p; a = 10; p = &a; return *p; }" 10
+try "int main(){ int x; int *y; y = &x; *y = 3; return x; }" 3
+try "int main(){ int x; int *y; int **z; x = 100; y = &x; z = &y; **z = 10; return x; }" 10
 
 echo ""
 exit 0
