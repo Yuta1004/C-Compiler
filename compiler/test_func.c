@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdarg.h>
 
 
@@ -42,3 +43,15 @@ int print(int argc, ...){
     va_end(va);
     return 0;
 }
+
+int *mem_alloc(int *ptr, int argc, ...) {
+    ptr = (int*)malloc(argc*sizeof(int));
+    va_list va;
+    va_start(va, argc);
+    for(int idx = 0; idx < argc; ++ idx){
+        ptr[idx] = idx;
+    }
+    va_end(va);
+    return 0;
+}
+
