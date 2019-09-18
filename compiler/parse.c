@@ -330,6 +330,7 @@ Node *primary(){
         Node *node = calloc(1, sizeof(Node));
         LVar *result = find_lvar(next_token);
         node->offset = result->offset;
+        node->type = result->type;
         node->kind = ND_LVER;
         return node;
     }

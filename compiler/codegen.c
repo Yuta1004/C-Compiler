@@ -115,6 +115,9 @@ void gen_asm(Node *node){
 
     case ND_DEREF:
         gen_asm(node->left);
+        if(node->left->type != NULL) {
+            node->type = node->left->type->ptr_to;
+        }
         printf("        pop rax\n");
         printf("        mov rax, [rax]\n");
         printf("        push rax\n");
