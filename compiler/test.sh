@@ -110,6 +110,9 @@ try "int main(){ int c; int y; int tmp; c = 1204; y = 1004; tmp = *(&y + 8); pri
 try "int main(){ int a; int *p; a = 10; p = &a; return *p; }" 10
 try "int main(){ int x; int *y; y = &x; *y = 3; return x; }" 3
 try "int main(){ int x; int *y; int **z; x = 100; y = &x; z = &y; **z = 10; return x; }" 10
+try "int main(){ int *p; mem_alloc(&p, 4, 1, 2, 3, 4); int *q; q = p + 2; return *q; }" 3
+try "int main(){ int *p; mem_alloc(&p, 4, 1, 2, 4, 8); int *q; q = p + 3; return *q; }" 8
+try "int main(){ int *p; mem_alloc(&p, 4, 1, 3, 5, 7); int *q; int idx; for(idx = 0; idx < 4; idx = idx + 1){ q = p + idx; print(1, *q); } return 0; }" 0
 
 echo ""
 exit 0
