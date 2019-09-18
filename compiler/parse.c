@@ -18,7 +18,7 @@ Node *mul();
 Node *unary();
 Node *primary();
 LVar *find_lvar(Token *request);
-LVar *regist_lvar(Token *request);
+LVar *regist_lvar();
 
 // 構文解析1
 // program = func*
@@ -51,16 +51,14 @@ Node *func(){
     expect("(");
     node->args = calloc(6, sizeof(Node));
     for(int idx = 0; idx < 6; ++ idx) {
-        Token *int_token = consume_kind(TOKEN_INT);
-        Token *arg_token = consume_ident();
-        if(int_token && arg_token && arg_token->str != NULL) {      // 引数があるかチェック
-            LVar *lvar = regist_lvar(arg_token);
+        LVar *lvar = regist_lvar();
+        if(lvar) {                                      // 引数があるかチェック
             Node *arg_node = calloc(1, sizeof(Node));
             arg_node->kind = ND_LVER;
             arg_node->offset = lvar->offset;
             node->args[idx] = arg_node;
         }
-        if(!consume(",")){                                          // , が無ければ続く引数は無いと判断する
+        if(!consume(",")){                              // , が無ければ続く引数は無いと判断する
             break;
         }
     }
@@ -175,8 +173,7 @@ Node *stmt(){
 
     // Variable<int>
     if(token->kind == TOKEN_INT) {
-        token = token->next;
-        regist_lvar(consume_ident());
+        regist_lvar();
         expect(";");
         return NULL;
     }
@@ -355,11 +352,27 @@ LVar *find_lvar(Token *request){
 }
 
 // ローカル変数登録
-LVar *regist_lvar(Token *request){
+LVar *regist_lvar(){
+    // "int"
+    if(!consume_kind(TOKEN_INT)) {
+        return NULL;
+    }
+
+    // "*"*
+    Type int_type = {INT, NULL};
+    Type *type = &int_type;
+    while(consume("*")) {
+        Type ptr_type = {PTR, type};
+        type = &ptr_type;
+    }
+
+    // 変数名
     LVar *lvar = calloc(1, sizeof(LVar));
+    Token *var_name = consume_ident();
+    lvar->type = type;
     lvar->next = locals;
-    lvar->name = request->str;
-    lvar->len = request->len;
+    lvar->name = var_name->str;
+    lvar->len = var_name->len;
     lvar->offset = locals->offset + 8;
     locals = lvar;
     return lvar;
