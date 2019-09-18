@@ -1,11 +1,14 @@
 #!/bin/bash
 
+# Setup
+gcc -c -o test_func.o test_func.c
+
+# Try Function
 try() {
     input="$1"
     expected="$2"
 
     ./yncc "$input" > tmp.s
-    gcc -c -o test_func.o test_func.c
     gcc -O0 -g -o tmp tmp.s test_func.o
     ./tmp
     actual="$?"
@@ -17,7 +20,8 @@ try() {
     fi
 }
 
-# exprssion
+# Test
+## exprssion
 echo -e "\e[1m\nExprssion\e[m"
 try "int main(){ return 0; }" 0
 try "int main(){ return 124; }" 124
@@ -39,7 +43,7 @@ try "int main(){ return 20*100 < 30000; }" 1
 try "int main(){ return 1 <= 0; }" 0
 try "int main(){ return 10 % 3; }" 1
 
-# variable
+## variable
 echo -e "\e[1m\nVariable\e[m"
 try "int main(){ int a; int b; int c; int d; a = 1; b = 2; c = 3; a = b*c/a; d = a+b+c; return d; }" 11
 try "int main(){ int a; int b; int c; int d; int e; a = 10; b = 20; c = a*b; d = (c+100)/(e=10); return d-e; }" 20
@@ -50,18 +54,18 @@ try "int main(){ int a; int b; int tmp; a = 10; b = 20; tmp = a; a = b; b = tmp;
 try "int main(){ int seven; int eleven; int seven_eleven; seven = 7; eleven = 11; seven_eleven = seven + eleven; return seven_eleven; }" 18
 try "int main(){ int a; int b; return a=b=10; }" 10
 
-# if
+## if
 echo -e "\e[1m\nif\e[m"
 try "int main(){ int a; int b; a = 10; b = 30; if(a == 10) return b; }" 30
 try "int main(){ int a; int b; a = 10; b = 10; if(a == b) return 20; else return 100; }" 20
 try "int main(){ int a; int b; a = 10; b = 10; if(a != b) return 20; else return 100; }" 100
 try "int main(){ int result; result = 0; if (1) if (1) if (0) result = result + 10; else if(1) result = result + 20; else result = result + 30; else result = result + 40; return result; }" 20
 
-# while
+## while
 echo -e "\e[1m\nwhile\e[m"
 try "int main(){ int num; num = 0; while(num < 10) num = num + 1; return num; }" 10
 
-# for
+## for
 echo -e "\e[1m\nfor\e[m"
 try "int main(){ int num; int i; num = 0; for(i = 0; i < 200; i = i + 1) num = num + 1; return num; }" 200
 try "int main(){ int num; num = 0; for(; num < 100; ) num = num + 1; return num; }" 100
@@ -71,13 +75,13 @@ try "int main(){ int sum; int n; sum = 0; for(n = 1; n <= 10; n = n + 1) sum = s
 try "int main(){ int sum; int n; sum = 0; for(n = 0; n <= 20; n = n + 2) sum = sum + n; return sum; }" 110
 try "int main(){ int sum; int n; sum = 0; for(n = 1; n <= 20; n = n + 1) if(n % 2 == 0) sum = sum + n; return sum; }" 110
 
-# block
+## block
 echo -e "\e[1m\nblock\e[m"
 try "int main(){ int cnt; cnt = 0; for(; cnt < 10;){ cnt = cnt + 1; } return cnt; }" 10
 try "int main(){ int a; int b; int cnt; int tmp; a = 1; b = 1; for(cnt = 0; cnt < 10; cnt = cnt + 1){ tmp = a; a = b; b = tmp + b; } return b; }" 144
 try "int main(){ int result; result = 0; if(1){ if(1){ if(1){ result = result + 1; result = result + 2;} result = result + 3;} result = result + 4;} return result; }" 10
 
-# call function
+## call function
 echo -e "\e[1m\ncall function\e[m"
 try "int main(){ return funcA(); }" 0
 try "int main(){ int a; int b; a = funcA() + 10; b = 20; return a+b; }" 30
@@ -91,7 +95,7 @@ try "int main(){ return funcF(8, 5, 9, 4, 7, 1); }" 34
 try "int main(){ int sum; sum = funcF(1, 2, 3, 4, 5, 6); print(1, sum); return 0; }" 0
 try "int main(){ int sum; int num; sum = 0; for(num = 1; num <= 10; num = num + 1){ sum = sum + num; print(1, sum); } return 0; }" 0
 
-# define function
+## define function
 echo -e "\e[1m\ndefine function\e[m"
 try "int main(){ return sum(1, 2); } int sum(int a, int b){ return a+b; }" 3
 try "int main(){ int result; result = sum(10, 20); return result - 15; }  int sum(int a, int b){ return a+b; }" 15
@@ -102,7 +106,7 @@ try "int main(){ return mul(sum(1, 2), sum(3, 4)); } int sum(int a, int b){ retu
 try "int main(){ return sum(sum(sum(1, 2), sum(3, 4)), sum(sum(5, 6), sum(7, 8))); } int sum(int a, int b){ return a+b; }" 36
 try "int main(){ int num; for(num = 1; num <= 10; num = num + 1){ print(2, num, fib(num)); }} int fib(int depth){ if(depth <= 2){ return 1; } else { return fib(depth-1) + fib(depth-2); }}" 0
 
-# pointer
+## pointer
 echo -e "\e[1m\npointer\e[m"
 try "int main(){ int a; int ap; int apv; a = 4; ap = &a; apv = *ap; print(2, ap, apv); return 0; }" 0
 try "int main(){ int x; int y; int z; int zc; x = 3; y = 5; z = &y + 8; zc = *z; print(1, zc); return zc; }" 3
