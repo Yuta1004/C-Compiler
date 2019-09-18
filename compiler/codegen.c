@@ -7,14 +7,19 @@
 
 // 左辺値コンパイル
 void gen_lval(Node *node){
-    if(node->kind != ND_LVER){
-        error("左辺値が変数ではありません");
+    if(node->kind == ND_LVER) {
+        printf("        mov rax, rbp\n");
+        printf("        sub rax, %d\n", node->offset);
+        printf("        push rax\n");
+        return;
     }
 
-    printf("        mov rax, rbp\n");
-    printf("        sub rax, %d\n", node->offset);
-    printf("        push rax\n");
-    return;
+    if(node->kind == ND_DEREF) {
+        gen_asm(node->left);
+        return;
+    }
+
+    error("左辺値が変数ではありません");
 }
 
 // 構文木 to アセンブリ (with <pop rax>)
