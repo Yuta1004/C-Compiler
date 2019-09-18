@@ -116,7 +116,7 @@ void gen_asm(Node *node){
     case ND_DEREF:
         gen_asm(node->left);
         if(node->left->type != NULL) {
-            node->type = node->left->type->ptr_to;
+            node->left->type = node->left->type->ptr_to;
         }
         printf("        pop rax\n");
         printf("        mov rax, [rax]\n");
@@ -180,13 +180,24 @@ void gen_asm(Node *node){
     printf("        pop rdi\n");
     printf("        pop rax\n");
 
+    bool is_left_ptr = (node->left->type != NULL && node->left->type->ty == PTR);
+    bool is_right_ptr = (node->right->type != NULL && node->right->type->ty == PTR);
+
     // 式
     switch(node->kind){
     case ND_ADD:
+        if(is_left_ptr)
+            printf("        imul rdi, %d\n", type_to_size(node->left->type->ptr_to->ty));
+        if(is_right_ptr)
+            printf("        imul rax, %d\n", type_to_size(node->right->type->ptr_to->ty));
         printf("        add rax, rdi\n");
         break;
 
     case ND_SUB:
+        if(is_left_ptr)
+            printf("        imul rdi, %d\n", type_to_size(node->left->type->ptr_to->ty));
+        if(is_right_ptr)
+            printf("        imul rax, %d\n", type_to_size(node->right->type->ptr_to->ty));
         printf("        sub rax, rdi\n");
         break;
 
