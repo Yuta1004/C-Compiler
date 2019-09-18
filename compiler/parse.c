@@ -362,11 +362,15 @@ LVar *regist_lvar(){
     }
 
     // "*"*
-    Type int_type = {INT, NULL};
-    Type *type = &int_type;
+    Type *int_type = calloc(1, sizeof(Type));
+    int_type->ty = INT;
+    int_type->ptr_to = NULL;
+    Type *type = int_type;
     while(consume("*")) {
-        Type ptr_type = {PTR, type};
-        type = &ptr_type;
+        Type *ptr_type = calloc(1, sizeof(Type));
+        ptr_type->ty = PTR;
+        ptr_type->ptr_to = type;
+        type = ptr_type;
     }
 
     // 変数名
