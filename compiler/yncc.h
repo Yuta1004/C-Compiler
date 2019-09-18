@@ -75,6 +75,7 @@ struct LVar {
     char *name;     // 変数名
     int len;        // 長さ
     int offset;     // RBPからのオフセット
+    Type *type;     // 型
 };
 
 struct Type {
