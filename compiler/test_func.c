@@ -44,14 +44,13 @@ int print(int argc, ...){
     return 0;
 }
 
-int *mem_alloc(int *ptr, int argc, ...) {
-    ptr = (int*)malloc(argc*sizeof(int));
+int *mem_alloc(int **ptr, int argc, ...) {
+    *ptr = calloc(argc, sizeof(int));
     va_list va;
     va_start(va, argc);
-    for(int idx = 0; idx < argc; ++ idx){
-        ptr[idx] = idx;
+    for(int idx = 0; idx < argc; ++ idx) {
+        (*ptr)[idx] = va_arg(va, int);
     }
     va_end(va);
     return 0;
 }
-
