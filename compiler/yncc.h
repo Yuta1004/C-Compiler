@@ -42,7 +42,7 @@ typedef enum {
 } NodeKind;
 
 typedef struct Node Node;
-
+typedef struct Type Type;
 typedef struct LVar LVar;
 
 /* 構造体 */
@@ -58,11 +58,16 @@ struct Node {
     NodeKind kind;              // ノードの種類
     Node *left;                 // 左辺ノードのポインタ
     Node *right;                // 右辺ノードのポインタ
+
     Node *block_next_node;      // ブロックノードだった時、その次のノード
+
     int val;                    // 数字ノードだった時、その値
+
     int offset;                 // ローカル変数ノードだった時、そのオフセット
+    Type *type;                 // 変数ノードだった時、その型
+
     char *f_name;               // 関数ノードだった時、その名前
-    Node **args;                  // 関数ノードだった時、その引数
+    Node **args;                // 関数ノードだった時、その引数
 };
 
 struct LVar {
@@ -70,6 +75,11 @@ struct LVar {
     char *name;     // 変数名
     int len;        // 長さ
     int offset;     // RBPからのオフセット
+};
+
+struct Type {
+    enum{ INT, PTR } ty;
+    struct Type *ptr_to;
 };
 
 /* グローバル変数 */

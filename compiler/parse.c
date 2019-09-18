@@ -78,7 +78,7 @@ Node *func(){
 //        | "if" "(" expr ")" stmt ("else" stmt)?
 //        | "while" "(" expr ")" stmt
 //        | "for" "(" expr? ";" expr? ";" expr? ")"
-//        | "int" ident ";"
+//        | "int" "*"* ident ";"
 Node *stmt(){
     if(token->kind == TOKEN_RETURN){
         token = token->next;
