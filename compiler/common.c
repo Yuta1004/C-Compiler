@@ -38,3 +38,15 @@ int is_alnum(char chr){
            ('1' <= chr && chr <= '9') ||
            (chr == '_');
 }
+
+// 型のサイズを求める
+int type_to_size(int type) {
+    switch(type){
+    case INT:
+        return 4;
+    case PTR:
+        return 8;
+    default:
+        return 1;
+    }
+}
