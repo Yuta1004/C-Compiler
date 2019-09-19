@@ -57,3 +57,19 @@ void define_type(Type **type_ptr, int type){
     tmp->ty = type;
     *type_ptr = tmp;
 }
+
+// 大きい方の型の種類を返す
+Type *max_type(Type *a, Type *b){
+    if(a == NULL && b == NULL){
+        Type *tmp = calloc(1, sizeof(Type));
+        tmp->ty = -1;
+        return tmp;
+    }
+    if(a == NULL) return b;
+    if(b == NULL) return a;
+
+    if(a->ty > b->ty){
+        return a;
+    }
+    return b;
+}
