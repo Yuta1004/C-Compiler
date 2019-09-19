@@ -1,6 +1,8 @@
 #ifndef YNCC_H
 #define YNCC_H
 
+#include <stdlib.h>
+
 /* 型定義 */
 typedef enum {
     TOKEN_RESERVED,     // 記号
@@ -80,8 +82,9 @@ struct LVar {
 };
 
 struct Type {
-    enum{ INT, PTR } ty;
+    enum{ INT, PTR, ARRAY } ty;
     struct Type *ptr_to;
+    size_t size;
 };
 
 /* グローバル変数 */
