@@ -280,8 +280,15 @@ Node *mul(){
 }
 
 // 構文解析10
-// unary = ("+" | "-")? primary | ("*" | "&") unary
+// unary = "sizeof" unary | ("+" | "-")? primary | ("*" | "&") unary
 Node *unary(){
+    if(token->kind == TOKEN_SIZEOF) {
+        token = token->next;
+        Node *node = unary();
+        int type = node->type->ty;
+        free(node);
+        return new_num_node(type_to_size(node->type->ty));
+    }
     if(consume("-")) {
         Node *node = new_node(ND_SUB, new_num_node(0), primary());
         define_type(&node->type, INT);
