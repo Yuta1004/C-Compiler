@@ -177,8 +177,10 @@ void gen_asm(Node *node){
     printf("        pop rdi\n");
     printf("        pop rax\n");
 
-    bool is_left_ptr = (node->left->type != NULL && node->left->type->ty == PTR);
-    bool is_right_ptr = (node->right->type != NULL && node->right->type->ty == PTR);
+    bool is_left_ptr =
+        (node->left->type != NULL && node->left->type->ptr_to != NULL && node->left->type->ty == PTR);
+    bool is_right_ptr =
+        (node->right->type != NULL && node->right->type->ptr_to != NULL && node->right->type->ty == PTR);
 
     // 式
     switch(node->kind){
