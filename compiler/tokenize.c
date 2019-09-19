@@ -93,6 +93,14 @@ Token *tokenize(char *p){
             continue;
         }
 
+        // sizeof
+        if(strncmp(p, "sizeof", 6) == 0 && !is_alnum(*(p+6))){
+            cur = new_token(TOKEN_INT, cur, p);
+            cur->len = 6;
+            p += 6;
+            continue;
+        }
+
         // 識別子
         if(('a' <= *p && *p <= 'z') || ('A' <= *p && *p <= 'Z')){
             cur = new_token(TOKEN_IDENT, cur, p);
