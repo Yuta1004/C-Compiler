@@ -374,7 +374,7 @@ Node *primary(){
             addr->kind = ND_LVER;
             addr->offset = result->offset;
             define_type(&addr_par->type, PTR);
-            define_type(&addr_par->type->ptr_to, PTR);
+            define_type(&addr_par->type->ptr_to, INT);
             return addr_par;
         }
         return node;
