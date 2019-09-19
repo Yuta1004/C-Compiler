@@ -362,6 +362,20 @@ Node *primary(){
         node->offset = result->offset;
         node->type = result->type;
         node->kind = ND_LVER;
+
+        // 変数が配列を指していた場合、先頭アドレスへのポインタに変換する
+        if(node->type->ty == ARRAY) {
+            free(node);
+            Node *addr_par = calloc(1, sizeof(Node));
+            Node *addr = calloc(1, sizeof(Node));
+            addr_par->kind = ND_ADDR;
+            addr_par->left = addr;
+            addr->kind = ND_LVER;
+            addr->offset = result->offset;
+            define_type(&addr_par->type, PTR);
+            define_type(&addr_par->type->ptr_to, PTR);
+            return addr_par;
+        }
         return node;
     }
 
