@@ -96,6 +96,7 @@ void error(char *fmt, ...);
 void error_at(char *location, char *fmt, ...);
 int is_alnum(char chr);
 int type_to_size(int type);
+void define_type(Type **type_ptr, int type);
 
 /* tokenize.c */
 #include <stdbool.h>
