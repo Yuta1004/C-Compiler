@@ -289,10 +289,13 @@ Node *unary(){
         free(node);
         return new_num_node(type_to_size(node->type->ty));
     }
+
     if(consume("-")) {
         Node *node = new_node(ND_SUB, new_num_node(0), primary());
         define_type(&node->type, INT);
+        return node;
     }
+
     if(consume("*")) {
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_DEREF;
@@ -300,6 +303,7 @@ Node *unary(){
         node->type = node->left->type->ptr_to;
         return node;
     }
+
     if(consume("&")) {
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_ADDR;
