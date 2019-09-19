@@ -417,6 +417,9 @@ LVar *regist_lvar(){
         size_t size = expect_number();
         lvar->offset = locals->offset - 8 + (8 * size);
         expect("]");
+        if(size <= 0) {
+            error("[ERROR] 長さが0以下の配列は定義できません");
+        }
     }
     return lvar;
 }
