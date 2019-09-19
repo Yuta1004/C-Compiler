@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdio.h>
 
 // 新しいトークンを作成してcurに繋げる
 Token *new_token(TokenKind kind, Token *cur, char *str){
@@ -95,7 +96,7 @@ Token *tokenize(char *p){
 
         // sizeof
         if(strncmp(p, "sizeof", 6) == 0 && !is_alnum(*(p+6))){
-            cur = new_token(TOKEN_INT, cur, p);
+            cur = new_token(TOKEN_SIZEOF, cur, p);
             cur->len = 6;
             p += 6;
             continue;
