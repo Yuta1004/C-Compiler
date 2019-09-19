@@ -76,7 +76,7 @@ Node *func(){
 //        | "if" "(" expr ")" stmt ("else" stmt)?
 //        | "while" "(" expr ")" stmt
 //        | "for" "(" expr? ";" expr? ";" expr? ")"
-//        | "int" "*"* ident ";"
+//        | "int" "*"* ident ("[" num "]")? ";"
 Node *stmt(){
     if(token->kind == TOKEN_RETURN){
         token = token->next;
@@ -385,14 +385,14 @@ LVar *find_lvar(Token *request){
 // ローカル変数登録
 LVar *regist_lvar(){
     // "int"
+    Type *int_type = calloc(1, sizeof(Type));
+    int_type->ty = INT;
+    int_type->ptr_to = NULL;
     if(!consume_kind(TOKEN_INT)) {
         return NULL;
     }
 
     // "*"*
-    Type *int_type = calloc(1, sizeof(Type));
-    int_type->ty = INT;
-    int_type->ptr_to = NULL;
     Type *type = int_type;
     while(consume("*")) {
         Type *ptr_type = calloc(1, sizeof(Type));
@@ -410,5 +410,13 @@ LVar *regist_lvar(){
     lvar->len = var_name->len;
     lvar->offset = locals->offset + 8;
     locals = lvar;
+
+    // "[" array_size "]"
+    if(consume("[")) {
+        int_type->ty = ARRAY;
+        size_t size = expect_number();
+        lvar->offset = locals->offset - 8 + (8 * size);
+        expect("]");
+    }
     return lvar;
 }
