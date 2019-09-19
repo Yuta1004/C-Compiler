@@ -1,0 +1,13 @@
+name: Compiler-Test
+
+on: [push]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-18.04
+    
+    steps:
+    - uses: actions/checkout@master
+    - name: Do test
+      run: cd compiler; make test
