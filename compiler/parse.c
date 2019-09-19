@@ -309,6 +309,7 @@ Node *unary(){
         node->kind = ND_ADDR;
         node->left = unary();
         define_type(&node->type, PTR);
+        define_type(&node->type->ptr_to, PTR);
         return node;
     }
 
