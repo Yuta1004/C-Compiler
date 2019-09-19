@@ -213,6 +213,8 @@ Node *equality(){
     } else {
         return node;
     }
+
+    define_type(&node->type, INT);
     return node;
 }
 
@@ -233,6 +235,8 @@ Node *relational(){
     } else {
         return node;
     }
+
+    define_type(&node->type, INT);
     return node;
 }
 
@@ -244,8 +248,10 @@ Node *add(){
     while(true) {
         if(consume("+")) {
             node = new_node(ND_ADD, node, mul());
+            define_type(&node->type, max_type(node->left->type, node->right->type)->ty);
         } else if(consume("-")) {
             node = new_node(ND_SUB, node, mul());
+            define_type(&node->type, max_type(node->left->type, node->right->type)->ty);
         } else {
             return node;
         }
@@ -260,10 +266,13 @@ Node *mul(){
     while(true) {
         if(consume("*")) {
             node = new_node(ND_MUL, node, unary());
+            define_type(&node->type, max_type(node->left->type, node->right->type)->ty);
         } else if(consume("/")) {
             node = new_node(ND_DIV, node, unary());
+            define_type(&node->type, max_type(node->left->type, node->right->type)->ty);
         } else if(consume("%")) {
             node = new_node(ND_DIV_REMAIN, node, unary());
+            define_type(&node->type, max_type(node->left->type, node->right->type)->ty);
         } else {
             return node;
         }
@@ -274,18 +283,21 @@ Node *mul(){
 // unary = ("+" | "-")? primary | ("*" | "&") unary
 Node *unary(){
     if(consume("-")) {
-        return new_node(ND_SUB, new_num_node(0), primary());
+        Node *node = new_node(ND_SUB, new_num_node(0), primary());
+        define_type(&node->type, INT);
     }
     if(consume("*")) {
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_DEREF;
         node->left = unary();
+        node->type = node->left->type->ptr_to;
         return node;
     }
     if(consume("&")) {
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_ADDR;
         node->left = unary();
+        define_type(&node->type, PTR);
         return node;
     }
 
