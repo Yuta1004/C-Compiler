@@ -198,6 +198,7 @@ Node *assign(){
     } else {
         return node;
     }
+    return node;
 }
 
 // 構文解析6
@@ -212,6 +213,7 @@ Node *equality(){
     } else {
         return node;
     }
+    return node;
 }
 
 // 構文解析7
@@ -231,6 +233,7 @@ Node *relational(){
     } else {
         return node;
     }
+    return node;
 }
 
 // 構文解析8
