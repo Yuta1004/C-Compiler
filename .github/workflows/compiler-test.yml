@@ -9,9 +9,5 @@ jobs:
     
     steps:
     - uses: actions/checkout@master
-    - name: cd compiler
-      run: cd compiler
-    - name: make
-      run: make
-    - name: make test
-      run: make test
+    - name: Do test
+      run: cd compiler; make test
