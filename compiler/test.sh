@@ -118,5 +118,16 @@ try "int main(){ int *p; mem_alloc(&p, 4, 1, 2, 3, 4); int *q; q = p + 2; return
 try "int main(){ int *p; mem_alloc(&p, 4, 1, 2, 4, 8); int *q; q = p + 3; return *q; }" 8
 try "int main(){ int *p; mem_alloc(&p, 4, 1, 3, 5, 7); int *q; int idx; for(idx = 0; idx < 4; idx = idx + 1){ q = p + idx; print(1, *q); } return 0; }" 0
 
+## sizeof
+echo -e "\e[1m\nsizeof\e[m"
+try "int main(){ int x; return sizeof(x); }" 4
+try "int main(){ int *y; return sizeof(y); }" 8
+try "int main(){ int x; return sizeof(x + 3); }" 4
+try "int main(){ int *y; return sizeof(y + 1); }" 8
+try "int main(){ return sizeof(100); }" 4
+try "int main(){ return sizeof(sizeof(100)); }" 4
+try "int main(){ return sizeof sizeof sizeof sizeof sizeof sizeof 10; }" 4
+try "int main(){ int x; print(1, sizeof(x)); return 0; }" 0
+
 echo ""
 exit 0
