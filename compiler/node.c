@@ -13,7 +13,10 @@ Node *new_node(NodeKind kind, Node *left, Node *right){
 
 // 数字ノード生成
 Node *new_num_node(int val){
+    Type *type = calloc(1, sizeof(Type));
+    type->ty = INT;
     Node *node = calloc(1, sizeof(Node));
+    node->type = type;
     node->kind = ND_NUM;
     node->val = val;
     return node;
