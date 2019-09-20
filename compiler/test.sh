@@ -109,8 +109,8 @@ try "int main(){ int num; for(num = 1; num <= 10; num = num + 1){ print(2, num, 
 ## pointer
 echo -e "\e[1m\npointer\e[m"
 try "int main(){ int a; int ap; int apv; a = 4; ap = &a; apv = *ap; print(2, ap, apv); return 0; }" 0
-try "int main(){ int x; int y; int z; int zc; x = 3; y = 5; z = &y + 8; zc = *z; print(1, zc); return zc; }" 3
-try "int main(){ int c; int y; int tmp; c = 1204; y = 1004; tmp = *(&y + 8); print(1, tmp); return 0;} " 0
+try "int main(){ int x; int y; int z; int zc; x = 3; y = 5; z = &y + 1; zc = *z; print(1, zc); return zc; }" 3
+try "int main(){ int c; int y; int tmp; c = 1204; y = 1004; tmp = *(&y + 1); print(1, tmp); return 0;} " 0
 try "int main(){ int a; int *p; a = 10; p = &a; return *p; }" 10
 try "int main(){ int x; int *y; y = &x; *y = 3; return x; }" 3
 try "int main(){ int x; int *y; int **z; x = 100; y = &x; z = &y; **z = 10; return x; }" 10
@@ -128,6 +128,12 @@ try "int main(){ return sizeof(100); }" 4
 try "int main(){ return sizeof(sizeof(100)); }" 4
 try "int main(){ return sizeof sizeof sizeof sizeof sizeof sizeof 10; }" 4
 try "int main(){ int x; print(1, sizeof(x)); return 0; }" 0
+
+## array
+echo -e "\e[1m\narray\e[m"
+try "int main(){ int a; int b; int array[10]; }" 0
+try "int main(){ int a[2]; *a = 1; *(a + 1) = 2; int *p; p = a; int num; num = *(p + 1); print(1, num); return *p + *(p + 1); }" 3
+try "int main(){ int array[10]; int idx; int num; for(idx = 0; idx < 10; idx = idx + 1){ *(array + idx) = idx * 10; } for(idx = 0; idx < 10; idx = idx + 1){ num = *(array + idx);  } return 0; }" 0
 
 echo ""
 exit 0
