@@ -8,9 +8,6 @@
 
 ## Dir
 
-- machine-and-assembly
-    - 機械語とアセンブリ
-
 - compiler
     - コンパイラ本体
 
@@ -20,7 +17,9 @@
 // Run
 cd compiler
 make
-./yncc "return 0;"
+./yncc "int main(){ return 0; " > tmp.s
+gcc -o tmp tmp.s
+./tmp
 echo $?
 
 // Test
