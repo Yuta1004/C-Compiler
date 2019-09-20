@@ -1,5 +1,7 @@
 # C-compiler
 
+![](https://github.com/Yuta1004/yncc/workflows/Compiler%2DTest/badge.svg)
+
 ## Reference
 
 [低レイヤを知りたい人のためのCコンパイラ作成入門](https://www.sigbus.info/compilerbook)
