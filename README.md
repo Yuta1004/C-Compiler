@@ -17,7 +17,7 @@
 // Run
 cd compiler
 make
-./yncc "int main(){ return 0; " > tmp.s
+./yncc "int main(){ return 0; }" > tmp.s
 gcc -o tmp tmp.s
 ./tmp
 echo $?
