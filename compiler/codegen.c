@@ -52,10 +52,10 @@ void gen_asm(Node *node){
     case ND_ASSIGN:
         gen_lval(node->left);                   // [a] = 9 + 1  : LEFT
         gen_asm(node->right);                   // a = [9 + 1]  : RIGHT
-        printf("        pop rdi\n");            // RIGHT
+        printf("        pop rbx\n");            // RIGHT
         printf("        pop rax\n");            // LEFT
-        printf("        mov [rax], rdi\n");     // [LEFT] = RIGHT
-        printf("        push rdi\n");           // a=b=c=8 が出来るように右辺値をスタックに残しておく
+        printf("        mov [rax], rbx\n");     // [LEFT] = RIGHT
+        printf("        push rbx\n");           // a=b=c=8 が出来るように右辺値をスタックに残しておく
         return;
 
     case ND_BLOCK:;
@@ -174,7 +174,7 @@ void gen_asm(Node *node){
     gen_asm(node->left);
     gen_asm(node->right);
 
-    printf("        pop rdi\n");
+    printf("        pop rbx\n");
     printf("        pop rax\n");
 
     bool is_left_ptr =
@@ -186,55 +186,55 @@ void gen_asm(Node *node){
     switch(node->kind){
     case ND_ADD:
         if(is_left_ptr)
-            printf("        imul rdi, %d\n", type_to_size(node->left->type->ptr_to->ty));
+            printf("        imul rbx, %d\n", type_to_size(node->left->type->ptr_to->ty));
         if(is_right_ptr)
             printf("        imul rax, %d\n", type_to_size(node->right->type->ptr_to->ty));
-        printf("        add rax, rdi\n");
+        printf("        add rax, rbx\n");
         break;
 
     case ND_SUB:
         if(is_left_ptr)
-            printf("        imul rdi, %d\n", type_to_size(node->left->type->ptr_to->ty));
+            printf("        imul rbx, %d\n", type_to_size(node->left->type->ptr_to->ty));
         if(is_right_ptr)
             printf("        imul rax, %d\n", type_to_size(node->right->type->ptr_to->ty));
-        printf("        sub rax, rdi\n");
+        printf("        sub rax, rbx\n");
         break;
 
     case ND_MUL:
-        printf("        imul rax, rdi\n");
+        printf("        imul rax, rbx\n");
         break;
 
     case ND_DIV:
         printf("        cqo\n");        // raxレジスタをrdxと合わせた128bitに拡張
-        printf("        idiv rdi\n");   // rax / rsiの結果 (余りはrdx)
+        printf("        idiv rbx\n");   // rax / rsiの結果 (余りはrdx)
         break;
 
     case ND_DIV_REMAIN:
         printf("        cqo\n");
-        printf("        idiv rdi\n");
+        printf("        idiv rbx\n");
         printf("        mov rax, rdx\n");
         break;
 
     case ND_EQ:
-        printf("        cmp rdi, rax\n");   // rdiとraxを比較 -> 結果はフラグレジスタへ
+        printf("        cmp rbx, rax\n");   // rdiとraxを比較 -> 結果はフラグレジスタへ
         printf("        sete al\n");        // 比較結果(==)をalに入れる(raxの下位8ビットにあたるレジスタ)
         printf("        movzb rax, al\n");  // raxレジスタの上位56ビットをゼロクリア
         break;
 
     case ND_NEQ:
-        printf("        cmp rdi, rax\n");
+        printf("        cmp rbx, rax\n");
         printf("        setne al\n");       // 比較結果(!=)をalに入れる
         printf("        movzb rax, al\n");
         break;
 
     case ND_UPPERL:
-        printf("        cmp rdi, rax\n");
+        printf("        cmp rbx, rax\n");
         printf("        setl al\n");        // 比較結果(>)をalに入れる
         printf("        movzb rax, al\n");
         break;
 
     case ND_UPPEREQL:
-        printf("        cmp rdi, rax\n");
+        printf("        cmp rbx, rax\n");
         printf("        setle al\n");       // 比較結果(>=)をalに入れる
         printf("        movzb rax, al\n");
         break;
