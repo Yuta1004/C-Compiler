@@ -42,6 +42,7 @@ try "int main(){ return 1/1+10-10 >= 0; }" 1
 try "int main(){ return 20*100 < 30000; }" 1
 try "int main(){ return 1 <= 0; }" 0
 try "int main(){ return 10 % 3; }" 1
+try "int main(){ return 100 / 100; }" 1
 
 ## variable
 echo -e "\e[1m\nVariable\e[m"
@@ -134,6 +135,10 @@ echo -e "\e[1m\narray\e[m"
 try "int main(){ int a; int b; int array[10]; }" 0
 try "int main(){ int a[2]; *a = 1; *(a + 1) = 2; int *p; p = a; int num; num = *(p + 1); print(1, num); return *p + *(p + 1); }" 3
 try "int main(){ int array[10]; int idx; int num; for(idx = 0; idx < 10; idx = idx + 1){ *(array + idx) = idx * 10; } for(idx = 0; idx < 10; idx = idx + 1){ num = *(array + idx);  } return 0; }" 0
+try "int main(){ int array[4]; array[0] = 10; array[1] = 20; array[2] = 30; array[3] = 40; int sum; sum = array[0] + array[1] + array[2] + array[3]; print(1, sum); return sum; }" 100
+try "int main(){ int array[10]; int idx; for(idx = 0; idx < 10; idx = idx + 1){ array[idx] = idx * 10; } int sum; sum = 0; for(idx = 0; idx < 10; idx = idx + 1){ sum = sum + array[idx]; } return sum / 10; }" 45
+try "int main(){ int array[2]; array[0] = 50; 1[array] = 20; return 0[array] - array[1]; }" 30
+try "int main(){ int memo[10]; memo[0] = 1; memo[1] = 1;int idx; for(idx = 2; idx < 10; idx = idx + 1){ memo[idx] = memo[idx-1] + memo[idx-2]; } return memo[9]; }" 55
 
 echo ""
 exit 0
