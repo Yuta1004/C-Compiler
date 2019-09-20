@@ -280,7 +280,7 @@ Node *mul(){
 }
 
 // 構文解析10
-// unary = "sizeof" unary | ("+" | "-")? primary | ("*" | "&") unary
+// unary = "sizeof" unary | ("+" | "-")? primary | ("*" | "&") unary | unary "[" unary "]"
 Node *unary(){
     if(token->kind == TOKEN_SIZEOF) {
         token = token->next;
@@ -296,28 +296,49 @@ Node *unary(){
         return node;
     }
 
+    Node *node = NULL;
     if(consume("*")) {
-        Node *node = calloc(1, sizeof(Node));
+        node = calloc(1, sizeof(Node));
         node->kind = ND_DEREF;
         node->left = unary();
         node->type = node->left->type->ptr_to;
-        return node;
+        goto check_array_access;
     }
 
     if(consume("&")) {
-        Node *node = calloc(1, sizeof(Node));
+        node = calloc(1, sizeof(Node));
         node->kind = ND_ADDR;
         node->left = unary();
         define_type(&node->type, PTR);
         define_type(&node->type->ptr_to, PTR);
-        return node;
+        goto check_array_access;
     }
 
-    return primary();
+    if(node == NULL) {
+        node = primary();
+        goto check_array_access;
+    }
+
+    // "[" (ident | num ) "]"
+check_array_access:
+    if(consume("[")) {
+        Node *deref_par = calloc(1, sizeof(Node));
+        Node *add = calloc(1, sizeof(Node));
+        deref_par->kind = ND_DEREF;
+        deref_par->left = add;
+        add->kind = ND_ADD;
+        add->left = node;
+        add->right = expr();
+        define_type(&add->type, max_type(add->left->type->ptr_to, add->right->type->ptr_to)->ty);
+        define_type(&deref_par->type, add->type->ty);
+        expect("]");
+        return deref_par;
+    }
+    return node;
 }
 
 // 構文解析11
-// primary = "(" expr ") | ident ("(" (expr ","?)* ")") | num
+// primary = "(" expr ") | ident ("(" (expr ","?)* ")") | num | ident
 Node *primary(){
     // "(" expr ")"
     if(consume("(")) {
@@ -375,7 +396,7 @@ Node *primary(){
             addr->offset = result->offset;
             define_type(&addr_par->type, PTR);
             define_type(&addr_par->type->ptr_to, INT);
-            return addr_par;
+            node = addr_par;
         }
         return node;
     }
