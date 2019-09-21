@@ -14,6 +14,18 @@ static char *regs32[] = {"r10d", "r11d", "ebx", "r12d", "r13d", "r14d", "r15d"};
 /* 引数用のレジスタ */
 static char *argregs[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
 
+// 型に対して適切なサイズ指定文を返す
+char* size_stmt(Type *type) {
+    switch(type_to_size(type)) {
+        case 1:
+            return "byte ptr";
+        case 4:
+            return "dword ptr";
+        default:
+            return "";
+    }
+}
+
 // ラベル出力
 void outlabel(char *fmt, ...){
     va_list va;
