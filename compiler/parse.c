@@ -390,6 +390,8 @@ Node *primary(){
         node->offset = result->offset;
         node->type = result->type;
         node->kind = ND_LVAR;
+        node->name = result->name;
+        if(result->var_type == GLOBAL) node->kind = ND_GVAR;
 
         // 変数が配列を指していた場合、先頭アドレスへのポインタに変換する
         if(node->type->ty == ARRAY) {
@@ -400,6 +402,8 @@ Node *primary(){
             addr_par->left = addr;
             addr->kind = ND_LVAR;
             addr->offset = result->offset;
+            addr->name = result->name;
+            if(result->var_type == GLOBAL) addr->kind = ND_GVAR;
             define_type(&addr_par->type, PTR);
             define_type(&addr_par->type->ptr_to, INT);
             node = addr_par;

@@ -66,6 +66,12 @@ void gen_lval(Node *node){
         return;
     }
 
+    if(node->kind == ND_GVAR) {
+        outasm("lea rax, %s[rip]", node->name);
+        outasm("push rax");
+        return;
+    }
+
     if(node->kind == ND_DEREF) {
         gen_asm(node->left);
         return;
@@ -98,7 +104,8 @@ void gen_asm(Node *node){
         outasm("push %d", val);
         return;
 
-    case ND_LVAR:   // 右辺に左辺値が出てきた場合
+    case ND_GVAR:
+    case ND_LVAR:
         gen_lval(node);
         outasm("pop rax");
         outasm("mov %s, %s [rax]", reg(0, node->type), size_stmt(node->type));
@@ -124,6 +131,7 @@ void gen_asm(Node *node){
         return;
 
     case ND_DEFGVAR:
+        printf(".data\n");
         outlabel("%s", node->name);
         outasm(".zero %d", type_to_size(node->type) * node->type->size);
         printf("\n");
@@ -131,6 +139,7 @@ void gen_asm(Node *node){
 
     case ND_FUNC:{
         printf("\n");
+        printf(".text\n");
         printf("%s:\n", node->name);
         outasm("push rbx");
         outasm("push rbp");
