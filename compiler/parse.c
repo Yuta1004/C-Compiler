@@ -5,6 +5,9 @@
 #include <ctype.h>
 #include "yncc.h"
 
+#define LOCAL 0
+#define GLOBAL 1
+
 /* プロトタイプ宣言 */
 void program();
 Node *func();
@@ -18,7 +21,7 @@ Node *mul();
 Node *unary();
 Node *primary();
 LVar *find_lvar(Token *request);
-LVar *regist_lvar();
+LVar *regist_var(bool is_global);
 
 // 構文解析1
 // program = func*
@@ -51,7 +54,7 @@ Node *func(){
     expect("(");
     node->args = calloc(6, sizeof(Node));
     for(int idx = 0; idx < 6; ++ idx) {
-        LVar *lvar = regist_lvar();
+        LVar *lvar = regist_var(LOCAL);
         if(lvar) {                                      // 引数があるかチェック
             Node *arg_node = calloc(1, sizeof(Node));
             arg_node->kind = ND_LVER;
@@ -173,7 +176,7 @@ Node *stmt(){
 
     // Variable<int>
     if(token->kind == TOKEN_INT) {
-        regist_lvar();
+        regist_var(LOCAL);
         expect(";");
         return NULL;
     }
@@ -418,8 +421,8 @@ LVar *find_lvar(Token *request){
     error("[ERROR] 定義されていない変数です => %s\n", name);
 }
 
-// ローカル変数登録
-LVar *regist_lvar(){
+// 変数登録
+LVar *regist_var(bool is_global){
     // "int"
     Type *int_type = calloc(1, sizeof(Type));
     int_type->ty = INT;
@@ -438,20 +441,33 @@ LVar *regist_lvar(){
     }
 
     // 変数名
-    LVar *lvar = calloc(1, sizeof(LVar));
-    Token *var_name = consume_ident();
-    lvar->type = type;
-    lvar->next = locals;
-    lvar->name = var_name->str;
-    lvar->len = var_name->len;
-    lvar->offset = locals->offset + 8;
-    locals = lvar;
+    GVar *gvar;
+    LVar *lvar;
+    if(is_global) {
+        gvar = calloc(1, sizeof(GVar));
+        Token *var_name = consume_ident();
+        gvar->type = type;
+        gvar->next = globals;
+        gvar->name = var_name->str;
+        gvar->len = var_name->len;
+        globals = gvar;
+    } else {
+        lvar = calloc(1, sizeof(LVar));
+        Token *var_name = consume_ident();
+        lvar->type = type;
+        lvar->next = locals;
+        lvar->name = var_name->str;
+        lvar->len = var_name->len;
+        lvar->offset = locals->offset + 8;
+        locals = lvar;
+    }
 
     // "[" array_size "]"
     if(consume("[")) {
-        int_type->ty = ARRAY;
         size_t size = expect_number();
-        lvar->offset = locals->offset - 8 + (8 * size);
+        int_type->ty = ARRAY;
+        int_type->size = size;
+        if(!is_global) lvar->offset = locals->offset - 8 + (8 * size);
         expect("]");
         if(size <= 0) {
             error("[ERROR] 長さが0以下の配列は定義できません");
