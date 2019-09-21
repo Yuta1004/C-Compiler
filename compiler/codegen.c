@@ -101,17 +101,17 @@ void gen_asm(Node *node){
     case ND_LVER:   // 右辺に左辺値が出てきた場合
         gen_lval(node);
         outasm("pop rax");
-        outasm("mov rax, [rax]");
+        outasm("mov %s, %s [rax]", reg(0, node->type), size_stmt(node->type));
         outasm("push rax");
         return;
 
     case ND_ASSIGN:
-        gen_lval(left);                 // [a] = 9 + 1  : LEFT
-        gen_asm(right);                 // a = [9 + 1]  : RIGHT
-        outasm("pop rbx");              // RIGHT
-        outasm("pop rax");              // LEFT
-        outasm("mov [rax], rbx");      // [LEFT] = RIGHT
-        outasm("push rbx");             // a=b=c=8 が出来るように右辺値をスタックに残しておく
+        gen_lval(left);                                     // [a] = 9 + 1  : LEFT
+        gen_asm(right);                                     // a = [9 + 1]  : RIGHT
+        outasm("pop %s", regs[1]);                          // RIGHT
+        outasm("pop rax");                                  // LEFT
+        outasm("mov %s [rax], %s", size_stmt(right->type), reg(1, right->type));
+        outasm("push %s", regs[1]);                         // a=b=c=8 が出来るように右辺値をスタックに残しておく
         return;
 
     case ND_BLOCK:;
