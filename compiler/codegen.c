@@ -14,6 +14,15 @@ static char *regs32[] = {"r10d", "r11d", "ebx", "r12d", "r13d", "r14d", "r15d"};
 /* 引数用のレジスタ */
 static char *argregs[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
 
+// ラベル出力
+void outlabel(char *fmt, ...){
+    va_list va;
+    va_start(va, fmt);
+    vfprintf(stdout, fmt, va);
+    va_end(va);
+    printf(":\n");
+}
+
 // アセンブリ出力
 void outasm(char *fmt, ...) {
     printf("\t\t");
@@ -170,15 +179,15 @@ void gen_asm(Node *node){
         gen_asm_with_pop(right->left);
         outasm("jmp .L__if_end_%d", tmp_label);
         // 処理<false>
-        printf(".L__if_else_%d:\n", tmp_label);
+        outlabel(".L__if_else_%d", tmp_label);
         gen_asm_with_pop(right->right);
-        printf(".L__if_end_%d:\n", tmp_label);
+        outlabel(".L__if_end_%d", tmp_label);
         outasm("push 0");
         return;
 
     case ND_WHILE:
         label ++;
-        printf(".L__while_start_%d:\n", tmp_label);
+        outlabel(".L__while_start_%d", tmp_label);
         // 条件式
         gen_asm_with_pop(left);
         outasm("cmp rax, 1");
@@ -186,7 +195,7 @@ void gen_asm(Node *node){
         // 処理
         gen_asm_with_pop(right);
         outasm("jmp .L__while_start_%d", tmp_label);
-        printf(".L__while_end_%d:\n", tmp_label);
+        outlabel(".L__while_end_%d", tmp_label);
         outasm("push 0");
         return;
 
@@ -194,7 +203,7 @@ void gen_asm(Node *node){
         label ++;
         // 初期化
         gen_asm_with_pop(left);
-        printf(".L__for_start_%d:\n", tmp_label);
+        outlabel(".L__for_start_%d", tmp_label);
         // 条件式
         gen_asm_with_pop(right->left->left);
         outasm("cmp rax, 1");
@@ -204,7 +213,7 @@ void gen_asm(Node *node){
         // 変化式
         gen_asm_with_pop(right->right);
         outasm("jmp .L__for_start_%d", tmp_label);
-        printf(".L__for_end_%d:\n", tmp_label);
+        outlabel(".L__for_end_%d", tmp_label);
         outasm("push 0");
         return;
     }
