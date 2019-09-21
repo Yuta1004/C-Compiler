@@ -47,13 +47,12 @@ Var *regist_var(int var_type){
     Token *var_name = consume_ident();
     var->var_type = var_type;
     var->type = type;
-    var->next = locals;
     var->len = var_name->len;
     var->offset = locals->offset + 8;
     var->name = (char*)malloc(var_name->len*sizeof(char));
     strncpy(var->name, var_name->str, var_name->len);
-    if(var_type == LOCAL)  locals = var;
-    if(var_type == GLOBAL) globals = var;
+    if(var_type == LOCAL) {  var->next = locals; locals = var; }
+    if(var_type == GLOBAL) { var->next = globals; globals = var; }
 
     // "[" array_size "]"
     if(consume("[")) {
