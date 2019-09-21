@@ -59,7 +59,7 @@ void outasm(char *fmt, ...) {
 
 // 左辺値コンパイル
 void gen_lval(Node *node){
-    if(node->kind == ND_VAR) {
+    if(node->kind == ND_LVAR) {
         outasm("mov rax, rbp");
         outasm("sub rax, %d", node->offset);
         outasm("push rax");
@@ -98,7 +98,7 @@ void gen_asm(Node *node){
         outasm("push %d", val);
         return;
 
-    case ND_VAR:   // 右辺に左辺値が出てきた場合
+    case ND_LVAR:   // 右辺に左辺値が出てきた場合
         gen_lval(node);
         outasm("pop rax");
         outasm("mov %s, %s [rax]", reg(0, node->type), size_stmt(node->type));
