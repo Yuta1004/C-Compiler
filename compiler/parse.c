@@ -21,7 +21,7 @@ Node *mul();
 Node *unary();
 Node *primary();
 LVar *find_lvar(Token *request);
-LVar *regist_var(bool is_global);
+void *regist_var(bool is_global);
 
 // 構文解析1
 // program = func*
@@ -430,7 +430,7 @@ LVar *find_lvar(Token *request){
 }
 
 // 変数登録
-LVar *regist_var(bool is_global){
+void *regist_var(bool is_global){
     // "int"
     Type *int_type = calloc(1, sizeof(Type));
     int_type->ty = INT;
@@ -481,5 +481,7 @@ LVar *regist_var(bool is_global){
             error("[ERROR] 長さが0以下の配列は定義できません");
         }
     }
-    return lvar;
+
+    if(is_global) return (void*) gvar;
+    else          return (void*) lvar;
 }
