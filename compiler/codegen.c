@@ -29,12 +29,12 @@ char *reg(int id, Type *type) {
 // 型に対して適切なサイズ指定文を返す
 char* size_stmt(Type *type) {
     switch(type_to_size(type)) {
-        case 1:
-            return "byte ptr";
-        case 4:
-            return "dword ptr";
-        default:
-            return "";
+    case 1:
+        return "byte ptr";
+    case 4:
+        return "dword ptr";
+    default:
+        return "";
     }
 }
 
