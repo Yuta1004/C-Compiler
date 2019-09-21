@@ -52,9 +52,9 @@ int type_to_size(int type) {
 }
 
 // 型を指定する
-void define_type(Type **type_ptr, int type){
+void define_type(Type **type_ptr, int ty){
     Type *tmp = calloc(1, sizeof(Type));
-    tmp->ty = type;
+    tmp->ty = ty;
     *type_ptr = tmp;
 }
 
