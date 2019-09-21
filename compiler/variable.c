@@ -35,6 +35,7 @@ void *regist_var(bool is_global){
         Type *ptr_type = calloc(1, sizeof(Type));
         ptr_type->ty = PTR;
         ptr_type->ptr_to = type;
+        ptr_type->size = 1;
         type = ptr_type;
     }
 
