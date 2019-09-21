@@ -12,10 +12,18 @@ LVar *find_lvar(Token *request){
             return var;
         }
     }
+    return NULL;
+}
 
-    char *name = (char*)malloc(request->len*sizeof(char));
-    strncpy(name, request->str, request->len);
-    error("[ERROR] 定義されていない変数です => %s\n", name);
+// ローカル変数検索
+GVar *find_gvar(Token *request){
+    // 検索
+    for(GVar *var = globals; var; var = var->next){
+        if(var->len == request->len && strncmp(var->name, request->str, request->len) == 0){
+            return var;
+        }
+    }
+    return NULL;
 }
 
 // 変数登録

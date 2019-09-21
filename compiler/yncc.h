@@ -140,6 +140,7 @@ void program();
 
 /* variable.c */
 LVar *find_lvar(Token *request);
+GVar *find_gvar(Token *request);
 void *regist_var(bool is_global);
 
 /* codegen.c */
