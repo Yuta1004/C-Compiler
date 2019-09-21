@@ -48,8 +48,7 @@ typedef enum {
 
 typedef struct Node Node;
 typedef struct Type Type;
-typedef struct LVar LVar;
-typedef struct GVar GVar;
+typedef struct Var Var;
 
 /* 構造体 */
 struct Token {
@@ -77,19 +76,13 @@ struct Node {
 };
 
 #define LOCAL 0
-struct LVar {
-    LVar *next;     // 次のLVar
-    char *name;     // 変数名
-    int len;        // 長さ
-    int offset;     // RBPからのオフセット
-    Type *type;     // 型
-};
-
 #define GLOBAL 1
-struct GVar {
-    GVar *next;     // 次のGVar
+struct Var {
+    int var_type;   // LOCAL or GLOBAL
+    Var *next;      // 次のVar
     char *name;     // 変数名
     int len;        // 長さ
+    int offset;     // ローカル変数だった時、RBPからのオフセット
     Type *type;     // 型
 };
 
@@ -103,8 +96,8 @@ struct Type {
 Token *token;
 char *user_input;
 Node *code[100];
-LVar *locals;
-GVar *globals;
+Var *locals;
+Var *globals;
 int label;
 
 /* common.c */
@@ -133,15 +126,14 @@ Token *consume_kind();
 /* node.c */
 Node *new_node(NodeKind kind, Node *left, Node *right);
 Node *new_num_node(int val);
-Node *new_def_gvar_node(GVar *gvar);
+Node *new_def_gvar_node(Var *gvar);
 
 /* parse.c */
 void program();
 
 /* variable.c */
-LVar *find_lvar(Token *request);
-GVar *find_gvar(Token *request);
-void *regist_var(bool is_global);
+Var *find_var(Token *request);
+Var *regist_var(int var_type);
 
 /* codegen.c */
 void gen_asm();

@@ -38,7 +38,7 @@ Node *func(){
     Node *node = calloc(1, sizeof(Node));
     node->kind = ND_FUNC;
     free(locals);
-    locals = calloc(1, sizeof(LVar));
+    locals = calloc(1, sizeof(Var));
 
     // 関数名
     expect_kind(TOKEN_INT);
@@ -54,11 +54,11 @@ Node *func(){
     if(consume("(")) {          // 関数定義(引数リスト)
         node->args = calloc(6, sizeof(Node));
         for(int idx = 0; idx < 6; ++ idx) {
-            LVar *lvar = regist_var(LOCAL);
-            if(lvar) {                                      // 引数があるかチェック
+            Var *var = regist_var(LOCAL);
+            if(var) {                                      // 引数があるかチェック
                 Node *arg_node = calloc(1, sizeof(Node));
                 arg_node->kind = ND_LVAR;
-                arg_node->offset = lvar->offset;
+                arg_node->offset = var->offset;
                 node->args[idx] = arg_node;
             }
             if(!consume(",")){                              // , が無ければ続く引数は無いと判断する
@@ -70,9 +70,9 @@ Node *func(){
         return node;
     } else {                    // グローバル変数定義
         token = bef_token;
-        GVar *gvar = regist_var(GLOBAL);
+        Var *var = regist_var(GLOBAL);
         expect(";");
-        return new_def_gvar_node(gvar);
+        return new_def_gvar_node(var);
     }
 }
 
@@ -386,7 +386,7 @@ Node *primary(){
 
         // 変数
         Node *node = calloc(1, sizeof(Node));
-        LVar *result = find_lvar(next_token);
+        Var *result = find_var(next_token);
         node->offset = result->offset;
         node->type = result->type;
         node->kind = ND_LVAR;
