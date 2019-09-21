@@ -34,7 +34,8 @@ typedef enum {
     ND_ADDR,            // &()
     ND_DEREF,           // *()
     ND_DEFGVAR,         // グローバル変数定義
-    ND_VAR,             // 変数
+    ND_LVAR,            // ローカル変数
+    ND_GVAR,            // グローバル変数
     ND_FUNC,            // 関数
     ND_CALL_FUNC,       // 関数呼び出し
     ND_BLOCK,           // ブロック
