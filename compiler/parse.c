@@ -30,7 +30,7 @@ void program(){
     for(; !at_eof(); ++ idx){
         code[idx] = func();
     }
-    code[idx] = NULL;
+    code[idx] = (Node*)-1;
 }
 
 // 構文解析2
