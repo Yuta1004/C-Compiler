@@ -7,9 +7,12 @@
 // 変数検索
 Var *find_var(Token *request){
     // 検索
-    for(Var *var = locals; var; var = var->next){
-        if(var->len == request->len && strncmp(var->name, request->str, request->len) == 0){
-            return var;
+    Var *var_list[] = {locals, globals};
+    for(int idx = 0; idx < 2; ++ idx) {
+        for(Var *var = var_list[idx]; var; var = var->next){
+            if(var->len == request->len && strncmp(var->name, request->str, request->len) == 0){
+                return var;
+            }
         }
     }
 
