@@ -35,7 +35,11 @@ void program(){
 
 // 構文解析2
 // func = "int" ident "(" ("int" ident ","?)* ")" "{" stmt* "}"
+//      | "int" ident "*"* ("[" expr "]")? ";"
 Node *func(){
+    Token *bef_token = token;
+
+    // ローカル変数初期化
     Node *node = calloc(1, sizeof(Node));
     node->kind = ND_FUNC;
     free(locals);
@@ -50,26 +54,30 @@ Node *func(){
     node->f_name = calloc(f_name_token->len, sizeof(char));
     strncpy(node->f_name, f_name_token->str, f_name_token->len);
 
-    // 引数リスト
-    expect("(");
-    node->args = calloc(6, sizeof(Node));
-    for(int idx = 0; idx < 6; ++ idx) {
-        LVar *lvar = regist_var(LOCAL);
-        if(lvar) {                                      // 引数があるかチェック
-            Node *arg_node = calloc(1, sizeof(Node));
-            arg_node->kind = ND_LVER;
-            arg_node->offset = lvar->offset;
-            node->args[idx] = arg_node;
+    // 関数定義 or グローバル変数定義分岐
+    if(consume("(")) {          // 関数定義(引数リスト)
+        node->args = calloc(6, sizeof(Node));
+        for(int idx = 0; idx < 6; ++ idx) {
+            LVar *lvar = regist_var(LOCAL);
+            if(lvar) {                                      // 引数があるかチェック
+                Node *arg_node = calloc(1, sizeof(Node));
+                arg_node->kind = ND_LVER;
+                arg_node->offset = lvar->offset;
+                node->args[idx] = arg_node;
+            }
+            if(!consume(",")){                              // , が無ければ続く引数は無いと判断する
+                break;
+            }
         }
-        if(!consume(",")){                              // , が無ければ続く引数は無いと判断する
-            break;
-        }
+        expect(")");
+        node->left = stmt();
+        return node;
+    } else {                    // グローバル変数定義
+        token = bef_token;
+        regist_var(GLOBAL);
+        expect(";");
+        return NULL;
     }
-    expect(")");
-
-    // 関数本体
-    node->left = stmt();
-    return node;
 }
 
 // 構文解析3
