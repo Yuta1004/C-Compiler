@@ -5,6 +5,15 @@
 #include "yncc.h"
 
 
+/* 計算途中で使用するレジスタ */
+static char *regs[] = {"r10", "r11", "rbx", "r12", "r13", "r14", "r15"};
+static char *regs8[] = {"r10b", "r11b", "bl", "r12b", "r13b", "r14b", "r15b"};
+static char *regs32[] = {"r10d", "r11d", "ebx", "r12d", "r13d", "r14d", "r15d"};
+
+/* 引数用のレジスタ */
+static char *argregs[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+
+
 // 左辺値コンパイル
 void gen_lval(Node *node){
     if(node->kind == ND_LVER) {
@@ -78,10 +87,9 @@ void gen_asm(Node *node){
         printf("        push rbp\n");
         printf("        mov rbp, rsp\n");
         printf("        sub rsp, %d\n", 8*20);
-        char *arg_regs[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
         for(int idx = 0; idx < 6; ++ idx) {
             if(node->args[idx]){
-                printf("        mov [rbp-%d], %s\n", idx*8+8, arg_regs[idx]);
+                printf("        mov [rbp-%d], %s\n", idx*8+8, argregs[idx]);
             }
         }
         gen_asm_with_pop(left);
@@ -96,11 +104,10 @@ void gen_asm(Node *node){
     case ND_CALL_FUNC:{
         printf("        push rdi\n");                                       // rdi, rsi
         printf("        push rsi\n");
-        char *arg_regs[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};        //　引数
         for(int idx = 0; idx < 6; ++ idx) {
             if(node->args[idx]) {
                 gen_asm_with_pop(node->args[idx]);
-                printf("        mov %s, rax\n", arg_regs[idx]);
+                printf("        mov %s, rax\n", argregs[idx]);
             }
         }
         printf("        mov rbx, rsp\n");
