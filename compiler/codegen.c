@@ -36,10 +36,14 @@ void gen_asm(Node *node){
     if(node == NULL) return;
     int tmp_label = label;
 
+    int val = node->val;
+    Node *left = node->left;
+    Node *right = node->right;
+
     // 変数, 値, ブロック, 関数定義, 関数呼び出し, ポインタ
     switch(node->kind){
     case ND_NUM:
-        printf("        push %d\n", node->val);
+        printf("        push %d\n", val);
         return;
 
     case ND_LVER:   // 右辺に左辺値が出てきた場合
@@ -50,8 +54,8 @@ void gen_asm(Node *node){
         return;
 
     case ND_ASSIGN:
-        gen_lval(node->left);                   // [a] = 9 + 1  : LEFT
-        gen_asm(node->right);                   // a = [9 + 1]  : RIGHT
+        gen_lval(left);                         // [a] = 9 + 1  : LEFT
+        gen_asm(right);                         // a = [9 + 1]  : RIGHT
         printf("        pop rbx\n");            // RIGHT
         printf("        pop rax\n");            // LEFT
         printf("        mov [rax], rbx\n");     // [LEFT] = RIGHT
@@ -80,7 +84,7 @@ void gen_asm(Node *node){
                 printf("        mov [rbp-%d], %s\n", idx*8+8, arg_regs[idx]);
             }
         }
-        gen_asm_with_pop(node->left);
+        gen_asm_with_pop(left);
         printf("        mov rax, 0\n");
         printf("        mov rsp, rbp\n");
         printf("        pop rbp\n");
@@ -110,11 +114,11 @@ void gen_asm(Node *node){
     }
 
     case ND_ADDR:
-        gen_lval(node->left);
+        gen_lval(left);
         return;
 
     case ND_DEREF:
-        gen_asm(node->left);
+        gen_asm(left);
         printf("        pop rax\n");
         printf("        mov rax, [rax]\n");
         printf("        push rax\n");
@@ -124,7 +128,7 @@ void gen_asm(Node *node){
     // 予約語
     switch(node->kind){
     case ND_RETURN:
-        gen_asm_with_pop(node->left);
+        gen_asm_with_pop(left);
         printf("        mov rsp, rbp\n");
         printf("        pop rbp\n");
         printf("        pop rbx\n");
@@ -133,13 +137,13 @@ void gen_asm(Node *node){
 
     case ND_IF:
         label ++;
-        gen_asm_with_pop(node->left);
+        gen_asm_with_pop(left);
         printf("        cmp rax, 1\n");
         printf("        jne .L__if_else_%d\n", tmp_label);
-        gen_asm_with_pop(node->right->left);
+        gen_asm_with_pop(right->left);
         printf("        jmp .L__if_end_%d\n", tmp_label);
         printf(".L__if_else_%d:\n", tmp_label);
-        gen_asm_with_pop(node->right->right);
+        gen_asm_with_pop(right->right);
         printf(".L__if_end_%d:\n", tmp_label);
         printf("        push 0\n");
         return;
@@ -147,10 +151,10 @@ void gen_asm(Node *node){
     case ND_WHILE:
         label ++;
         printf(".L__while_start_%d:\n", tmp_label);
-        gen_asm_with_pop(node->left);
+        gen_asm_with_pop(left);
         printf("        cmp rax, 1\n");
         printf("        jne .L__while_end_%d\n", tmp_label);
-        gen_asm_with_pop(node->right);
+        gen_asm_with_pop(right);
         printf("        jmp .L__while_start_%d\n", tmp_label);
         printf(".L__while_end_%d:\n", tmp_label);
         printf("        push 0\n");
@@ -158,45 +162,45 @@ void gen_asm(Node *node){
 
     case ND_FOR:
         label ++;
-        gen_asm_with_pop(node->left);
+        gen_asm_with_pop(left);
         printf(".L__for_start_%d:\n", tmp_label);
-        gen_asm_with_pop(node->right->left->left);
+        gen_asm_with_pop(right->left->left);
         printf("        cmp rax, 1\n");
         printf("        jne .L__for_end_%d\n", tmp_label);
-        gen_asm_with_pop(node->right->left->right);
-        gen_asm_with_pop(node->right->right);
+        gen_asm_with_pop(right->left->right);
+        gen_asm_with_pop(right->right);
         printf("        jmp .L__for_start_%d\n", tmp_label);
         printf(".L__for_end_%d:\n", tmp_label);
         printf("        push 0\n");
         return;
     }
 
-    gen_asm(node->left);
-    gen_asm(node->right);
+    gen_asm(left);
+    gen_asm(right);
 
     printf("        pop rbx\n");
     printf("        pop rax\n");
 
     bool is_left_ptr =
-        (node->left->type != NULL && node->left->type->ptr_to != NULL && node->left->type->ty == PTR);
+        (left->type != NULL && left->type->ptr_to != NULL && left->type->ty == PTR);
     bool is_right_ptr =
-        (node->right->type != NULL && node->right->type->ptr_to != NULL && node->right->type->ty == PTR);
+        (right->type != NULL && right->type->ptr_to != NULL && right->type->ty == PTR);
 
     // 式
     switch(node->kind){
     case ND_ADD:
         if(is_left_ptr)
-            printf("        imul rbx, %d\n", type_to_size(node->left->type->ptr_to->ty));
+            printf("        imul rbx, %d\n", type_to_size(left->type->ptr_to->ty));
         if(is_right_ptr)
-            printf("        imul rax, %d\n", type_to_size(node->right->type->ptr_to->ty));
+            printf("        imul rax, %d\n", type_to_size(right->type->ptr_to->ty));
         printf("        add rax, rbx\n");
         break;
 
     case ND_SUB:
         if(is_left_ptr)
-            printf("        imul rbx, %d\n", type_to_size(node->left->type->ptr_to->ty));
+            printf("        imul rbx, %d\n", type_to_size(left->type->ptr_to->ty));
         if(is_right_ptr)
-            printf("        imul rax, %d\n", type_to_size(node->right->type->ptr_to->ty));
+            printf("        imul rax, %d\n", type_to_size(right->type->ptr_to->ty));
         printf("        sub rax, rbx\n");
         break;
 
