@@ -46,17 +46,19 @@ void *regist_var(bool is_global){
         Token *var_name = consume_ident();
         gvar->type = type;
         gvar->next = globals;
-        gvar->name = var_name->str;
         gvar->len = var_name->len;
+        gvar->name = (char*)malloc(var_name->len*sizeof(char));
+        strncpy(gvar->name, var_name->str, var_name->len);
         globals = gvar;
     } else {
         lvar = calloc(1, sizeof(LVar));
         Token *var_name = consume_ident();
         lvar->type = type;
         lvar->next = locals;
-        lvar->name = var_name->str;
         lvar->len = var_name->len;
         lvar->offset = locals->offset + 8;
+        lvar->name = (char*)malloc(var_name->len*sizeof(char));
+        strncpy(lvar->name, var_name->str, var_name->len);
         locals = lvar;
     }
 
