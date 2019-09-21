@@ -7,12 +7,24 @@
 
 
 /* 計算途中で使用するレジスタ */
-static char *regs[] = {"r10", "r11", "rbx", "r12", "r13", "r14", "r15"};
-static char *regs8[] = {"r10b", "r11b", "bl", "r12b", "r13b", "r14b", "r15b"};
-static char *regs32[] = {"r10d", "r11d", "ebx", "r12d", "r13d", "r14d", "r15d"};
+static char *regs[] = {"rax", "r10", "r11", "rbx", "r12", "r13", "r14", "r15"};
+static char *regs8[] = {"al", "r10b", "r11b", "bl", "r12b", "r13b", "r14b", "r15b"};
+static char *regs32[] = {"eax", "r10d", "r11d", "ebx", "r12d", "r13d", "r14d", "r15d"};
 
 /* 引数用のレジスタ */
 static char *argregs[] = {"rdi", "rsi", "rdx", "rcx", "r8", "r9"};
+
+// 番号, 型に対して適切なレジスタ名を返す
+char *reg(int id, Type *type) {
+    switch(type_to_size(type)) {
+    case 1:
+        return regs8[id];
+    case 4:
+        return regs32[id];
+    default:
+        return regs[id];
+    }
+}
 
 // 型に対して適切なサイズ指定文を返す
 char* size_stmt(Type *type) {
