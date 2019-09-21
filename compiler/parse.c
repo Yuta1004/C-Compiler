@@ -49,8 +49,8 @@ Node *func(){
     if(!f_name_token){
         error("[ERROR] 関数定義が要求されました");
     }
-    node->f_name = calloc(f_name_token->len, sizeof(char));
-    strncpy(node->f_name, f_name_token->str, f_name_token->len);
+    node->name = calloc(f_name_token->len, sizeof(char));
+    strncpy(node->name, f_name_token->str, f_name_token->len);
 
     // 関数定義 or グローバル変数定義分岐
     if(consume("(")) {          // 関数定義(引数リスト)
@@ -363,9 +363,8 @@ Node *primary(){
             // 関数名
             Node *node = calloc(1, sizeof(Node));
             node->kind = ND_CALL_FUNC;
-            node->f_name = (char*)malloc(next_token->len * sizeof(char));
-            strncpy(node->f_name, next_token->str, next_token->len);
-            node->f_name[next_token->len] = '\0';
+            node->name = (char*)malloc(next_token->len * sizeof(char));
+            strncpy(node->name, next_token->str, next_token->len);
 
             // 引数
             node->args = calloc(6, sizeof(Node));

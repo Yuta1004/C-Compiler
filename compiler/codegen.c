@@ -125,7 +125,7 @@ void gen_asm(Node *node){
 
     case ND_FUNC:{
         printf("\n");
-        printf("%s:\n", node->f_name);
+        printf("%s:\n", node->name);
         outasm("push rbx");
         outasm("push rbp");
         outasm("mov rbp, rsp");
@@ -161,7 +161,7 @@ void gen_asm(Node *node){
         }
         outasm("mov rbx, rsp");
         outasm("and rsp, 0xfffffffffffffff0");                    // アライメント
-        outasm("call %s", node->f_name);
+        outasm("call %s", node->name);
         outasm("mov rsp, rbx");
         outasm("pop rsi");
         outasm("pop rdi");
