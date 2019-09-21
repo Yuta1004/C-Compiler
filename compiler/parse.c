@@ -287,7 +287,7 @@ Node *unary(){
         Node *node = unary();
         int type = node->type->ty;
         free(node);
-        return new_num_node(type_to_size(node->type->ty));
+        return new_num_node(type_to_size(node->type));
     }
 
     if(consume("-")) {

@@ -98,7 +98,7 @@ int label;
 void error(char *fmt, ...);
 void error_at(char *location, char *fmt, ...);
 int is_alnum(char chr);
-int type_to_size(int type);
+int type_to_size(Type *type);
 void define_type(Type **type_ptr, int type);
 Type *max_type(Type *a, Type *b);
 

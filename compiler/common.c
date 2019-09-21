@@ -40,8 +40,9 @@ int is_alnum(char chr){
 }
 
 // 型のサイズを求める
-int type_to_size(int type) {
-    switch(type){
+int type_to_size(Type *type) {
+    if(type == NULL) return 1;
+    switch(type->ty){
     case INT:
         return 4;
     case PTR:

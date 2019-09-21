@@ -181,26 +181,24 @@ void gen_asm(Node *node){
     printf("        pop rbx\n");
     printf("        pop rax\n");
 
-    bool is_left_ptr =
-        (left->type != NULL && left->type->ptr_to != NULL && left->type->ty == PTR);
-    bool is_right_ptr =
-        (right->type != NULL && right->type->ptr_to != NULL && right->type->ty == PTR);
+    bool is_left_ptr = (left->type != NULL && left->type->ty == PTR);
+    bool is_right_ptr = (right->type != NULL && right->type->ty == PTR);
 
     // 式
     switch(node->kind){
     case ND_ADD:
         if(is_left_ptr)
-            printf("        imul rbx, %d\n", type_to_size(left->type->ptr_to->ty));
+            printf("        imul rbx, %d\n", type_to_size(left->type->ptr_to));
         if(is_right_ptr)
-            printf("        imul rax, %d\n", type_to_size(right->type->ptr_to->ty));
+            printf("        imul rax, %d\n", type_to_size(right->type->ptr_to));
         printf("        add rax, rbx\n");
         break;
 
     case ND_SUB:
         if(is_left_ptr)
-            printf("        imul rbx, %d\n", type_to_size(left->type->ptr_to->ty));
+            printf("        imul rbx, %d\n", type_to_size(left->type->ptr_to));
         if(is_right_ptr)
-            printf("        imul rax, %d\n", type_to_size(right->type->ptr_to->ty));
+            printf("        imul rax, %d\n", type_to_size(right->type->ptr_to));
         printf("        sub rax, rbx\n");
         break;
 
