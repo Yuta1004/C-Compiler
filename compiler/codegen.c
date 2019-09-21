@@ -185,6 +185,10 @@ void gen_asm(Node *node){
     switch(node->kind){
     case ND_RETURN:
         gen_asm_with_pop(left);
+        outasm("pop r15");
+        outasm("pop r14");
+        outasm("pop r13");
+        outasm("pop r12");
         outasm("mov rsp, rbp");
         outasm("pop rbp");
         outasm("pop rbx");
