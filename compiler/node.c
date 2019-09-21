@@ -21,3 +21,12 @@ Node *new_num_node(int val){
     node->val = val;
     return node;
 }
+
+// グローバル変数定義ノード生成
+Node *new_def_gvar_node(GVar *gvar) {
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = ND_DEFGVAR;
+    node->name = gvar->name;
+    node->type = gvar->type;
+    return node;
+}
