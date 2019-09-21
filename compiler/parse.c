@@ -72,9 +72,9 @@ Node *func(){
         return node;
     } else {                    // グローバル変数定義
         token = bef_token;
-        regist_var(GLOBAL);
+        GVar *gvar = regist_var(GLOBAL);
         expect(";");
-        return NULL;
+        return new_def_gvar_node(gvar);
     }
 }
 
