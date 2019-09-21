@@ -34,7 +34,7 @@ char* size_stmt(Type *type) {
     case 4:
         return "dword ptr";
     default:
-        return "";
+        return "qword ptr";
     }
 }
 
