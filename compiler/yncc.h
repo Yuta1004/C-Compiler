@@ -133,6 +133,10 @@ Node *new_num_node(int val);
 /* parse.c */
 void program();
 
+/* variable.c */
+LVar *find_lvar(Token *request);
+void *regist_var(bool is_global);
+
 /* codegen.c */
 void gen_asm();
 
