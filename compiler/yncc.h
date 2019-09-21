@@ -76,6 +76,7 @@ struct Node {
     Node **args;                // 関数ノードだった時、その引数
 };
 
+#define LOCAL 0
 struct LVar {
     LVar *next;     // 次のLVar
     char *name;     // 変数名
@@ -84,6 +85,7 @@ struct LVar {
     Type *type;     // 型
 };
 
+#define GLOBAL 1
 struct GVar {
     GVar *next;     // 次のGVar
     char *name;     // 変数名

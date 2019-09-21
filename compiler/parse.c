@@ -5,9 +5,6 @@
 #include <ctype.h>
 #include "yncc.h"
 
-#define LOCAL 0
-#define GLOBAL 1
-
 /* プロトタイプ宣言 */
 void program();
 Node *func();
