@@ -86,6 +86,10 @@ void gen_asm(Node *node){
         printf("        push rbx\n");
         printf("        push rbp\n");
         printf("        mov rbp, rsp\n");
+        printf("        push r12\n");
+        printf("        push r13\n");
+        printf("        push r14\n");
+        printf("        push r15\n");
         printf("        sub rsp, %d\n", 8*20);
         for(int idx = 0; idx < 6; ++ idx) {
             if(node->args[idx]){
@@ -94,6 +98,10 @@ void gen_asm(Node *node){
         }
         gen_asm_with_pop(left);
         printf("        mov rax, 0\n");
+        printf("        pop r15\n");
+        printf("        pop r14\n");
+        printf("        pop r13\n");
+        printf("        pop r12\n");
         printf("        mov rsp, rbp\n");
         printf("        pop rbp\n");
         printf("        pop rbx\n");
