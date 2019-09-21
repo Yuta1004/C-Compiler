@@ -45,6 +45,7 @@ Node *func(){
 
     // 関数名
     expect_kind(TOKEN_INT);
+    while(consume("*"));
     Token *f_name_token = consume_ident();
     if(!f_name_token){
         error("[ERROR] 関数定義が要求されました");
