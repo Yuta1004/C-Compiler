@@ -141,5 +141,10 @@ try "int main(){ int array[10]; int idx; for(idx = 0; idx < 10; idx = idx + 1){ 
 try "int main(){ int array[2]; array[0] = 50; 1[array] = 20; return 0[array] - array[1]; }" 30
 try "int main(){ int memo[10]; memo[0] = 1; memo[1] = 1;int idx; for(idx = 2; idx < 10; idx = idx + 1){ memo[idx] = memo[idx-1] + memo[idx-2]; } return memo[9]; }" 55
 
+## global variable
+echo -e "\e[1m\nglobal variable\e[m"
+try "int a; int b; int c; int main(){ a = 10; b = 20; c = 30; return a + b - c; }" 0
+try "int cnt; int main(){ cnt = 0; int idx; for(idx = 0; idx < 20; idx = idx + 1) { countup(); } return cnt; } int countup(){ cnt = cnt + 1; }" 20
+
 echo ""
 exit 0
