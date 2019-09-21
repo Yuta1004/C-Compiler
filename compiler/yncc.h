@@ -47,6 +47,7 @@ typedef enum {
 typedef struct Node Node;
 typedef struct Type Type;
 typedef struct LVar LVar;
+typedef struct GVar GVar;
 
 /* 構造体 */
 struct Token {
@@ -81,6 +82,13 @@ struct LVar {
     Type *type;     // 型
 };
 
+struct GVar {
+    GVar *next;     // 次のGVar
+    char *name;     // 変数名
+    int len;        // 長さ
+    Type *type;     // 型
+};
+
 struct Type {
     enum{ INT, PTR, ARRAY } ty;
     struct Type *ptr_to;
@@ -92,6 +100,7 @@ Token *token;
 char *user_input;
 Node *code[100];
 LVar *locals;
+GVar *globals;
 int label;
 
 /* common.c */
