@@ -59,7 +59,7 @@ Node *func(){
             LVar *lvar = regist_var(LOCAL);
             if(lvar) {                                      // 引数があるかチェック
                 Node *arg_node = calloc(1, sizeof(Node));
-                arg_node->kind = ND_LVER;
+                arg_node->kind = ND_VAR;
                 arg_node->offset = lvar->offset;
                 node->args[idx] = arg_node;
             }
@@ -392,7 +392,7 @@ Node *primary(){
         LVar *result = find_lvar(next_token);
         node->offset = result->offset;
         node->type = result->type;
-        node->kind = ND_LVER;
+        node->kind = ND_VAR;
 
         // 変数が配列を指していた場合、先頭アドレスへのポインタに変換する
         if(node->type->ty == ARRAY) {
@@ -401,7 +401,7 @@ Node *primary(){
             Node *addr = calloc(1, sizeof(Node));
             addr_par->kind = ND_ADDR;
             addr_par->left = addr;
-            addr->kind = ND_LVER;
+            addr->kind = ND_VAR;
             addr->offset = result->offset;
             define_type(&addr_par->type, PTR);
             define_type(&addr_par->type->ptr_to, INT);
