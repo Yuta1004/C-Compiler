@@ -23,6 +23,7 @@ void *regist_var(bool is_global){
     // "int"
     Type *int_type = calloc(1, sizeof(Type));
     int_type->ty = INT;
+    int_type->size = 1;
     int_type->ptr_to = NULL;
     if(!consume_kind(TOKEN_INT)) {
         return NULL;
