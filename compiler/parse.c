@@ -413,31 +413,3 @@ Node *primary(){
 
     return new_num_node(expect_number());
 }
-
-// 構文解析12
-// type = ("int" | "char") "*"*
-Type *type() {
-    Type *b_type = calloc(1, sizeof(Type));
-    b_type->size = 1;
-    b_type->ptr_to = NULL;
-
-    // ("int" | "char")
-    if(consume_kind(TOKEN_INT)) {
-        b_type->ty = INT;
-    } else if(consume_kind(TOKEN_CHAR)) {
-        b_type->ty = CHAR;
-    } else {
-        error("[ERROR] 定義されていない型です");
-    }
-
-    // "*"*
-    Type *lead_type = b_type;
-    while(consume("*")) {
-        Type *ptr_type = calloc(1, sizeof(Type));
-        ptr_type->ty = PTR;
-        ptr_type->ptr_to = type;
-        ptr_type->size = 1;
-        lead_type = ptr_type;
-    }
-    return lead_type;
-}
