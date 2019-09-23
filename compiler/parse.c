@@ -29,8 +29,8 @@ void program(){
 }
 
 // 構文解析2
-// func = "int" ident "(" ("int" ident ","?)* ")" "{" stmt* "}"
-//      | "int" ident "*"* ("[" expr "]")? ";"
+// func = type ident "(" (type ident ","?)* ")" "{" stmt* "}"
+//      | type ident "*"* ("[" expr "]")? ";"
 Node *func(){
     Token *bef_token = token;
 
@@ -41,8 +41,7 @@ Node *func(){
     locals = calloc(1, sizeof(Var));
 
     // 関数名
-    expect_kind(TOKEN_INT);
-    while(consume("*"));
+    read_type();
     Token *f_name_token = consume_ident();
     if(!f_name_token){
         error("[ERROR] 関数定義が要求されました");
