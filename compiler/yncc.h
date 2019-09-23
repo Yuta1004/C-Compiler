@@ -87,7 +87,7 @@ struct Var {
 };
 
 struct Type {
-    enum{ INT, PTR, ARRAY } ty;
+    enum{ INT, PTR, ARRAY, CHAR } ty;
     struct Type *ptr_to;
     size_t size;
 };
