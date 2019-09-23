@@ -52,7 +52,7 @@ Type *read_type() {
     } else if(consume_kind(TOKEN_CHAR)) {
         b_type->ty = CHAR;
     } else {
-        error("[ERROR] 定義されていない型です");
+        return NULL;
     }
 
     // "*"*
