@@ -43,6 +43,8 @@ int is_alnum(char chr){
 int type_to_size(Type *type) {
     if(type == NULL) return 1;
     switch(type->ty){
+    case CHAR:
+        return 1;
     case INT:
         return 4;
     case PTR:
