@@ -111,6 +111,7 @@ int type_to_size(Type *type);
 void define_type(Type **type_ptr, int type);
 Type *max_type(Type *a, Type *b);
 Type *read_type();
+Type *get_base_type(Type *type);
 
 /* tokenize.c */
 #include <stdbool.h>

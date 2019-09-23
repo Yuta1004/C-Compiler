@@ -66,3 +66,14 @@ Type *read_type() {
     }
     return lead_type;
 }
+
+// ポインタを辿ってベースとなる型を探す
+Type *get_base_type(Type *type) {
+    Type *now_pos = type;
+    while(true) {
+        if(now_pos->ptr_to == NULL) {
+            return now_pos;
+        }
+        now_pos = now_pos->ptr_to;
+    }
+}
