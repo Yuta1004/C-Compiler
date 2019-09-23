@@ -82,7 +82,7 @@ Node *func(){
 //        | "if" "(" expr ")" stmt ("else" stmt)?
 //        | "while" "(" expr ")" stmt
 //        | "for" "(" expr? ";" expr? ";" expr? ")"
-//        | "int" "*"* ident ("[" num "]")? ";"
+//        | type ident ("[" num "]")? ";"
 Node *stmt(){
     if(token->kind == TOKEN_RETURN){
         token = token->next;
@@ -177,9 +177,8 @@ Node *stmt(){
         return node;
     }
 
-    // Variable<int>
-    if(token->kind == TOKEN_INT) {
-        regist_var(LOCAL);
+    // Variable
+    if(regist_var(LOCAL)) {
         expect(";");
         return NULL;
     }
@@ -412,3 +411,7 @@ Node *primary(){
 
     return new_num_node(expect_number());
 }
+
+// 構文解析12
+// type = ("int" | "char") "*"*
+//   -> type.c
