@@ -47,7 +47,7 @@ Node *func(){
     if(!f_name_token){
         error("[ERROR] 関数定義が要求されました");
     }
-    node->name = calloc(f_name_token->len, sizeof(char));
+    node->name = (char*)malloc(f_name_token->len*sizeof(char));
     strncpy(node->name, f_name_token->str, f_name_token->len);
 
     // 関数定義 or グローバル変数定義分岐
