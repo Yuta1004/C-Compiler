@@ -95,6 +95,14 @@ Token *tokenize(char *p){
             continue;
         }
 
+        // char
+        if(strncmp(p, "char", 4) == 0 && !is_alnum(*(p+4))){
+            cur = new_token(TOKEN_CHAR, cur, p);
+            cur->len = 4;
+            p += 4;
+            continue;
+        }
+
         // sizeof
         if(strncmp(p, "sizeof", 6) == 0 && !is_alnum(*(p+6))){
             cur = new_token(TOKEN_SIZEOF, cur, p);
