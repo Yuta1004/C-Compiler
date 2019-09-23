@@ -71,7 +71,7 @@ Type *max_type(Type *a, Type *b){
     if(a == NULL) return b;
     if(b == NULL) return a;
 
-    if(a->ty > b->ty){
+    if(type_to_size(a) > type_to_size(b)){
         return a;
     }
     return b;
