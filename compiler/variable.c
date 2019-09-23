@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
@@ -23,24 +24,10 @@ Var *find_var(Token *request){
 
 // 変数登録
 Var *regist_var(int var_type){
-    // "int"
-    Type *int_type = calloc(1, sizeof(Type));
-    int_type->ty = INT;
-    int_type->size = 1;
-    int_type->ptr_to = NULL;
-    if(!consume_kind(TOKEN_INT)) {
-        return NULL;
-    }
-
-    // "*"*
-    Type *type = int_type;
-    while(consume("*")) {
-        Type *ptr_type = calloc(1, sizeof(Type));
-        ptr_type->ty = PTR;
-        ptr_type->ptr_to = type;
-        ptr_type->size = 1;
-        type = ptr_type;
-    }
+    // 型
+    Type *type = read_type();
+    if(!type) return NULL;
+    Type *base_type = get_base_type(type);
 
     // 変数名
     Var *var = calloc(1, sizeof(Var));
@@ -57,8 +44,8 @@ Var *regist_var(int var_type){
     // "[" array_size "]"
     if(consume("[")) {
         size_t size = expect_number();
-        int_type->ty = ARRAY;
-        int_type->size = size;
+        base_type->ty = ARRAY;
+        base_type->size = size;
         var->offset = locals->offset - 8 + (8 * size);
         expect("]");
         if(size <= 0) {
