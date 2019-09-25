@@ -203,6 +203,7 @@ Node *assign(){
     } else {
         return node;
     }
+    define_type(&node->type, max_type(node->left->type, node->right->type)->ty);
     return node;
 }
 
@@ -360,6 +361,7 @@ Node *primary(){
             Node *node = calloc(1, sizeof(Node));
             node->kind = ND_CALL_FUNC;
             node->name = (char*)malloc(next_token->len * sizeof(char));
+            define_type(&node->type, INT);
             strncpy(node->name, next_token->str, next_token->len);
 
             // 引数
