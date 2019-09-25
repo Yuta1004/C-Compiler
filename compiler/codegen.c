@@ -117,7 +117,7 @@ void gen_asm(Node *node){
         gen_asm(right);                                     // a = [9 + 1]  : RIGHT
         outasm("pop %s", regs[1]);                          // RIGHT
         outasm("pop rax");                                  // LEFT
-        outasm("mov %s [rax], %s", size_stmt(right->type), reg(1, right->type));
+        outasm("mov %s [rax], %s", size_stmt(left->type), reg(1, left->type));
         outasm("push %s", regs[1]);                         // a=b=c=8 が出来るように右辺値をスタックに残しておく
         return;
 
