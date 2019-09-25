@@ -203,7 +203,7 @@ Node *assign(){
     } else {
         return node;
     }
-    define_type(&node->type, max_type(node->left->type, node->right->type)->ty);
+    node->type = max_type(node->left->type, node->right->type);
     return node;
 }
 
@@ -220,7 +220,7 @@ Node *equality(){
         return node;
     }
 
-    define_type(&node->type, max_type(node->left->type, node->right->type)->ty);
+    node->type = max_type(node->left->type, node->right->type);
     return node;
 }
 
@@ -242,7 +242,7 @@ Node *relational(){
         return node;
     }
 
-    define_type(&node->type, max_type(node->left->type, node->right->type)->ty);
+    node->type = max_type(node->left->type, node->right->type);
     return node;
 }
 
@@ -254,10 +254,10 @@ Node *add(){
     while(true) {
         if(consume("+")) {
             node = new_node(ND_ADD, node, mul());
-            define_type(&node->type, max_type(node->left->type, node->right->type)->ty);
+            node->type = max_type(node->left->type, node->right->type);
         } else if(consume("-")) {
             node = new_node(ND_SUB, node, mul());
-            define_type(&node->type, max_type(node->left->type, node->right->type)->ty);
+            node->type = max_type(node->left->type, node->right->type);
         } else {
             return node;
         }
@@ -272,13 +272,13 @@ Node *mul(){
     while(true) {
         if(consume("*")) {
             node = new_node(ND_MUL, node, unary());
-            define_type(&node->type, max_type(node->left->type, node->right->type)->ty);
+            node->type = max_type(node->left->type, node->right->type);
         } else if(consume("/")) {
             node = new_node(ND_DIV, node, unary());
-            define_type(&node->type, max_type(node->left->type, node->right->type)->ty);
+            node->type = max_type(node->left->type, node->right->type);
         } else if(consume("%")) {
             node = new_node(ND_DIV_REMAIN, node, unary());
-            define_type(&node->type, max_type(node->left->type, node->right->type)->ty);
+            node->type = max_type(node->left->type, node->right->type);
         } else {
             return node;
         }
@@ -298,7 +298,7 @@ Node *unary(){
 
     if(consume("-")) {
         Node *node = new_node(ND_SUB, new_num_node(0), primary());
-        define_type(&node->type, max_type(node->left->type, node->right->type)->ty);
+        node->type = max_type(node->left->type, node->right->type);
         return node;
     }
 
@@ -335,7 +335,7 @@ check_array_access:
         add->kind = ND_ADD;
         add->left = node;
         add->right = expr();
-        define_type(&add->type, max_type(add->left->type->ptr_to, add->right->type->ptr_to)->ty);
+        add->type = max_type(add->left->type->ptr_to, add->right->type->ptr_to);
         define_type(&deref_par->type, add->type->ty);
         expect("]");
         return deref_par;
