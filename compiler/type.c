@@ -10,6 +10,7 @@ int type_to_size(Type *type) {
     case INT:
         return 4;
     case PTR:
+    case ARRAY:
         return 8;
     default:
         return 1;
