@@ -108,7 +108,10 @@ void gen_asm(Node *node){
     case ND_LVAR:
         gen_lval(node);
         outasm("pop rax");
-        outasm("mov %s, %s [rax]", reg(0, node->type), size_stmt(node->type));
+        if(type_to_size(node->type) == 1)
+            outasm("movsx eax, %s [rax]", size_stmt(node->type));
+        else
+            outasm("mov %s, %s [rax]", reg(0, node->type), size_stmt(node->type));
         outasm("push rax");
         return;
 
