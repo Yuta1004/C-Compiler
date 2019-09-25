@@ -219,7 +219,7 @@ Node *equality(){
         return node;
     }
 
-    define_type(&node->type, INT);
+    define_type(&node->type, max_type(node->left->type, node->right->type)->ty);
     return node;
 }
 
@@ -241,7 +241,7 @@ Node *relational(){
         return node;
     }
 
-    define_type(&node->type, INT);
+    define_type(&node->type, max_type(node->left->type, node->right->type)->ty);
     return node;
 }
 
@@ -297,7 +297,7 @@ Node *unary(){
 
     if(consume("-")) {
         Node *node = new_node(ND_SUB, new_num_node(0), primary());
-        define_type(&node->type, INT);
+        define_type(&node->type, max_type(node->left->type, node->right->type)->ty);
         return node;
     }
 
