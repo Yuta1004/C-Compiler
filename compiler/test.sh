@@ -111,7 +111,6 @@ try "int main(){ int num; for(num = 1; num <= 10; num = num + 1){ print(2, num, 
 echo -e "\e[1m\npointer\e[m"
 try "int main(){ int a; int *ap; int apv; a = 4; ap = &a; apv = *ap; print(2, ap, apv); return 0; }" 0
 try "int main(){ int x; int y; int *z; int zc; x = 3; y = 5; z = &y + 1; zc = *z; print(1, zc); return zc; }" 3
-try "int main(){ int c; int y; int tmp; c = 1204; y = 1004; tmp = *(&y + 1); print(1, tmp); return 0;} " 0
 try "int main(){ int a; int *p; a = 10; p = &a; return *p; }" 10
 try "int main(){ int x; int *y; y = &x; *y = 3; return x; }" 3
 try "int main(){ int x; int *y; int **z; x = 100; y = &x; z = &y; **z = 10; return x; }" 10
@@ -145,6 +144,15 @@ try "int main(){ int memo[10]; memo[0] = 1; memo[1] = 1;int idx; for(idx = 2; id
 echo -e "\e[1m\nglobal variable\e[m"
 try "int a; int b; int c; int main(){ a = 10; b = 20; c = 30; return a + b - c; }" 0
 try "int cnt; int main(){ cnt = 0; int idx; for(idx = 0; idx < 20; idx = idx + 1) { countup(); } return cnt; } int countup(){ cnt = cnt + 1; }" 20
+
+## char
+echo -e "\e[1m\nchar\e[m"
+try "int main(){ char a; char b; a = 1; b = 2; return a + b; }" 3
+try "int main(){ char a; return sizeof(a); }" 1
+try "int main(){ char *a; return sizeof(a); }" 8
+try "int main(){ char x[3]; x[0] = -1; x[1] = 2; int y; y = 4; return x[0] + y; }" 3
+try "int main(){ char a; char b; a = 128; b = -129; return a + b + 1; }" 0
+
 
 echo ""
 exit 0
