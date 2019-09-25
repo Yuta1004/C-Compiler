@@ -44,6 +44,7 @@ Var *regist_var(int var_type){
     // "[" array_size "]"
     if(consume("[")) {
         size_t size = expect_number();
+        define_type(&base_type->ptr_to, base_type->ty);
         base_type->ty = ARRAY;
         base_type->size = size;
         var->offset = locals->offset - 8 + (8 * size);

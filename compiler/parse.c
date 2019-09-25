@@ -403,7 +403,7 @@ Node *primary(){
             addr->name = result->name;
             if(result->var_type == GLOBAL) addr->kind = ND_GVAR;
             define_type(&addr_par->type, PTR);
-            define_type(&addr_par->type->ptr_to, INT);
+            define_type(&addr_par->type->ptr_to, result->type->ptr_to->ty);
             node = addr_par;
         }
         return node;
