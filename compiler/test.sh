@@ -153,6 +153,11 @@ try "int main(){ char *a; return sizeof(a); }" 8
 try "int main(){ char x[3]; x[0] = -1; x[1] = 2; int y; y = 4; return x[0] + y; }" 3
 try "int main(){ char a; char b; a = 128; b = -129; return a + b + 1; }" 0
 
+## str
+echo -e "\e[1m\nstr\e[m"
+try "int main(){ \"hello world\"; }" 0
+try "int main(){ \"yncc : c-compiler\"; }" 0
+
 
 echo ""
 exit 0
