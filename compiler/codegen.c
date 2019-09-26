@@ -177,6 +177,7 @@ void gen_asm(Node *node){
                 gen_asm_with_pop(node->args[idx]);
                 outasm("mov %s, rax", argregs[idx]);
         }
+        outasm("mov al, 0");
         outasm("mov rbx, rsp");
         outasm("and rsp, 0xfffffffffffffff0");                    // アライメント
         outasm("call %s", node->name);
