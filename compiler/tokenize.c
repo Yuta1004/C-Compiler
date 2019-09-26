@@ -47,6 +47,17 @@ Token *tokenize(char *p){
             continue;
         }
 
+        // 文字列
+        if(*p == '\"'){
+            ++ p;
+            int len = 0;
+            do ++ len; while(*(p+len) != '\"');
+            char *str = (char*)malloc(len*sizeof(char));
+            strncpy(str, p, len);
+            p += len + 1;
+            continue;
+        }
+
         // return
         if(strncmp(p, "return", 6) == 0 && !is_alnum(*(p+6))){
             cur = new_token(TOKEN_RETURN, cur, p);
