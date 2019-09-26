@@ -76,7 +76,7 @@ Node *func(){
 }
 
 // 構文解析3
-// stmt = expr ";"
+// stmt =   expr? ";"
 //        | "{" stmt* "}"
 //        | "return" expr ";"
 //        | "if" "(" expr ")" stmt ("else" stmt)?
@@ -180,6 +180,11 @@ Node *stmt(){
     // Variable
     if(regist_var(LOCAL)) {
         expect(";");
+        return NULL;
+    }
+
+    // ;
+    if(consume(";")) {
         return NULL;
     }
 
