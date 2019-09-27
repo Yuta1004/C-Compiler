@@ -2,6 +2,7 @@
 #define YNCC_H
 
 #include <stdlib.h>
+#include "vector.h"
 
 /* 型定義 */
 typedef enum {
@@ -100,6 +101,7 @@ Node *code[100];
 Var *locals;
 Var *globals;
 int label;
+Vector *str_vec;
 
 /* common.c */
 void error(char *fmt, ...);

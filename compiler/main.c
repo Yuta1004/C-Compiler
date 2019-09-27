@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "yncc.h"
+#include "vector.h"
 
 int main(int argc, char** argv){
     if(argc < 2){
@@ -9,6 +10,7 @@ int main(int argc, char** argv){
     }
 
     // トークナイズ
+    str_vec = vec_new(30);
     user_input = argv[1];
     token = tokenize(argv[1]);
 
@@ -25,5 +27,6 @@ int main(int argc, char** argv){
     for(int idx = 0; code[idx] != (Node*)-1; ++ idx){
         gen_asm(code[idx]);
     }
+    vec_free(str_vec);
     return 0;
 }
