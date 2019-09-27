@@ -27,7 +27,7 @@ int main(int argc, char** argv){
     for(int idx = 0; idx < 30; ++ idx) {
         char *str = (char*)vec_get(str_vec, idx);
         if(str == NULL) break;
-        printf(".Lstr%d:\n", label);
+        printf(".str%d:\n", label);
         printf("\t\t.string \"%s\"\n\n", str);
         ++ label;
     }
