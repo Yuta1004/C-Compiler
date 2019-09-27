@@ -104,6 +104,11 @@ void gen_asm(Node *node){
         outasm("push %d", val);
         return;
 
+    case ND_STR:
+        outasm("mov rax, OFFSET FLAT:.str%d", node->val);
+        outasm("push rax");
+        return;
+
     case ND_GVAR:
     case ND_LVAR:
         gen_lval(node);

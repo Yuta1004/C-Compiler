@@ -46,6 +46,7 @@ typedef enum {
     ND_WHILE,           // while
     ND_FOR,             // for
     ND_NUM,             // 数字
+    ND_STR,             // 文字列リテラル
     ND_NONE,            // NONE
 } NodeKind;
 
