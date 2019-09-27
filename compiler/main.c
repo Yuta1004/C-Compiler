@@ -22,6 +22,15 @@ int main(int argc, char** argv){
     printf(".global         main\n");
     printf("\n");
 
+    // 文字列<ヘッダー>
+    for(int idx = 0; idx < 30; ++ idx) {
+        char *str = (char*)vec_get(str_vec, idx);
+        if(str == NULL) break;
+        printf(".Lstr%d:\n", label);
+        printf("        .string \"%s\"\n\n", str);
+        ++ label;
+    }
+
     // アセンブリ出力
     label = 0;
     for(int idx = 0; code[idx] != (Node*)-1; ++ idx){
