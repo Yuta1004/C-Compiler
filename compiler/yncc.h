@@ -143,6 +143,9 @@ void program();
 Var *find_var(Token *request);
 Var *regist_var(int var_type);
 
+/* string.c */
+int find_str(char *target_str);
+
 /* codegen.c */
 void gen_asm();
 
