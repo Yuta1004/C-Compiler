@@ -54,6 +54,7 @@ Token *tokenize(char *p){
             do ++ len; while(*(p+len) != '\"');
             char *str = (char*)malloc(len*sizeof(char));
             strncpy(str, p, len);
+            vec_push(str_vec, str);
             p += len + 1;
             continue;
         }
