@@ -135,6 +135,7 @@ Token *consume_kind();
 Node *new_node(NodeKind kind, Node *left, Node *right);
 Node *new_num_node(int val);
 Node *new_def_gvar_node(Var *gvar);
+Node *new_none_node();
 
 /* parse.c */
 void program();
