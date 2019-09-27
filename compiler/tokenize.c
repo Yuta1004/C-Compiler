@@ -49,13 +49,18 @@ Token *tokenize(char *p){
 
         // 文字列
         if(*p == '\"'){
+            // トークン生成
             ++ p;
+            cur = new_token(TOKEN_STR, cur, p);
+
+            // 文字列読み込み -> 登録
             int len = 0;
             do ++ len; while(*(p+len) != '\"');
             char *str = (char*)malloc(len*sizeof(char));
             strncpy(str, p, len);
             vec_push(str_vec, str);
             p += len + 1;
+            cur->len = len;
             continue;
         }
 
