@@ -373,11 +373,11 @@ Node *primary(){
             node->args = calloc(6, sizeof(Node));
             for(int idx = 0; idx < 6; ++ idx) {
                 Token *bef_token = token;
-                (   consume("*") ||
-                    consume("&") ||
-                    (consume_kind(TOKEN_SIZEOF) && consume("("))
+                while(  consume("*") ||
+                        consume("&") ||
+                        (consume_kind(TOKEN_SIZEOF) && consume("("))
                 );
-                if(consume_number() || consume_ident()){
+                if(consume_number() || consume_ident() || consume_kind(TOKEN_STR)){
                     token = bef_token;
                     node->args[idx] = expr();
                 }
