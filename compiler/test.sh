@@ -9,7 +9,7 @@ try() {
     expected="$2"
 
     ./yncc "$input" > tmp.s
-    gcc -O0 -g -o tmp tmp.s test_func.o
+    gcc -no-pie -O0 -g -o tmp tmp.s test_func.o
     ./tmp
     actual="$?"
 
@@ -157,6 +157,9 @@ try "int main(){ char a; char b; a = 128; b = -129; return a + b + 1; }" 0
 echo -e "\e[1m\nstr\e[m"
 try "int main(){ \"hello world\"; }" 0
 try "int main(){ \"yncc : c-compiler\"; }" 0
+try "int main(){ char *x; x = \"helloworld %d %d\\n\"; printf(x, 1, 2); }" 0
+try "int main(){ printf(\"Hello World\!\\n\"); }" 0
+try "int main(){ char *str; str = \"hello world\"; return str[0] + str[1]; }" 205
 
 
 echo ""
