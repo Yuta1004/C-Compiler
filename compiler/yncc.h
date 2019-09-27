@@ -46,6 +46,7 @@ typedef enum {
     ND_WHILE,           // while
     ND_FOR,             // for
     ND_NUM,             // 数字
+    ND_NONE,            // NONE
 } NodeKind;
 
 typedef struct Node Node;
