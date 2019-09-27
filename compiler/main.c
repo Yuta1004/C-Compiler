@@ -21,17 +21,26 @@ int main(int argc, char** argv){
     printf(".intel_syntax   noprefix\n");
     printf(".global         main\n");
     printf("\n");
+    printf(".data\n");
 
     // 文字列<ヘッダー>
     for(int idx = 0; idx < 30; ++ idx) {
         char *str = (char*)vec_get(str_vec, idx);
         if(str == NULL) break;
         printf(".Lstr%d:\n", label);
-        printf("        .string \"%s\"\n\n", str);
+        printf("\t\t.string \"%s\"\n\n", str);
         ++ label;
     }
 
+    // グローバル変数<ヘッダー>
+    for(Var *gvar = globals; gvar; gvar = gvar->next) {
+        printf("%s:\n", gvar->name);
+        printf("\t\t.zero %ld\n", type_to_size(gvar->type) * gvar->type->size);
+    }
+    printf("\n");
+
     // アセンブリ出力
+    printf(".text\n");
     label = 0;
     for(int idx = 0; code[idx] != (Node*)-1; ++ idx){
         gen_asm(code[idx]);

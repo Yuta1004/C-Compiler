@@ -142,7 +142,6 @@ void gen_asm(Node *node){
 
     case ND_FUNC:{
         printf("\n");
-        printf(".text\n");
         printf("%s:\n", node->name);
         outasm("push rbx");
         outasm("push rbp");
