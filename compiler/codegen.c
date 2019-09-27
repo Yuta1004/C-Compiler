@@ -133,13 +133,6 @@ void gen_asm(Node *node){
         outasm("push rax");
         return;
 
-    case ND_DEFGVAR:
-        printf(".data\n");
-        outlabel("%s", node->name);
-        outasm(".zero %d", type_to_size(node->type) * node->type->size);
-        printf("\n");
-        return;
-
     case ND_FUNC:{
         printf("\n");
         printf("%s:\n", node->name);
