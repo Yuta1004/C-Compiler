@@ -91,7 +91,7 @@ void gen_asm_with_pop(Node *node) {
 
 // 構文木 to アセンブリ
 void gen_asm(Node *node){
-    if(node == NULL) return;
+    if(node == NULL || node->kind == ND_NONE) return;
     int tmp_label = label;
 
     int val = node->val;
