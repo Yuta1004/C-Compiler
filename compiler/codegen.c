@@ -110,12 +110,16 @@ void gen_asm(Node *node){
         return;
 
     case ND_DEREF:
-        gen_asm(left);
-
     case ND_GVAR:
     case ND_LVAR:
-        gen_lval(node);
+        // 変数 or *演算子
+        if(node->kind == ND_GVAR || node->kind == ND_LVAR)
+            gen_lval(node);
+        else
+            gen_asm(left);
         outasm("pop rax");
+
+        // 型に合わせてmov命令
         if(type_to_size(node->type) == 1)
             outasm("movsx eax, %s [rax]", size_stmt(node->type));
         else
