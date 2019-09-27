@@ -109,6 +109,9 @@ void gen_asm(Node *node){
         outasm("push rax");
         return;
 
+    case ND_DEREF:
+        gen_asm(left);
+
     case ND_GVAR:
     case ND_LVAR:
         gen_lval(node);
@@ -187,13 +190,6 @@ void gen_asm(Node *node){
 
     case ND_ADDR:
         gen_lval(left);
-        return;
-
-    case ND_DEREF:
-        gen_asm(left);
-        outasm("pop rax");
-        outasm("mov rax, [rax]");
-        outasm("push rax");
         return;
     }
 
