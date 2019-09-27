@@ -71,7 +71,7 @@ Node *func(){
         token = bef_token;
         Var *var = regist_var(GLOBAL);
         expect(";");
-        return new_def_gvar_node(var);
+        return new_none_node();
     }
 }
 
