@@ -349,7 +349,7 @@ check_array_access:
 }
 
 // 構文解析11
-// primary = "(" expr ") | ident ("(" (expr ","?)* ")") | num | ident
+// primary = "(" expr ") | ident ("(" (expr ","?)* ")") | num | str | ident
 Node *primary(){
     // "(" expr ")"
     if(consume("(")) {
@@ -413,6 +413,21 @@ Node *primary(){
             define_type(&addr_par->type->ptr_to, result->type->ptr_to->ty);
             node = addr_par;
         }
+        return node;
+    }
+
+    // 文字列リテラル
+    Token *bef_token = token;
+    if(consume_kind(TOKEN_STR)) {
+        // 文字列ID取得
+        token = bef_token;
+        int str_id = find_str(token->str);
+        token = token->next;
+
+        Node *node = (Node*)calloc(1, sizeof(Node));
+        node->kind = ND_STR;
+        node->val = str_id;
+        define_type(&node->type, STR);
         return node;
     }
 
