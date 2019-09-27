@@ -9,6 +9,7 @@ typedef enum {
     TOKEN_RESERVED,     // 記号
     TOKEN_NUM,          // 数字
     TOKEN_IDENT,        // 識別子
+    TOKEN_STR,          // 文字列リテラル
     TOKEN_RETURN,       // return
     TOKEN_IF,           // if
     TOKEN_ELSE,         // else
