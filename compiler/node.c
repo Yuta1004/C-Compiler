@@ -30,3 +30,10 @@ Node *new_def_gvar_node(Var *gvar) {
     node->type = gvar->type;
     return node;
 }
+
+// Noneノード生成
+Node *new_none_node() {
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = ND_NONE;
+    return node;
+}
