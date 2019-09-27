@@ -136,7 +136,7 @@ void gen_asm(Node *node){
         outasm("push %s", regs[1]);                         // a=b=c=8 が出来るように右辺値をスタックに残しておく
         return;
 
-    case ND_BLOCK:;
+    case ND_BLOCK:{
         Node *block_node = node->block_next_node;   // ブロック連結リストのノードを持つ
         while(block_node != NULL) {
             gen_asm_with_pop(block_node);
@@ -144,6 +144,7 @@ void gen_asm(Node *node){
         }
         outasm("push rax");
         return;
+    }
 
     case ND_FUNC:{
         printf("\n");
