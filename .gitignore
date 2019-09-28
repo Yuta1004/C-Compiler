@@ -8,3 +8,4 @@ tmp.s
 test_func
 
 *.o
+program.c
