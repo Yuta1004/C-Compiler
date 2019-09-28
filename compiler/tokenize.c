@@ -34,6 +34,13 @@ Token *tokenize(char *p){
             continue;
         }
 
+        // "/* */" 複数行コメント
+        if(strncmp(p, "/*", 2) == 0) {
+            while(strncmp(p, "*/", 2)) ++ p;
+            p += 2;
+            continue;
+        }
+
         // ">=", "<=", "==", "!="
         if(strncmp(p, "<=", 2) == 0 || strncmp(p, ">=", 2) == 0 ||
            strncmp(p, "==", 2) == 0 || strncmp(p, "!=", 2) == 0){
