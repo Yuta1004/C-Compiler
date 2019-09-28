@@ -375,6 +375,7 @@ Node *primary(){
                 Token *bef_token = token;
                 while(  consume("*") ||
                         consume("&") ||
+                        consume("(") ||
                         (consume_kind(TOKEN_SIZEOF) && consume("("))
                 );
                 if(consume_number() || consume_ident() || consume_kind(TOKEN_STR)){
