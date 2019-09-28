@@ -8,6 +8,7 @@
 /* プロトタイプ宣言 */
 void program();
 Node *func();
+Node *block();
 Node *stmt();
 Node *expr();
 Node *assign();
@@ -29,7 +30,7 @@ void program(){
 }
 
 // 構文解析2
-// func = type ident "(" (type ident ","?)* ")" "{" stmt* "}"
+// func = type ident "(" (type ident ","?)* ")" block
 //      | type ident "*"* ("[" expr "]")? ";"
 Node *func(){
     Token *bef_token = token;
@@ -65,7 +66,7 @@ Node *func(){
             }
         }
         expect(")");
-        node->left = stmt();
+        node->left = block();
         return node;
     } else {                    // グローバル変数定義
         token = bef_token;
@@ -76,12 +77,34 @@ Node *func(){
 }
 
 // 構文解析3
+// block = "{" block* "}" | stmt
+Node *block() {
+    // Block
+    if(consume("{")) {
+        Node *node = calloc(1, sizeof(Node));
+        node->kind = ND_BLOCK;
+
+        // stmt*
+        Node *now_node = node;
+        while(!consume("}")) {
+            Node *new_node = block();
+            if(new_node){
+                now_node->block_next_node = new_node;
+                now_node = new_node;
+            }
+        }
+        now_node->block_next_node = NULL;
+        return node;
+    }
+    return stmt();
+}
+
+// 構文解析3
 // stmt =   expr? ";"
-//        | "{" stmt* "}"
 //        | "return" expr ";"
-//        | "if" "(" expr ")" stmt ("else" stmt)?
-//        | "while" "(" expr ")" stmt
-//        | "for" "(" expr? ";" expr? ";" expr? ")"
+//        | "if" "(" expr ")" block ("else" block)?
+//        | "while" "(" expr ")" block
+//        | "for" "(" expr? ";" expr? ";" expr? ")" block
 //        | type ident ("[" num "]")? ";"
 Node *stmt(){
     if(token->kind == TOKEN_RETURN){
@@ -93,27 +116,9 @@ Node *stmt(){
         return node;
     }
 
-    // Block
-    if(consume("{")) {
-        Node *node = calloc(1, sizeof(Node));
-        node->kind = ND_BLOCK;
-
-        // stmt*
-        Node *now_node = node;
-        while(!consume("}")) {
-            Node *new_node = stmt();
-            if(new_node){
-                now_node->block_next_node = new_node;
-                now_node = new_node;
-            }
-        }
-        now_node->block_next_node = NULL;
-        return node;
-    }
-
     // if
     if(token->kind == TOKEN_IF) {
-        // if ( expr ) stmt
+        // if ( expr ) block
         token = token->next;
         expect("(");
         Node *node = calloc(1, sizeof(Node));
@@ -121,26 +126,26 @@ Node *stmt(){
         node->left = expr();
         node->right = calloc(1, sizeof(Node));
         expect(")");
-        node->right->left = stmt();
+        node->right->left = block();
 
-        // else stmt
+        // else block
         if(token->kind == TOKEN_ELSE) {
             token = token->next;
-            node->right->right = stmt();
+            node->right->right = block();
         }
         return node;
     }
 
     // while
     if(token->kind == TOKEN_WHILE) {
-        // while ( expr ) stmt
+        // while ( expr ) block
         token = token->next;
         expect("(");
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_WHILE;
         node->left = expr();
         expect(")");
-        node->right = stmt();
+        node->right = block();
         return node;
     }
 
@@ -172,8 +177,8 @@ Node *stmt(){
             expect(")");
         }
 
-        // stmt
-        node->right->left->right = stmt();
+        // block
+        node->right->left->right = block();
         return node;
     }
 
