@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "yncc.h"
 #include "vector.h"
+#include "file.h"
 
 int main(int argc, char** argv){
     if(argc < 2){
@@ -9,10 +10,12 @@ int main(int argc, char** argv){
         return 0;
     }
 
+    // プログラムファイル読み込み
+    program_body = read_file(argv[1]);
+
     // トークナイズ
     str_vec = vec_new(30);
-    user_input = argv[1];
-    token = tokenize(argv[1]);
+    token = tokenize(program_body);
 
     // 構文木生成
     program();
