@@ -8,7 +8,8 @@ try() {
     input="$1"
     expected="$2"
 
-    ./yncc "$input" > tmp.s
+    echo "$input" > program.c
+    ./yncc program.c > tmp.s
     gcc -no-pie -O0 -g -o tmp tmp.s test_func.o
     ./tmp
     actual="$?"
