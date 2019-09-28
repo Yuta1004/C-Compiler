@@ -134,6 +134,7 @@ Token *tokenize(char *p){
             int len = 0;
             while(('a' <= *(p+len) && *(p+len) <= 'z') ||
                   ('A' <= *(p+len) && *(p+len) <= 'Z') ||
+                  ('0' <= *(p+len) && *(p+len) <= '9') ||
                   *(p+len) == '_'){
                 ++ len;
             }
