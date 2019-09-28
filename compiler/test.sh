@@ -162,6 +162,10 @@ try "int main(){ char *x; x = \"helloworld %d %d\\n\"; printf(x, 1, 2); }" 0
 try "int main(){ printf(\"Hello World\!\\n\"); }" 0
 try "int main(){ char *str; str = \"hello world\"; return str[0] + str[1]; }" 205
 
+## comment
+echo -e "\e[1m\ncomment\e[m"
+try "int main(){ /* abcdefghijklmn */ int a; a = 20; return a - 20; }" 0
+
 
 echo ""
 exit 0
