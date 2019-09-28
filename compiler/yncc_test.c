@@ -94,7 +94,9 @@ int main(){
     /* Test Result */
     if(failed_cnt == 0) {
         printf("\nALL Success!!\n");
+        return 0;
     } else {
         printf("\nFailed... : %d\n", failed_cnt);
+        return 1;
     }
 }
