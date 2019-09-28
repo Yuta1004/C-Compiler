@@ -15,19 +15,36 @@ void error(char *fmt, ...){
 
 //  エラー出力関数(詳細版)
 void error_at(char *location, char *fmt, ...){
-    va_list vargs;
-    va_start(vargs, fmt);
-
     if(location == NULL){
         location = program_body + strlen(program_body);
     }
 
-    int err_pos = location - program_body;
-    fprintf(stderr, "%s\n", program_body);
-    fprintf(stderr, "%*s", err_pos, "");
-    fprintf(stderr, "^\t");
-    vfprintf(stderr, fmt, vargs);
-    fprintf(stderr, "\n\n");
+    // 対象となる行の最初と最後を見つける
+    char *line = location;
+    char *end = location;
+    while(program_body < line && line[-1] != '\n') -- line;
+    while(*end != '\n') ++ end;
+
+    // 何行目か調べる
+    int line_num = 1;
+    for(char *p = program_body; p < line; ++ p) {
+        if(*p == '\n')
+            ++ line_num;
+    }
+
+    va_list va;
+    va_start(va, fmt);
+
+    // 出力
+    int indent = fprintf(stderr, "program:%d: ", line_num);
+    fprintf(stderr, "%.*s\n", (int)(end - line), line);
+    int pos = location - line + indent;
+    fprintf(stderr, "%*s", pos, "");
+    fprintf(stderr, "^ ");
+    vfprintf(stderr, fmt, va);
+    fprintf(stderr, "\n");
+
+    va_end(va);
     exit(1);
 }
 
