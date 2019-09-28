@@ -19,11 +19,11 @@ void error_at(char *location, char *fmt, ...){
     va_start(vargs, fmt);
 
     if(location == NULL){
-        location = user_input + strlen(user_input);
+        location = program_body + strlen(program_body);
     }
 
-    int err_pos = location - user_input;
-    fprintf(stderr, "%s\n", user_input);
+    int err_pos = location - program_body;
+    fprintf(stderr, "%s\n", program_body);
     fprintf(stderr, "%*s", err_pos, "");
     fprintf(stderr, "^\t");
     vfprintf(stderr, fmt, vargs);

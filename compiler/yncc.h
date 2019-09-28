@@ -98,7 +98,7 @@ struct Type {
 
 /* グローバル変数 */
 Token *token;
-char *user_input;
+char *program_body;
 Node *code[100];
 Var *locals;
 Var *globals;
