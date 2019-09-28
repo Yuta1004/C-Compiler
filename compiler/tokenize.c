@@ -56,7 +56,7 @@ Token *tokenize(char *p){
             // 文字列読み込み -> 登録
             int len = 0;
             do ++ len; while(*(p+len) != '\"');
-            char *str = (char*)malloc(len*sizeof(char));
+            char *str = (char*)calloc(len, sizeof(char));
             strncpy(str, p, len);
             vec_push(str_vec, str);
             p += len + 1;
