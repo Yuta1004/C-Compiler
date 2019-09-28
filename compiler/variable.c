@@ -17,7 +17,7 @@ Var *find_var(Token *request){
         }
     }
 
-    char *name = (char*)calloc(request->len, sizeof(char));
+    char *name = (char*)calloc(request->len+1, sizeof(char));
     strncpy(name, request->str, request->len);
     error("[ERROR] 定義されていない変数です -> %s", name);
 }
@@ -36,7 +36,7 @@ Var *regist_var(int var_type){
     var->type = type;
     var->len = var_name->len;
     var->offset = locals->offset + 8;
-    var->name = (char*)calloc(var_name->len, sizeof(char));
+    var->name = (char*)calloc(var_name->len+1, sizeof(char));
     strncpy(var->name, var_name->str, var_name->len);
     if(var_type == LOCAL) {  var->next = locals; locals = var; }
     if(var_type == GLOBAL) { var->next = globals; globals = var; }
