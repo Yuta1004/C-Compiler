@@ -354,11 +354,18 @@ check_array_access:
 }
 
 // 構文解析11
-// primary = "(" expr ") | ident ("(" (expr ","?)* ")") | num | str | ident
+// primary = "(" (expr | block) ") | ident ("(" (expr ","?)* ")") | num | str | ident
 Node *primary(){
-    // "(" expr ")"
+    // "(" expr | block ")"
     if(consume("(")) {
-        Node *node = expr();
+        Node *node;
+        Token *bef_token = token;
+        if(consume("{")) {          // block
+            token = bef_token;
+            node = block();
+        } else {                    // expr
+            node = expr();
+        }
         expect(")");
         return node;
     }
