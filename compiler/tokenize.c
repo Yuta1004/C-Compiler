@@ -27,6 +27,13 @@ Token *tokenize(char *p){
             continue;
         }
 
+        // "//" 1行コメント
+        if(strncmp(p, "//", 2) == 0) {
+            while(*p != '\n') ++ p;
+            ++p;
+            continue;
+        }
+
         // ">=", "<=", "==", "!="
         if(strncmp(p, "<=", 2) == 0 || strncmp(p, ">=", 2) == 0 ||
            strncmp(p, "==", 2) == 0 || strncmp(p, "!=", 2) == 0){
