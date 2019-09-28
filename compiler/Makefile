@@ -1,6 +1,6 @@
 GCC=gcc
 CFLAGS=-std=c11 -g -static                      # Cコンパイラ引数
-SRCS=$(filter-out program.c, $(wildcard *.c))   # ソースリスト wildcardで拡張子がcのファイルのみを選択
+SRCS=$(filter-out yncc_test.c program.c, $(wildcard *.c))   # ソースリスト wildcardで拡張子がcのファイルのみを選択
 OBJS=$(SRCS:.c=.o)				                # .cを.oに置換
 
 yncc: $(OBJS)
@@ -8,10 +8,18 @@ yncc: $(OBJS)
 
 $(OBJS): yncc.h
 
-test: yncc
+test:
+	make test-c
+
+test-sh: yncc
 	./test.sh
 
+test-c: yncc yncc_test.c
+	./yncc yncc_test.c > tmp.s
+	$(GCC) -no-pie -o tmp tmp.s
+	./tmp
+
 clean:
-	rm -f yncc *.o *~ tmp*
+	rm -f *.o *~ tmp*
 
 .PHONY: test clean
