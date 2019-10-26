@@ -1,4 +1,4 @@
-int failed_cnt;
+int failed_cnt = 0;
 
 int try(int req, int expr) {
     if(req == expr) {

@@ -166,6 +166,10 @@ try "int main(){ char *str; str = \"hello world\"; return str[0] + str[1]; }" 20
 echo -e "\e[1m\ncomment\e[m"
 try "int main(){ /* abcdefghijklmn */ int a; a = 20; return a - 20; }" 0
 
+## init global variable
+echo -e "\e[1m\ninit global variable\e[m"
+try "int a = 10; int b = 20; int c = 30; int sum; int main(){ func(40); return sum; } int func(int d){ sum = a + b + c + d; }" 100
+
 
 echo ""
 exit 0
