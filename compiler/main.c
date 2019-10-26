@@ -31,7 +31,7 @@ int main(int argc, char** argv){
         char *str = (char*)vec_get(str_vec, idx);
         if(str == NULL) break;
         printf(".str%d:\n", label);
-        printf("\t\t.string \"%s\"\n", str);
+        printf("\t\t.string \"%s\\0\"\n", str);
         ++ label;
     }
     printf("\n");
