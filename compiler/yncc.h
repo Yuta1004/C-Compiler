@@ -82,12 +82,13 @@ struct Node {
 #define LOCAL 0
 #define GLOBAL 1
 struct Var {
-    int var_type;   // LOCAL or GLOBAL
-    Var *next;      // 次のVar
-    char *name;     // 変数名
-    int len;        // 長さ
-    int offset;     // ローカル変数だった時、RBPからのオフセット
-    Type *type;     // 型
+    int var_type;    // LOCAL or GLOBAL
+    Var *next;       // 次のVar
+    char *name;      // 変数名
+    int len;         // 長さ
+    int offset;      // ローカル変数だった時、RBPからのオフセット
+    Type *type;      // 型
+    Node *init_expr; // グローバル変数だった時、初期化式のノード
 };
 
 struct Type {
