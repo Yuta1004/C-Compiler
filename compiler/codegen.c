@@ -65,18 +65,15 @@ void gen_lval(Node *node){
         outasm("push rax");
         return;
     }
-
     if(node->kind == ND_GVAR) {
         outasm("lea rax, %s[rip]", node->name);
         outasm("push rax");
         return;
     }
-
     if(node->kind == ND_DEREF) {
         gen_asm(node->left);
         return;
     }
-
     error("左辺値が変数ではありません");
 }
 
@@ -105,7 +102,7 @@ void gen_asm(Node *node){
         return;
 
     case ND_STR:
-        outasm("mov rax, OFFSET FLAT:.str%d", node->val);
+        outasm("mov rax, OFFSET FLAT:.str%d", val);
         outasm("push rax");
         return;
 
