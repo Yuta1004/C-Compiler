@@ -2,29 +2,23 @@
 #include <stdlib.h>
 #include "yncc.h"
 
-char *precalc_expr(Node *root);
-int precalc_expr_child(Node *node);
+int precalc_expr(Node *node);
 
 char *precalc(Node *root) {
-    // 式
-    return precalc_expr(root);
-}
-
-char *precalc_expr(Node *root) {
     // 式評価
-    int size, result = precalc_expr_child(root);
+    int size, result = precalc_expr(root);
     for(size = 1; result / (size * 10) > 0; ++ size);
 
     // 文字列にして返す
     char *ret_val = malloc((size + 1) * sizeof(char));
-    sprintf(ret_val, "%d", precalc_expr_child(root));
+    sprintf(ret_val, "%d", result);
     return ret_val;
 }
 
-int precalc_expr_child(Node *node) {
+int precalc_expr(Node *node) {
     if(node == NULL) return 0;
-    int left = precalc_expr_child(node->left);
-    int right = precalc_expr_child(node->right);
+    int left = precalc_expr(node->left);
+    int right = precalc_expr(node->right);
 
     switch(node->kind) {
     case ND_ADD:
