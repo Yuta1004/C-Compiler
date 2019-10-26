@@ -69,10 +69,15 @@ Node *func(){
         node->left = block();
         return node;
     } else {                    // グローバル変数定義
-        // 登録 -> 初期化式セット
+        // 登録
         token = bef_token;
         Var *var = regist_var(GLOBAL);
+        var->init_expr = calloc(1, sizeof(Node));
+        var->init_expr->type = var->type;
+
+        // 初期化式セット
         if(consume("=")) {
+            free(var->init_expr);
             var->init_expr = equality();
         }
         expect(";");

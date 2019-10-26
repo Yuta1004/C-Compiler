@@ -130,7 +130,7 @@ void gen_asm(Node *node){
     case ND_INIT_GVAR:
         outlabel("%s", left->name);
         outasm(".zero %d", type_to_size(right->type));
-        break;
+        return;
 
     case ND_ASSIGN:
         gen_lval(left);                                     // [a] = 9 + 1  : LEFT
