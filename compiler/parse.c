@@ -73,6 +73,7 @@ Node *func(){
         token = bef_token;
         Var *var = regist_var(GLOBAL);
         var->init_expr = calloc(1, sizeof(Node));
+        var->init_expr->kind = ND_NONE;
         var->init_expr->type = var->type;
 
         // 初期化式セット
