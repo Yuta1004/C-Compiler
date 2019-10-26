@@ -154,7 +154,6 @@ int find_str(char *target_str);
 void gen_asm();
 
 /* precalc.c */
-char *precalc(Node *root);
 int precalc_expr(Node *root);
 
 #endif // YNCC_H
