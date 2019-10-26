@@ -153,4 +153,7 @@ int find_str(char *target_str);
 /* codegen.c */
 void gen_asm();
 
+/* precalc.c */
+char *precalc(Node *root);
+
 #endif // YNCC_H
