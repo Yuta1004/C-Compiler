@@ -132,12 +132,16 @@ void gen_asm(Node *node){
         switch(right->kind){
         case ND_NONE:
             outasm(".zero %d", type_to_size(right->type));
-            break;
+            return;
+
+        case ND_STR:
+            outasm(".ascii \"%s\\0\"", (char*)vec_get(str_vec, right->val));
+            return;
+
         default:
             outasm(".long %d", precalc_expr(right));
-            break;
+            return;
         }
-        return;
 
     case ND_ASSIGN:
         gen_lval(left);                                     // [a] = 9 + 1  : LEFT
