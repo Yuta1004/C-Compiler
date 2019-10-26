@@ -6,6 +6,7 @@
 
 /* 型定義 */
 typedef enum {
+    TOKEN_NONE,
     TOKEN_RESERVED,     // 記号
     TOKEN_NUM,          // 数字
     TOKEN_IDENT,        // 識別子
@@ -24,6 +25,7 @@ typedef enum {
 typedef struct Token Token;
 
 typedef enum {
+    ND_NONE,
     ND_EQ,              // ==
     ND_NEQ,             // !=
     ND_UPPERL,          // >
@@ -48,7 +50,6 @@ typedef enum {
     ND_FOR,             // for
     ND_NUM,             // 数字
     ND_STR,             // 文字列リテラル
-    ND_NONE,            // NONE
 } NodeKind;
 
 typedef struct Node Node;
