@@ -129,7 +129,11 @@ void gen_asm(Node *node){
 
     case ND_INIT_GVAR:
         outlabel("%s", left->name);
-        outasm(".zero %d", type_to_size(right->type));
+        if(right->kind == ND_NONE) {
+            outasm(".zero %d", type_to_size(right->type));
+        } else {
+            outasm(".long %s", precalc(right));
+        }
         return;
 
     case ND_ASSIGN:
