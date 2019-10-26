@@ -31,7 +31,7 @@ void program(){
 
 // 構文解析2
 // func = type ident "(" (type ident ","?)* ")" block
-//      | type ident "*"* ("[" expr "]")? ";"
+//      | type ident "*"* ("[" num "]")? ";"
 Node *func(){
     Token *bef_token = token;
 
