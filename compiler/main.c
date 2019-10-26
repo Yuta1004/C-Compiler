@@ -38,8 +38,9 @@ int main(int argc, char** argv){
 
     // グローバル変数<ヘッダー>
     for(Var *gvar = globals; gvar; gvar = gvar->next) {
-        printf("%s:\n", gvar->name);
-        printf("\t\t.zero %ld\n", type_to_size(gvar->type) * gvar->type->size);
+        Node *gvar_node = calloc(1, sizeof(Node));
+        gvar_node->name = gvar->name;
+        gen_asm(new_node(ND_INIT_GVAR, gvar_node, gvar->init_expr));
     }
     printf("\n");
 

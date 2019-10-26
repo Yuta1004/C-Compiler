@@ -127,6 +127,11 @@ void gen_asm(Node *node){
         outasm("push rax");
         return;
 
+    case ND_INIT_GVAR:
+        outlabel("%s", left->name);
+        outasm(".zero %d", type_to_size(right->type));
+        break;
+
     case ND_ASSIGN:
         gen_lval(left);                                     // [a] = 9 + 1  : LEFT
         gen_asm(right);                                     // a = [9 + 1]  : RIGHT
