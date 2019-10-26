@@ -31,7 +31,7 @@ void program(){
 
 // 構文解析2
 // func = type ident "(" (type ident ","?)* ")" block
-//      | type ident "*"* ("[" num "]")? ";"
+//      | type ident "*"* ("[" num "]")? ("=" equality)? ";"
 Node *func(){
     Token *bef_token = token;
 
@@ -69,8 +69,12 @@ Node *func(){
         node->left = block();
         return node;
     } else {                    // グローバル変数定義
+        // 登録 -> 初期化式セット
         token = bef_token;
         Var *var = regist_var(GLOBAL);
+        if(consume("=")) {
+            var->init_expr = equality();
+        }
         expect(";");
         return new_none_node();
     }
