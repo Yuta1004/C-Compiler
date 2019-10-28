@@ -50,8 +50,8 @@ Node *func(){
     node->name = (char*)calloc(f_name_token->len+1, sizeof(char));
     strncpy(node->name, f_name_token->str, f_name_token->len);
 
-    // 関数定義 or グローバル変数定義分岐
-    if(consume("(")) {          // 関数定義(引数リスト)
+    // 関数定義
+    if(consume("(")) {
         node->args = calloc(6, sizeof(Node));
         for(int idx = 0; idx < 6; ++ idx) {
             Var *var = regist_var(LOCAL);
@@ -68,22 +68,20 @@ Node *func(){
         expect(")");
         node->left = block();
         return node;
-    } else {                    // グローバル変数定義
-        // 登録
-        token = bef_token;
-        Var *var = regist_var(GLOBAL);
-        var->init_expr = calloc(1, sizeof(Node));
-        var->init_expr->kind = ND_NONE;
-        var->init_expr->type = var->type;
-
-        // 初期化式セット
-        if(consume("=")) {
-            free(var->init_expr);
-            var->init_expr = equality();
-        }
-        expect(";");
-        return new_none_node();
     }
+
+    // グローバル変数定義
+    token = bef_token;
+    Var *var = regist_var(GLOBAL);
+    var->init_expr = calloc(1, sizeof(Node));
+    var->init_expr->kind = ND_NONE;
+    var->init_expr->type = var->type;
+    if(consume("=")) {
+        free(var->init_expr);
+        var->init_expr = equality();
+    }
+    expect(";");
+    return new_none_node();
 }
 
 // 構文解析3
