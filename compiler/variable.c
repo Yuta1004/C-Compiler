@@ -41,16 +41,35 @@ Var *regist_var(int var_type){
     if(var_type == LOCAL) {  var->next = locals; locals = var; }
     if(var_type == GLOBAL) { var->next = globals; globals = var; }
 
-    // "[" array_size "]"
-    if(consume("[")) {
-        size_t size = expect_number();
-        define_type(&base_type->ptr_to, base_type->ty);
-        base_type->ty = ARRAY;
-        base_type->size = size;
-        var->offset = locals->offset - 8 + (8 * size);
-        expect("]");
-        if(size <= 0) {
-            error("[ERROR] 長さが0以下の配列は定義できません");
+    // LOCAL -> "[" array_size "]"
+    // GLOBAL -> "[" array_size? "]"
+    switch(var_type){
+    case LOCAL:
+        if(consume("[")) {
+            size_t size = expect_number();
+            define_type(&base_type->ptr_to, base_type->ty);
+            base_type->ty = ARRAY;
+            base_type->size = size;
+            var->offset = locals->offset - 8 + (8 * size);
+            expect("]");
+            if(size <= 0) {
+                error("[ERROR] 長さが0以下の配列は定義できません");
+            }
+        }
+
+    case GLOBAL:
+        if(consume("[")) {
+            Token *size = consume_number();
+            define_type(&base_type->ptr_to, base_type->ty);
+            base_type->ty = ARRAY;
+            if(size){
+                base_type->size = size->val;
+                var->offset = locals->offset - 8 + (8 * size->val);
+            }
+            expect("]");
+            if(size != 0 && size->len <= 0) {
+                error("[ERROR] 長さが0以下の配列は定義できません");
+            }
         }
     }
     return var;
