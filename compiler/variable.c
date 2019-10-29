@@ -67,7 +67,7 @@ Var *regist_var(int var_type){
                 var->offset = locals->offset - 8 + (8 * size->val);
             }
             expect("]");
-            if(size != 0 && size->len <= 0) {
+            if(size != 0 && size->val <= 0) {
                 error("[ERROR] 長さが0以下の配列は定義できません");
             }
         }
