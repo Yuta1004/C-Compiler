@@ -41,6 +41,7 @@ int main(int argc, char** argv){
     for(Var *gvar = globals; gvar; gvar = gvar->next) {
         Node *gvar_node = calloc(1, sizeof(Node));
         gvar_node->name = gvar->name;
+        gvar_node->type = gvar->type;
         gen_asm(new_node(ND_INIT_GVAR, gvar_node, gvar->init_expr));
     }
     printf("\n");
