@@ -141,6 +141,10 @@ void gen_asm(Node *node){
             outasm(".ascii \"%s\\0\"", (char*)vec_get(str_vec, right->val));
             return;
 
+        case ND_ADDR:
+            outasm(".quad %s", right->left->name);
+            return;
+
         default:
             outasm(".long %d", precalc_expr(right));
             return;

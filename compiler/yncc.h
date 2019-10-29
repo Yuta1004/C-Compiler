@@ -155,5 +155,6 @@ void gen_asm();
 
 /* precalc.c */
 int precalc_expr(Node *root);
+void decode_precalc_expr(char *s, Node *root);
 
 #endif // YNCC_H
