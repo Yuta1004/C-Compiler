@@ -131,7 +131,7 @@ void gen_asm(Node *node){
         outlabel("%s", left->name, right->kind);
         switch(right->kind){
         case ND_NONE:
-            outasm(".zero %d", type_to_size(right->type));
+            outasm(".zero %d", type_to_size(right->type) * right->type->size);
             return;
 
         case ND_STR:
