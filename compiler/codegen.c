@@ -131,7 +131,7 @@ void gen_asm(Node *node){
         return;
 
     case ND_INIT_GVAR:
-        outlabel("%s", left->name);
+        outlabel("%s", left->name, right->kind);
         switch(right->kind){
         case ND_NONE:
             outasm(".zero %d", type_to_size(right->type));
@@ -141,12 +141,14 @@ void gen_asm(Node *node){
             outasm(".ascii \"%s\\0\"", (char*)vec_get(str_vec, right->val));
             return;
 
-        case ND_ADDR:
-            outasm(".quad %s", right->left->name);
-            return;
-
         default:
-            outasm(".long %d", precalc_expr(right));
+            if(right->type->ty == PTR) {
+                char *expr = malloc(10*sizeof(char));
+                decode_precalc_expr(expr, right);
+                outasm(".quad %s", expr);
+            } else {
+                outasm(".long %d", precalc_expr(right));
+            }
             return;
         }
 
