@@ -41,6 +41,7 @@ typedef enum {
     ND_LVAR,            // ローカル変数
     ND_GVAR,            // グローバル変数
     ND_INIT_GVAR,       // グローバル変数初期化
+    ND_INIT_ARRAY,      // 配列初期化式
     ND_FUNC,            // 関数
     ND_CALL_FUNC,       // 関数呼び出し
     ND_BLOCK,           // ブロック
