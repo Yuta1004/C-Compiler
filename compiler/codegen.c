@@ -138,13 +138,18 @@ void gen_asm(Node *node){
             outasm(".ascii \"%s\\0\"", (char*)vec_get(str_vec, right->val));
             return;
 
-        case ND_INIT_ARRAY:;
+        case ND_INIT_ARRAY:{
+            int idx;
+            int size = (left->type->size > right->val) ? left->type->size : right->val;
             Node *value = right->block_next_node;
-            for(int idx = 0; idx < right->val; ++ idx) {
+            for(idx = 0; idx < right->val; ++ idx) {
                 outasm(".long %d", precalc_expr(value));
                 value = value->block_next_node;
             }
+            for(; idx < size; ++ idx)
+                outasm(".long 0");
             return;
+        }
 
         default:
             if(right->type->ty == PTR) {
