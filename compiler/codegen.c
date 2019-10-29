@@ -138,6 +138,14 @@ void gen_asm(Node *node){
             outasm(".ascii \"%s\\0\"", (char*)vec_get(str_vec, right->val));
             return;
 
+        case ND_INIT_ARRAY:;
+            Node *value = right->block_next_node;
+            for(int idx = 0; idx < right->val; ++ idx) {
+                outasm(".long %d", precalc_expr(value));
+                value = value->block_next_node;
+            }
+            return;
+
         default:
             if(right->type->ty == PTR) {
                 char *expr = malloc(10*sizeof(char));
