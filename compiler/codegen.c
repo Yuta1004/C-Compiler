@@ -139,15 +139,16 @@ void gen_asm(Node *node){
             return;
 
         case ND_INIT_ARRAY:{
-            int idx;
             int size = (left->type->size > right->val) ? left->type->size : right->val;
             Node *value = right->block_next_node;
-            for(idx = 0; idx < right->val; ++ idx) {
-                outasm(".long %d", precalc_expr(value));
-                value = value->block_next_node;
+            for(int idx = 0; idx < size; ++ idx) {
+                if(idx < right->val) {
+                    outasm(".long %d", precalc_expr(value));
+                    value = value->block_next_node;
+                } else {
+                    outasm(".long 0");
+                }
             }
-            for(; idx < size; ++ idx)
-                outasm(".long 0");
             return;
         }
 
@@ -156,9 +157,9 @@ void gen_asm(Node *node){
                 char *expr = malloc(10*sizeof(char));
                 decode_precalc_expr(expr, right);
                 outasm(".quad %s", expr);
-            } else {
-                outasm(".long %d", precalc_expr(right));
+                return;
             }
+            outasm(".long %d", precalc_expr(right));
             return;
         }
 
