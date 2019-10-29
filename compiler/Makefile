@@ -19,6 +19,11 @@ test-c: yncc yncc_test.c
 	$(GCC) -no-pie -o tmp tmp.s
 	./tmp
 
+run-program:
+	@./yncc program.c > tmp.s
+	@gcc -no-pie -o tmp tmp.s
+	./tmp
+
 clean:
 	rm -f *.o *~ tmp*
 
