@@ -169,6 +169,7 @@ try "int main(){ /* abcdefghijklmn */ int a; a = 20; return a - 20; }" 0
 ## init global variable
 echo -e "\e[1m\ninit global variable\e[m"
 try "int a = 10; int b = 20; int c = 30; int sum; int main(){ func(40); return sum; } int func(int d){ sum = a + b + c + d; }" 100
+try "int a; int *b = &a; char c[] = \"hello world\"; char *d = c+3; int main(){ a = 20; if(*b != 20) return 0; int idx; for(idx = 3; c[idx] != 0; idx = idx+1){ if(c[idx] != d[idx-3]) return 1; } return 0; }" 0
 
 
 echo ""
