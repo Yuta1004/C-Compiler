@@ -116,11 +116,8 @@ void gen_asm(Node *node){
             gen_asm(left);
         outasm("pop rax");
 
-        // グローバル変数(ポインタ)は↑の値がそのままアドレスとして使える
-        if(node->kind == ND_GVAR && node->type->ptr_to != NULL){
-            outasm("push rax");
-            return;
-        }
+        // 文字列をもつグローバル変数
+        if(node->kind == ND_GVAR && node->type->ty == STR) return;
 
         // 型に合わせてmov命令
         if(type_to_size(node->type) == 1)
