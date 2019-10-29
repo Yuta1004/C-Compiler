@@ -213,12 +213,10 @@ Node *expr(){
     if(consume("{")) {
         // ノード生成
         Node *array_init_expr = calloc(1, sizeof(Node));
-        Node *values = calloc(1, sizeof(Node));
-        array_init_expr->block_next_node = values;
+        Node *values, *values_last = values;
 
-        // 要素一覧
+        // 初期化式
         int size;
-        Node *values_last = values;
         for(size = 0; !consume("}"); ++ size) {
             if(size > 0)
                 expect(",");
@@ -229,6 +227,7 @@ Node *expr(){
         values_last->block_next_node = NULL;
         array_init_expr->val = size;
         array_init_expr->kind = ND_INIT_ARRAY;
+        array_init_expr->block_next_node = values->block_next_node;
         return array_init_expr;
     }
 
