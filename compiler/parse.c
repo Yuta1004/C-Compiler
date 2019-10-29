@@ -78,7 +78,7 @@ Node *func(){
     var->init_expr->type = var->type;
     if(consume("=")) {
         free(var->init_expr);
-        var->init_expr = equality();
+        var->init_expr = expr();
     }
     expect(";");
     return new_none_node();
@@ -207,8 +207,32 @@ Node *stmt(){
 }
 
 // 構文解析4
-// expr = assign
+// expr = assign | "{" expr ("," expr)* "}"
 Node *expr(){
+    // 配列の初期化式
+    if(consume("{")) {
+        // ノード生成
+        Node *array_init_expr = calloc(1, sizeof(Node));
+        Node *values = calloc(1, sizeof(Node));
+        array_init_expr->block_next_node = values;
+
+        // 要素一覧
+        int size;
+        Node *values_last = values;
+        for(size = 0; !consume("}"); ++ size) {
+            if(size > 0)
+                expect(",");
+            Node *value = expr();
+            values_last->block_next_node = value;
+            values_last = value;
+        }
+        values_last->block_next_node = NULL;
+        array_init_expr->val = size;
+        array_init_expr->kind = ND_INIT_ARRAY;
+        return array_init_expr;
+    }
+
+    // 式
     return assign();
 }
 
