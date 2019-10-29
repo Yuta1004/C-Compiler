@@ -24,9 +24,9 @@ int main(int argc, char** argv){
     printf(".intel_syntax   noprefix\n");
     printf(".global         main\n");
     printf("\n");
-    printf(".data\n");
 
     // 文字列<ヘッダー>
+    printf(".section .rodata\n");
     for(int idx = 0; idx < str_vec->len; ++ idx) {
         char *str = (char*)vec_get(str_vec, idx);
         if(str == NULL) break;
@@ -37,6 +37,7 @@ int main(int argc, char** argv){
     printf("\n");
 
     // グローバル変数<ヘッダー>
+    printf(".data\n");
     for(Var *gvar = globals; gvar; gvar = gvar->next) {
         Node *gvar_node = calloc(1, sizeof(Node));
         gvar_node->name = gvar->name;
