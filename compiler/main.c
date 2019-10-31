@@ -18,6 +18,8 @@ int main(int argc, char** argv){
     token = tokenize(program_body);
 
     // 構文木生成
+    globals = vec_new(10);
+    locals = vec_new(10);
     program();
 
     // ヘッダー
@@ -38,7 +40,8 @@ int main(int argc, char** argv){
 
     // グローバル変数<ヘッダー>
     printf(".data\n");
-    for(Var *gvar = globals; gvar; gvar = gvar->next) {
+    for(int idx = 0; idx < globals->len; ++ idx) {
+        Var *gvar = (Var*)vec_get(globals, idx);
         Node *gvar_node = calloc(1, sizeof(Node));
         gvar_node->name = gvar->name;
         gvar_node->type = gvar->type;

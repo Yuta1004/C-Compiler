@@ -17,12 +17,17 @@
 // Run
 cd compiler
 make
-./yncc "int main(){ return 0; }" > tmp.s
+vim program.c 
+./yncc program.c > tmp.s
 gcc -o tmp tmp.s
 ./tmp
 echo $?
 
-// Test
+// Test(C)
 cd compiler
 make test
+
+// Test(SH)
+cd compiler
+make test-sh
 ```

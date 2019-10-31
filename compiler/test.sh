@@ -173,6 +173,12 @@ try "int a; int *b = &a; char c[] = \"hello world\"; char *d = c+3; int main(){ 
 try "int a[] = {1, 2, 3, 4, 5}; int b[5] = {1, 2}; int c[5]; int main(){ int idx; for(idx = 0; idx < 5; idx = idx+1) printf(\"a = %d, b = %d, c = %d\\n\", a[idx], b[idx], c[idx]); }" 0
 try "int memo[10]; int main(){ int idx; for(idx = 1; idx < 10; idx = idx+1){ printf(\"%d\\n\", fib(idx)); }} int fib(int num){ if(num <= 2){ return 1; } if(memo[num] == 0){ memo[num] = fib(num-1) + fib(num-2); } return memo[num]; }" 0
 
+## init local variable
+echo -e "\e[1m\ninit local variable\e[m"
+try "int main(){ int a = 10; int b = 20; int c = 30; return a+b+c; }" 60
+try "int main(){ char *msg = \"hello %s!\\n\"; char *name = \"Yuta1004\"; printf(msg, name); }" 0
+try "int main(){ int x = 20; int *y = &x; int **z = &y; return **z; }" 20
+
 
 echo ""
 exit 0

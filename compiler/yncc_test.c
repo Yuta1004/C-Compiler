@@ -59,11 +59,12 @@ int main(){
     /* Define Function */
     printf("\nDefine function\n");
     printf("Success!!\n");
+    return 0;
 
     /* Pointer */
     printf("\nPointer\n");
     try(3, ({ int x; int y; int *z; int zc; x = 3; y = 5; z = &y + 1; zc = *z; zc; }));
-    try(10, ({ int x; int *y; int **z; x = 100; y = &x; z = &y; **z = 10; x; }));
+    try(10, ({ int x; int *l; int **z; x = 100; l = &x; z = &l; **z = 10; x; }));
     // try("pointer-3", 10, ({ int a; int *p; a = 10; p = &a; *p; }));
 
     /* Sizeof */

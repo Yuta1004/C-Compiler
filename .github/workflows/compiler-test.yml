@@ -9,5 +9,7 @@ jobs:
     
     steps:
     - uses: actions/checkout@master
-    - name: Do test
+    - name: Do test(C)
       run: cd compiler; make test
+    - name: Do test(sh)
+      run: cd compiler; make test-sh

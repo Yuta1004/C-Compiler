@@ -71,7 +71,7 @@ struct Node {
     Node *left;                 // 左辺ノードのポインタ
     Node *right;                // 右辺ノードのポインタ
 
-    Node *block_next_node;      // ブロックノードだった時、その次のノード
+    Vector *node_list;          // ノードに属するノードのリスト
 
     int val;                    // 数字ノードだった時、その値
 
@@ -104,10 +104,10 @@ struct Type {
 Token *token;
 char *program_body;
 Node *code[100];
-Var *locals;
-Var *globals;
-int label;
+Vector *locals;
+Vector *globals;
 Vector *str_vec;
+int label, sum_offset;
 
 /* common.c */
 void error(char *fmt, ...);

@@ -12,7 +12,7 @@ Vector* vec_new(int capacity){
 
 void *vec_push(Vector *vec, void* item) {
     if(vec->len >= vec->capacity) {
-        return NULL;
+        vec_add_capacity(vec, 10);
     }
     vec->data[vec->len] = item;
     ++ vec->len;

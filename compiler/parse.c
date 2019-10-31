@@ -38,8 +38,9 @@ Node *func(){
     // ローカル変数初期化
     Node *node = calloc(1, sizeof(Node));
     node->kind = ND_FUNC;
-    free(locals);
-    locals = calloc(1, sizeof(Var));
+    vec_free(locals);
+    locals = vec_new(10);
+    sum_offset = 0;
 
     // 関数名
     read_type();
@@ -91,17 +92,13 @@ Node *block() {
     if(consume("{")) {
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_BLOCK;
+        node->node_list = vec_new(10);
 
         // stmt*
         Node *now_node = node;
         while(!consume("}")) {
-            Node *new_node = block();
-            if(new_node){
-                now_node->block_next_node = new_node;
-                now_node = new_node;
-            }
+            vec_push(node->node_list, block());
         }
-        now_node->block_next_node = NULL;
         return node;
     }
     return stmt();
@@ -190,10 +187,20 @@ Node *stmt(){
         return node;
     }
 
-    // Variable
-    if(regist_var(LOCAL)) {
+    // ローカル変数定義
+    Var *var = regist_var(LOCAL);
+    if(var) {
+        Node *node = NULL;
+        if(consume("=")) {
+            Node *var_node = calloc(1, sizeof(Node));
+            var_node->kind = ND_LVAR;
+            var_node->name = var->name;
+            var_node->type = var->type;
+            var_node->offset = var->offset;
+            node = new_node(ND_ASSIGN, var_node, expr());
+        }
         expect(";");
-        return NULL;
+        return node;
     }
 
     // ;
@@ -213,21 +220,17 @@ Node *expr(){
     if(consume("{")) {
         // ノード生成
         Node *array_init_expr = calloc(1, sizeof(Node));
-        Node *values, *values_last = values;
+        array_init_expr->node_list = vec_new(10);
 
         // 初期化式
         int size;
         for(size = 0; !consume("}"); ++ size) {
             if(size > 0)
                 expect(",");
-            Node *value = expr();
-            values_last->block_next_node = value;
-            values_last = value;
+            vec_push(array_init_expr->node_list, expr());
         }
-        values_last->block_next_node = NULL;
         array_init_expr->val = size;
         array_init_expr->kind = ND_INIT_ARRAY;
-        array_init_expr->block_next_node = values->block_next_node;
         return array_init_expr;
     }
 

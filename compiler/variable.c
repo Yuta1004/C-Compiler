@@ -8,9 +8,10 @@
 // 変数検索
 Var *find_var(Token *request){
     // 検索
-    Var *var_list[] = {locals, globals};
+    Vector *var_list[] = {locals, globals};
     for(int idx = 0; idx < 2; ++ idx) {
-        for(Var *var = var_list[idx]; var; var = var->next){
+        for(int v_idx = 0; v_idx < var_list[idx]->len; ++ v_idx){
+            Var *var = (Var*)vec_get(var_list[idx], v_idx);
             if(var->len == request->len && strncmp(var->name, request->str, request->len) == 0){
                 return var;
             }
@@ -35,11 +36,13 @@ Var *regist_var(int var_type){
     var->var_type = var_type;
     var->type = type;
     var->len = var_name->len;
-    var->offset = locals->offset + 8;
+    var->offset = (sum_offset += 8);
     var->name = (char*)calloc(var_name->len+1, sizeof(char));
     strncpy(var->name, var_name->str, var_name->len);
-    if(var_type == LOCAL) {  var->next = locals; locals = var; }
-    if(var_type == GLOBAL) { var->next = globals; globals = var; }
+    if(var_type == LOCAL)
+        vec_push(locals, var);
+    if(var_type == GLOBAL)
+        vec_push(globals, var);
 
     // LOCAL -> "[" array_size "]"
     // GLOBAL -> "[" array_size? "]"
@@ -50,7 +53,7 @@ Var *regist_var(int var_type){
             define_type(&base_type->ptr_to, base_type->ty);
             base_type->ty = ARRAY;
             base_type->size = size;
-            var->offset = locals->offset - 8 + (8 * size);
+            var->offset = (sum_offset += (size*8) - 8);
             expect("]");
             if(size <= 0) {
                 error("[ERROR] 長さが0以下の配列は定義できません");
@@ -62,10 +65,8 @@ Var *regist_var(int var_type){
             Token *size = consume_number();
             define_type(&base_type->ptr_to, base_type->ty);
             base_type->ty = ARRAY;
-            if(size){
+            if(size)
                 base_type->size = size->val;
-                var->offset = locals->offset - 8 + (8 * size->val);
-            }
             expect("]");
             if(size != 0 && size->val <= 0) {
                 error("[ERROR] 長さが0以下の配列は定義できません");
