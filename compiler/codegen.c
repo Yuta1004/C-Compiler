@@ -38,25 +38,6 @@ char* size_stmt(Type *type) {
     }
 }
 
-// ラベル出力
-void outlabel(char *fmt, ...){
-    va_list va;
-    va_start(va, fmt);
-    vfprintf(stdout, fmt, va);
-    va_end(va);
-    printf(":\n");
-}
-
-// アセンブリ出力
-void outasm(char *fmt, ...) {
-    printf("\t\t");
-    va_list va;
-    va_start(va, fmt);
-    vfprintf(stdout, fmt, va);
-    va_end(va);
-    printf("\n");
-}
-
 // 左辺値コンパイル
 void gen_lval(Node *node){
     if(node->kind == ND_LVAR) {

@@ -112,6 +112,8 @@ int label, sum_offset;
 /* common.c */
 void error(char *fmt, ...);
 void error_at(char *location, char *fmt, ...);
+void outasm(char *fmt, ...);
+void outlabel(char *fmt, ...);
 int is_alnum(char chr);
 
 /* type.c */
