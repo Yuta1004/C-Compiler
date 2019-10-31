@@ -22,6 +22,16 @@ Node *new_num_node(int val){
     return node;
 }
 
+// 変数ノード生成
+Node *new_var_node(Var *var) {
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = ND_LVAR;
+    node->name = var->name;
+    node->type = var->type;
+    node->offset = var->offset;
+    return node;
+}
+
 // Noneノード生成
 Node *new_none_node() {
     Node *node = calloc(1, sizeof(Node));

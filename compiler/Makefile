@@ -20,8 +20,8 @@ test-c: yncc yncc_test.c
 	./tmp
 
 run-program:
-	@./yncc program.c > tmp.s
-	@gcc -no-pie -o tmp tmp.s
+	./yncc program.c > tmp.s
+	gcc -no-pie -o tmp tmp.s
 	./tmp
 
 clean:

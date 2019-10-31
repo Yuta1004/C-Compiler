@@ -38,25 +38,6 @@ char* size_stmt(Type *type) {
     }
 }
 
-// ラベル出力
-void outlabel(char *fmt, ...){
-    va_list va;
-    va_start(va, fmt);
-    vfprintf(stdout, fmt, va);
-    va_end(va);
-    printf(":\n");
-}
-
-// アセンブリ出力
-void outasm(char *fmt, ...) {
-    printf("\t\t");
-    va_list va;
-    va_start(va, fmt);
-    vfprintf(stdout, fmt, va);
-    va_end(va);
-    printf("\n");
-}
-
 // 左辺値コンパイル
 void gen_lval(Node *node){
     if(node->kind == ND_LVAR) {
@@ -140,14 +121,11 @@ void gen_asm(Node *node){
 
         case ND_INIT_ARRAY:{
             int size = (left->type->size > right->val) ? left->type->size : right->val;
-            Node *value = right->block_next_node;
             for(int idx = 0; idx < size; ++ idx) {
-                if(idx < right->val) {
-                    outasm(".long %d", precalc_expr(value));
-                    value = value->block_next_node;
-                } else {
+                if(idx < right->val)
+                    outasm(".long %d", precalc_expr((Node*)vec_get(right->node_list, idx)));
+                else
                     outasm(".long 0");
-                }
             }
             return;
         }
@@ -173,10 +151,8 @@ void gen_asm(Node *node){
         return;
 
     case ND_BLOCK:{
-        Node *block_node = node->block_next_node;   // ブロック連結リストのノードを持つ
-        while(block_node != NULL) {
-            gen_asm_with_pop(block_node);
-            block_node = block_node->block_next_node;
+        for(int idx = 0; idx < node->node_list->len; ++ idx) {
+            gen_asm_with_pop((Node*)vec_get(node->node_list, idx));
         }
         outasm("push rax");
         return;

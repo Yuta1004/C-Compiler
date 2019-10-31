@@ -48,6 +48,35 @@ void error_at(char *location, char *fmt, ...){
     exit(1);
 }
 
+// 普通の出力
+void outtxt(char *fmt, ...) {
+    va_list va;
+    va_start(va, fmt);
+    vfprintf(stdout, fmt, va);
+    va_end(va);
+    printf("\n");
+}
+
+// ラベル出力
+void outlabel(char *fmt, ...){
+    va_list va;
+    va_start(va, fmt);
+    vfprintf(stdout, fmt, va);
+    va_end(va);
+    printf(":\n");
+}
+
+// アセンブリ出力
+void outasm(char *fmt, ...) {
+    printf("\t\t");
+    va_list va;
+    va_start(va, fmt);
+    vfprintf(stdout, fmt, va);
+    va_end(va);
+    printf("\n");
+}
+
+
 // 文字がトークンを構成出来るか調べる
 int is_alnum(char chr){
     return ('a' <= chr && chr <= 'z') ||

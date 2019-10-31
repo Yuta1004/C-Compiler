@@ -38,8 +38,9 @@ Node *func(){
     // ローカル変数初期化
     Node *node = calloc(1, sizeof(Node));
     node->kind = ND_FUNC;
-    free(locals);
-    locals = calloc(1, sizeof(Var));
+    vec_free(locals);
+    locals = vec_new(10);
+    sum_offset = 0;
 
     // 関数名
     read_type();
@@ -91,17 +92,13 @@ Node *block() {
     if(consume("{")) {
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_BLOCK;
+        node->node_list = vec_new(10);
 
         // stmt*
         Node *now_node = node;
         while(!consume("}")) {
-            Node *new_node = block();
-            if(new_node){
-                now_node->block_next_node = new_node;
-                now_node = new_node;
-            }
+            vec_push(node->node_list, block());
         }
-        now_node->block_next_node = NULL;
         return node;
     }
     return stmt();
@@ -190,8 +187,35 @@ Node *stmt(){
         return node;
     }
 
-    // Variable
-    if(regist_var(LOCAL)) {
+    // ローカル変数定義
+    Var *var = regist_var(LOCAL);
+    if(var && consume("=")) {
+        Node *var_node = new_var_node(var);
+        Node *init_expr = expr();
+
+        // 配列初期化式 or 普通の式
+        if(init_expr->kind == ND_INIT_ARRAY) {
+            // Blockノード初期化
+            Node *node = new_node(ND_BLOCK, NULL, NULL);
+            node->node_list = vec_new(init_expr->node_list->len+1);
+
+            // 各要素を配列への代入式へ変換する
+            for(int idx = 0; idx < init_expr->node_list->len; ++ idx) {
+                Node *addr = new_node(ND_ADDR, var_node, NULL);                 // array
+                Node *add_expr = new_node(ND_ADD, addr, new_num_node(idx));     // array+idx
+                Node *left = new_node(ND_DEREF, add_expr, NULL);                // *(array+idx)
+                Node *right = (Node*)vec_get(init_expr->node_list, idx);        // right
+                define_type(&addr->type, PTR);
+                define_type(&addr->type->ptr_to, addr->left->type->ptr_to->ty);
+                add_expr->type = addr->type;
+                left->type = add_expr->type->ptr_to;
+                vec_push(node->node_list, new_node(ND_ASSIGN, left, right));    // *(array+idx) = right
+            }
+            return node;
+        }
+        return new_node(ND_ASSIGN, var_node, init_expr);
+    }
+    if(var){
         expect(";");
         return NULL;
     }
@@ -213,21 +237,17 @@ Node *expr(){
     if(consume("{")) {
         // ノード生成
         Node *array_init_expr = calloc(1, sizeof(Node));
-        Node *values, *values_last = values;
+        array_init_expr->node_list = vec_new(10);
 
         // 初期化式
         int size;
         for(size = 0; !consume("}"); ++ size) {
             if(size > 0)
                 expect(",");
-            Node *value = expr();
-            values_last->block_next_node = value;
-            values_last = value;
+            vec_push(array_init_expr->node_list, expr());
         }
-        values_last->block_next_node = NULL;
         array_init_expr->val = size;
         array_init_expr->kind = ND_INIT_ARRAY;
-        array_init_expr->block_next_node = values->block_next_node;
         return array_init_expr;
     }
 
@@ -426,26 +446,17 @@ Node *primary(){
         // 変数
         Node *node = calloc(1, sizeof(Node));
         Var *result = find_var(next_token);
+        node->kind = ND_LVAR;
         node->offset = result->offset;
         node->type = result->type;
-        node->kind = ND_LVAR;
         node->name = result->name;
         if(result->var_type == GLOBAL) node->kind = ND_GVAR;
 
         // 変数が配列を指していた場合、先頭アドレスへのポインタに変換する
         if(node->type->ty == ARRAY) {
-            free(node);
-            Node *addr_par = calloc(1, sizeof(Node));
-            Node *addr = calloc(1, sizeof(Node));
-            addr_par->kind = ND_ADDR;
-            addr_par->left = addr;
-            addr->kind = ND_LVAR;
-            addr->offset = result->offset;
-            addr->name = result->name;
-            if(result->var_type == GLOBAL) addr->kind = ND_GVAR;
-            define_type(&addr_par->type, PTR);
-            define_type(&addr_par->type->ptr_to, result->type->ptr_to->ty);
-            node = addr_par;
+            node = new_node(ND_ADDR, node, NULL);
+            define_type(&node->type, PTR);
+            define_type(&node->type->ptr_to, node->left->type->ptr_to->ty);
         }
         return node;
     }

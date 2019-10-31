@@ -71,7 +71,7 @@ struct Node {
     Node *left;                 // 左辺ノードのポインタ
     Node *right;                // 右辺ノードのポインタ
 
-    Node *block_next_node;      // ブロックノードだった時、その次のノード
+    Vector *node_list;          // ノードに属するノードのリスト
 
     int val;                    // 数字ノードだった時、その値
 
@@ -104,14 +104,17 @@ struct Type {
 Token *token;
 char *program_body;
 Node *code[100];
-Var *locals;
-Var *globals;
-int label;
+Vector *locals;
+Vector *globals;
 Vector *str_vec;
+int label, sum_offset;
 
 /* common.c */
 void error(char *fmt, ...);
 void error_at(char *location, char *fmt, ...);
+void outtxt(char *fmt, ...);
+void outasm(char *fmt, ...);
+void outlabel(char *fmt, ...);
 int is_alnum(char chr);
 
 /* type.c */
@@ -139,6 +142,7 @@ Token *consume_kind();
 /* node.c */
 Node *new_node(NodeKind kind, Node *left, Node *right);
 Node *new_num_node(int val);
+Node *new_var_node(Var *var);
 Node *new_none_node();
 
 /* parse.c */

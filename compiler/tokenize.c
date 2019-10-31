@@ -73,8 +73,6 @@ Token *tokenize(char *p){
             char *str = (char*)calloc(len+1, sizeof(char));
             strncpy(str, p, len);
             vec_push(str_vec, str);
-            if(str_vec->capacity - str_vec->len < 10)
-                vec_add_capacity(str_vec, 10);
             p += len + 1;
             cur->len = len;
             continue;

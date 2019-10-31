@@ -18,15 +18,17 @@ int main(int argc, char** argv){
     token = tokenize(program_body);
 
     // 構文木生成
+    globals = vec_new(10);
+    locals = vec_new(10);
     program();
 
     // ヘッダー
-    printf(".intel_syntax   noprefix\n");
-    printf(".global         main\n");
-    printf("\n");
+    outtxt(".intel_syntax   noprefix\n");
+    outtxt(".global         main\n");
+    outtxt("\n");
 
     // 文字列<ヘッダー>
-    printf(".section .rodata\n");
+    outtxt(".section .rodata\n");
     for(int idx = 0; idx < str_vec->len; ++ idx) {
         char *str = (char*)vec_get(str_vec, idx);
         if(str == NULL) break;
@@ -34,20 +36,19 @@ int main(int argc, char** argv){
         printf("\t\t.string \"%s\\0\"\n", str);
         ++ label;
     }
-    printf("\n");
+    outtxt("\n");
 
     // グローバル変数<ヘッダー>
-    printf(".data\n");
-    for(Var *gvar = globals; gvar; gvar = gvar->next) {
-        Node *gvar_node = calloc(1, sizeof(Node));
-        gvar_node->name = gvar->name;
-        gvar_node->type = gvar->type;
+    outtxt(".data\n");
+    for(int idx = 0; idx < globals->len; ++ idx) {
+        Var *gvar = (Var*)vec_get(globals, idx);
+        Node *gvar_node = new_var_node(gvar);
         gen_asm(new_node(ND_INIT_GVAR, gvar_node, gvar->init_expr));
     }
-    printf("\n");
+    outtxt("\n");
 
     // アセンブリ出力
-    printf(".text\n");
+    outtxt(".text\n");
     label = 0;
     for(int idx = 0; code[idx] != (Node*)-1; ++ idx){
         gen_asm(code[idx]);
