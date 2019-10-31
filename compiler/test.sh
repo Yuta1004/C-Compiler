@@ -178,7 +178,7 @@ echo -e "\e[1m\ninit local variable\e[m"
 try "int main(){ int a = 10; int b = 20; int c = 30; return a+b+c; }" 60
 try "int main(){ char *msg = \"hello %s!\\n\"; char *name = \"Yuta1004\"; printf(msg, name); }" 0
 try "int main(){ int x = 20; int *y = &x; int **z = &y; return **z; }" 20
-
+try "int main(){ int num[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}; int sum = 0; int idx = 0; for(; idx < 10; idx = idx + 1) sum = sum + num[idx]; return sum; }" 55
 
 echo ""
 exit 0
