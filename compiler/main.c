@@ -42,9 +42,7 @@ int main(int argc, char** argv){
     printf(".data\n");
     for(int idx = 0; idx < globals->len; ++ idx) {
         Var *gvar = (Var*)vec_get(globals, idx);
-        Node *gvar_node = calloc(1, sizeof(Node));
-        gvar_node->name = gvar->name;
-        gvar_node->type = gvar->type;
+        Node *gvar_node = new_var_node(gvar);
         gen_asm(new_node(ND_INIT_GVAR, gvar_node, gvar->init_expr));
     }
     printf("\n");

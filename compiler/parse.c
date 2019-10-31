@@ -192,15 +192,11 @@ Node *stmt(){
     if(var) {
         Node *node = NULL;
         if(consume("=")) {
-            // 変数ノード
-            Node *var_node = calloc(1, sizeof(Node));
-            var_node->kind = ND_LVAR;
-            var_node->name = var->name;
-            var_node->type = var->type;
-            var_node->offset = var->offset;
+            // 変数ノード, 初期化式
+            Node *var_node = new_var_node(var);
+            Node *init_expr = expr();
 
             // 配列初期化式 or 普通の式
-            Node *init_expr = expr();
             if(init_expr->kind == ND_INIT_ARRAY) {
                 // Blockノード初期化
                 node = calloc(1, sizeof(Node));
@@ -212,7 +208,7 @@ Node *stmt(){
                     Node *addr = new_node(ND_ADDR, var_node, NULL);                 // array
                     Node *add_expr = new_node(ND_ADD, addr, new_num_node(idx));     // array+idx
                     Node *left = new_node(ND_DEREF, add_expr, NULL);                // *(array+idx)
-                    Node *right = (Node*)vec_get(init_expr->node_list, idx);
+                    Node *right = (Node*)vec_get(init_expr->node_list, idx);        // right
                     define_type(&addr->type, PTR);
                     define_type(&addr->type->ptr_to, addr->left->type->ptr_to->ty);
                     add_expr->type = addr->type;
