@@ -48,6 +48,15 @@ void error_at(char *location, char *fmt, ...){
     exit(1);
 }
 
+// 普通の出力
+void outtxt(char *fmt, ...) {
+    va_list va;
+    va_start(va, fmt);
+    vfprintf(stdout, fmt, va);
+    va_end(va);
+    printf("\n");
+}
+
 // ラベル出力
 void outlabel(char *fmt, ...){
     va_list va;
