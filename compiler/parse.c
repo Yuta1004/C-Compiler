@@ -198,7 +198,31 @@ Node *stmt(){
             var_node->name = var->name;
             var_node->type = var->type;
             var_node->offset = var->offset;
-            node = new_node(ND_ASSIGN, var_node, expr());
+
+            // 配列初期化式 or 普通の式
+            Node *init_expr = expr();
+            if(init_expr->kind == ND_INIT_ARRAY) {
+                // Blockノード初期化
+                node = calloc(1, sizeof(Node));
+                node->kind = ND_BLOCK;
+                node->node_list = vec_new(init_expr->node_list->len+1);
+
+                // 各要素を配列への代入式へ変換する
+                for(int idx = 0; idx < init_expr->node_list->len; ++ idx) {
+                    Node *addr = new_node(ND_ADDR, var_node, NULL);                 // array
+                    Node *add_expr = new_node(ND_ADD, addr, new_num_node(idx));     // array+idx
+                    Node *left = new_node(ND_DEREF, add_expr, NULL);                // *(array+idx)
+                    Node *right = (Node*)vec_get(init_expr->node_list, idx);
+                    define_type(&addr->type, PTR);
+                    define_type(&addr->type->ptr_to, addr->left->type->ptr_to->ty);
+                    add_expr->type = addr->type;
+                    left->type = add_expr->type->ptr_to;
+                    vec_push(node->node_list, new_node(ND_ASSIGN, left, right));    // *(array+idx) = right
+                }
+            }
+            else {
+                node = new_node(ND_ASSIGN, var_node, init_expr);
+            }
         }
         expect(";");
         return node;
