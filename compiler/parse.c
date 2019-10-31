@@ -189,39 +189,35 @@ Node *stmt(){
 
     // ローカル変数定義
     Var *var = regist_var(LOCAL);
-    if(var) {
-        Node *node = NULL;
-        if(consume("=")) {
-            // 変数ノード, 初期化式
-            Node *var_node = new_var_node(var);
-            Node *init_expr = expr();
+    if(var && consume("=")) {
+        Node *var_node = new_var_node(var);
+        Node *init_expr = expr();
 
-            // 配列初期化式 or 普通の式
-            if(init_expr->kind == ND_INIT_ARRAY) {
-                // Blockノード初期化
-                node = calloc(1, sizeof(Node));
-                node->kind = ND_BLOCK;
-                node->node_list = vec_new(init_expr->node_list->len+1);
+        // 配列初期化式 or 普通の式
+        if(init_expr->kind == ND_INIT_ARRAY) {
+            // Blockノード初期化
+            Node *node = new_node(ND_BLOCK, NULL, NULL);
+            node->node_list = vec_new(init_expr->node_list->len+1);
 
-                // 各要素を配列への代入式へ変換する
-                for(int idx = 0; idx < init_expr->node_list->len; ++ idx) {
-                    Node *addr = new_node(ND_ADDR, var_node, NULL);                 // array
-                    Node *add_expr = new_node(ND_ADD, addr, new_num_node(idx));     // array+idx
-                    Node *left = new_node(ND_DEREF, add_expr, NULL);                // *(array+idx)
-                    Node *right = (Node*)vec_get(init_expr->node_list, idx);        // right
-                    define_type(&addr->type, PTR);
-                    define_type(&addr->type->ptr_to, addr->left->type->ptr_to->ty);
-                    add_expr->type = addr->type;
-                    left->type = add_expr->type->ptr_to;
-                    vec_push(node->node_list, new_node(ND_ASSIGN, left, right));    // *(array+idx) = right
-                }
+            // 各要素を配列への代入式へ変換する
+            for(int idx = 0; idx < init_expr->node_list->len; ++ idx) {
+                Node *addr = new_node(ND_ADDR, var_node, NULL);                 // array
+                Node *add_expr = new_node(ND_ADD, addr, new_num_node(idx));     // array+idx
+                Node *left = new_node(ND_DEREF, add_expr, NULL);                // *(array+idx)
+                Node *right = (Node*)vec_get(init_expr->node_list, idx);        // right
+                define_type(&addr->type, PTR);
+                define_type(&addr->type->ptr_to, addr->left->type->ptr_to->ty);
+                add_expr->type = addr->type;
+                left->type = add_expr->type->ptr_to;
+                vec_push(node->node_list, new_node(ND_ASSIGN, left, right));    // *(array+idx) = right
             }
-            else {
-                node = new_node(ND_ASSIGN, var_node, init_expr);
-            }
+            return node;
         }
+        return new_node(ND_ASSIGN, var_node, init_expr);
+    }
+    if(var){
         expect(";");
-        return node;
+        return NULL;
     }
 
     // ;
