@@ -192,6 +192,7 @@ Node *stmt(){
     if(var) {
         Node *node = NULL;
         if(consume("=")) {
+            // 変数ノード
             Node *var_node = calloc(1, sizeof(Node));
             var_node->kind = ND_LVAR;
             var_node->name = var->name;
@@ -429,26 +430,17 @@ Node *primary(){
         // 変数
         Node *node = calloc(1, sizeof(Node));
         Var *result = find_var(next_token);
+        node->kind = ND_LVAR;
         node->offset = result->offset;
         node->type = result->type;
-        node->kind = ND_LVAR;
         node->name = result->name;
         if(result->var_type == GLOBAL) node->kind = ND_GVAR;
 
         // 変数が配列を指していた場合、先頭アドレスへのポインタに変換する
         if(node->type->ty == ARRAY) {
-            free(node);
-            Node *addr_par = calloc(1, sizeof(Node));
-            Node *addr = calloc(1, sizeof(Node));
-            addr_par->kind = ND_ADDR;
-            addr_par->left = addr;
-            addr->kind = ND_LVAR;
-            addr->offset = result->offset;
-            addr->name = result->name;
-            if(result->var_type == GLOBAL) addr->kind = ND_GVAR;
-            define_type(&addr_par->type, PTR);
-            define_type(&addr_par->type->ptr_to, result->type->ptr_to->ty);
-            node = addr_par;
+            node = new_node(ND_ADDR, node, NULL);
+            define_type(&node->type, PTR);
+            define_type(&node->type->ptr_to, node->left->type->ptr_to->ty);
         }
         return node;
     }
