@@ -192,8 +192,8 @@ void gen_asm(Node *node){
         outasm("push rdi");                                       // rdi, rsi
         outasm("push rsi");
         for(int idx = 0; idx < 6 && node->args[idx]; ++ idx) {
-                gen_asm_with_pop(node->args[idx]);
-                outasm("mov %s, rax", argregs[idx]);
+            gen_asm_with_pop(node->args[idx]);
+            outasm("mov %s, rax", argregs[idx]);
         }
         outasm("mov al, 0");
         outasm("mov rbx, rsp");
