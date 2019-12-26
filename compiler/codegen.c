@@ -87,20 +87,21 @@ void gen_asm(Node *node){
         outasm("push rax");
         return;
 
-    case ND_DEREF:
     case ND_GVAR:
-    case ND_LVAR:
-        // 変数 or *演算子
-        if(node->kind == ND_GVAR || node->kind == ND_LVAR)
-            gen_lval(node);
-        else
-            gen_asm(left);
-        outasm("pop rax");
-
         // 文字列をもつグローバル変数
-        if(node->kind == ND_GVAR && node->type->ty == STR) return;
+        if(node->type->ty == STR)
+            return;
 
+    case ND_LVAR:
+        gen_lval(node);
+
+    case ND_DEREF:
+        if(node->kind == ND_DEREF)
+            gen_asm(left);
+
+        // ** GVAR, LVAR, DEREF共通処理 **
         // 型に合わせてmov命令
+        outasm("pop rax");
         if(type_to_size(node->type) == 1)
             outasm("movsx eax, %s [rax]", size_stmt(node->type));
         else
