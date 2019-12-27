@@ -13,9 +13,10 @@ Var *find_var(Token *request){
     Var *hit_var = NULL;
     for(int v_idx = 0; v_idx < locals->len; ++ v_idx) {
         Var *var = (Var*)vec_get(locals, v_idx);
-        if(_strncmp(var->name, request->str, var->len, request->len)) {
-            hit_var = var;
-        }
+        if( _strncmp(var->name, request->str, var->len, request->len) &&  // 名前チェック
+            (vec_find(man_scope, (void*)(long)var->scope_id) != -1 || scope_id == var->scope_id) && // スコープチェック
+            (hit_var == NULL || hit_var->scope_id < var->scope_id)  // 最大を残す
+        ) { hit_var = var; }
     }
     if(hit_var != NULL)
         return hit_var;
