@@ -12,6 +12,9 @@ int main(int argc, char** argv){
 
     // スコープ管理
     scope_id = 0;
+    scope_sum_id = 0;
+    man_scope = vec_new(10);
+    vec_push(man_scope, 0);
 
     // プログラムファイル読み込み
     program_body = read_file(argv[1]);

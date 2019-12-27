@@ -109,7 +109,7 @@ Vector *locals;
 Vector *globals;
 Vector *str_vec;
 Vector *man_scope;
-int label, sum_offset, scope_id;
+int label, sum_offset, scope_id, scope_sum_id;
 
 /* common.c */
 void error(char *fmt, ...);

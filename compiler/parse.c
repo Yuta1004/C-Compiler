@@ -6,6 +6,8 @@
 #include "yncc.h"
 
 /* プロトタイプ宣言 */
+void in_scope();
+void out_scope();
 void program();
 Node *func();
 Node *block();
@@ -18,6 +20,15 @@ Node *add();
 Node *mul();
 Node *unary();
 Node *primary();
+
+void in_scope() {
+    scope_id = (++scope_sum_id);
+    vec_push(man_scope, (void*)(long)scope_sum_id);
+}
+
+void out_scope() {
+    scope_id = ((int)(long)vec_pop(man_scope)) - 1;
+}
 
 // 構文解析1
 // program = func*
@@ -53,6 +64,7 @@ Node *func(){
 
     // 関数定義
     if(consume("(")) {
+        in_scope();
         node->args = calloc(6, sizeof(Node));
         for(int idx = 0; idx < 6; ++ idx) {
             Var *var = regist_var(LOCAL);
@@ -68,6 +80,7 @@ Node *func(){
         }
         expect(")");
         node->left = block();
+        out_scope();
         return node;
     }
 
@@ -95,11 +108,12 @@ Node *block() {
         node->node_list = vec_new(10);
 
         // stmt*
-        ++ scope_id;
+        in_scope();
         Node *now_node = node;
         while(!consume("}")) {
             vec_push(node->node_list, block());
         }
+        out_scope();
         return node;
     }
     return stmt();
@@ -124,6 +138,7 @@ Node *stmt(){
 
     // if
     if(token->kind == TOKEN_IF) {
+        in_scope();
         // if ( expr ) block
         ++ scope_id;
         token = token->next;
@@ -140,11 +155,13 @@ Node *stmt(){
             token = token->next;
             node->right->right = block();
         }
+        out_scope();
         return node;
     }
 
     // while
     if(token->kind == TOKEN_WHILE) {
+        in_scope();
         // while ( expr ) block
         ++ scope_id;
         token = token->next;
@@ -154,11 +171,13 @@ Node *stmt(){
         node->left = expr();
         expect(")");
         node->right = block();
+        out_scope();
         return node;
     }
 
     // for
     if(token->kind == TOKEN_FOR) {
+        in_scope();
         // for (
         ++ scope_id;
         token = token->next;
@@ -191,6 +210,7 @@ Node *stmt(){
 
         // block
         node->right->left->right = block();
+        out_scope();
         return node;
     }
 
