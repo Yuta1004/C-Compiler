@@ -31,7 +31,7 @@ Var *find_var(Token *request){
     // マッチなし
     char *name = (char*)calloc(request->len+1, sizeof(char));
     strncpy(name, request->str, request->len);
-    error("[ERROR] 定義されていない変数です -> %s", name);
+    error_at(request->str, "定義されていないか使用できない変数 : %s", name);
 }
 
 // 変数登録
@@ -68,7 +68,7 @@ Var *regist_var(int var_type){
             var->offset = (sum_offset += (size*8) - 8);
             expect("]");
             if(size <= 0) {
-                error("[ERROR] 長さが0以下の配列は定義できません");
+                error_at(token->str, "長さが0以下の配列は定義できません");
             }
         }
 
@@ -81,7 +81,7 @@ Var *regist_var(int var_type){
                 base_type->size = size->val;
             expect("]");
             if(size != 0 && size->val <= 0) {
-                error("[ERROR] 長さが0以下の配列は定義できません");
+                error_at(token->str, "長さが0以下の配列は定義できません");
             }
         }
     }

@@ -46,7 +46,7 @@ Node *func(){
     read_type();
     Token *f_name_token = consume_ident();
     if(!f_name_token){
-        error("[ERROR] 関数定義が要求されました");
+        error_at(token->str, "関数定義が要求されました");
     }
     node->name = (char*)calloc(f_name_token->len+1, sizeof(char));
     strncpy(node->name, f_name_token->str, f_name_token->len);
