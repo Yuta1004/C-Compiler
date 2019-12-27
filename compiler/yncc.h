@@ -92,6 +92,7 @@ struct Var {
     int offset;      // ローカル変数だった時、RBPからのオフセット
     Type *type;      // 型
     Node *init_expr; // グローバル変数だった時、初期化式のノード
+    int nest;        // ネスト
 };
 
 struct Type {
