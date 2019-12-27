@@ -1,6 +1,7 @@
 int failed_cnt = 0;
 
 int try(int req, int expr) {
+    printf("%d == %d\n", req, expr);
     if(req == expr) {
         printf("Success!!\n");
     } else {
@@ -65,7 +66,6 @@ int main(){
     printf("\nPointer\n");
     try(3, ({ int x; int y; int *z; int zc; x = 3; y = 5; z = &y + 1; zc = *z; zc; }));
     try(10, ({ int x; int *l; int **z; x = 100; l = &x; z = &l; **z = 10; x; }));
-    // try("pointer-3", 10, ({ int a; int *p; a = 10; p = &a; *p; }));
 
     /* Sizeof */
     printf("\nSizeof\n");
@@ -91,6 +91,9 @@ int main(){
     /* Comment */
     printf("\nComment\n");
     try(0, ({ /* abcdefghijklmn */ int a; a = 20; a - 20; }));
+
+    /* For-ext */
+    try(55, ({int sum = 0; for(int i = 0; i <= 10; i = i+1) sum = sum+i; sum; }));
 
     /* Test Result */
     if(failed_cnt == 0) {
