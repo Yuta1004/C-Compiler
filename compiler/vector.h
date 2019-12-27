@@ -12,6 +12,7 @@ Vector *vec_new(int capacity);
 void *vec_push(Vector *vec, void *item);
 void *vec_pop(Vector *vec);
 void *vec_get(Vector *vec, int idx);
+int vec_find(Vector *vec, void* target);
 void *vec_add_capacity(Vector *vec, int size);
 void vec_free(Vector *free);
 

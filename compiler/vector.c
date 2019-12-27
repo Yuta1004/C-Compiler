@@ -33,6 +33,14 @@ void *vec_get(Vector *vec, int idx) {
     return vec->data[idx];
 }
 
+int vec_find(Vector *vec, void* target) {
+    for(int idx = 0; idx < vec->len; ++ idx) {
+        if(vec->data[idx] == target)
+            return idx;
+    }
+    return -1;
+}
+
 void *vec_add_capacity(Vector *vec, int size) {
     int new_capacity = vec->capacity + size;
     void **new_data = (void**)malloc(sizeof(void*) * new_capacity);
