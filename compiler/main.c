@@ -10,9 +10,8 @@ int main(int argc, char** argv){
         return 0;
     }
 
-    // ネスト管理
-    nest_id = 0;
-    nest_depth = 0;
+    // スコープ管理
+    scope_id = 0;
 
     // プログラムファイル読み込み
     program_body = read_file(argv[1]);

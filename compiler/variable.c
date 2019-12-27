@@ -14,8 +14,7 @@ Var *find_var(Token *request){
     for(int v_idx = 0; v_idx < locals->len; ++ v_idx) {
         Var *var = (Var*)vec_get(locals, v_idx);
         if(_strncmp(var->name, request->str, var->len, request->len)) {
-            if(var->nest_depth <= nest_depth && (hit_var == NULL || hit_var->nest_depth < var->nest_depth))
-                hit_var = var;
+            hit_var = var;
         }
     }
     if(hit_var != NULL)
@@ -49,8 +48,7 @@ Var *regist_var(int var_type){
     var->len = var_name->len;
     var->offset = (sum_offset += 8);
     var->name = (char*)calloc(var_name->len+1, sizeof(char));
-    var->nest_id = nest_id;
-    var->nest_depth = nest_depth;
+    var->scope_id = scope_id;
     strncpy(var->name, var_name->str, var_name->len);
     if(var_type == LOCAL)
         vec_push(locals, var);
