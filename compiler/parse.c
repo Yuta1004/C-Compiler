@@ -126,6 +126,7 @@ Node *stmt(){
     // if
     if(token->kind == TOKEN_IF) {
         // if ( expr ) block
+        ++ nest;
         token = token->next;
         expect("(");
         Node *node = calloc(1, sizeof(Node));
@@ -140,12 +141,14 @@ Node *stmt(){
             token = token->next;
             node->right->right = block();
         }
+        -- nest;
         return node;
     }
 
     // while
     if(token->kind == TOKEN_WHILE) {
         // while ( expr ) block
+        ++ nest;
         token = token->next;
         expect("(");
         Node *node = calloc(1, sizeof(Node));
@@ -153,12 +156,14 @@ Node *stmt(){
         node->left = expr();
         expect(")");
         node->right = block();
+        -- nest;
         return node;
     }
 
     // for
     if(token->kind == TOKEN_FOR) {
         // for (
+        ++ nest;
         token = token->next;
         Node *node = calloc(1, sizeof(Node));
         node->right = calloc(1, sizeof(Node));
@@ -189,6 +194,7 @@ Node *stmt(){
 
         // block
         node->right->left->right = block();
+        -- nest;
         return node;
     }
 
