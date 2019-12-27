@@ -28,7 +28,7 @@ Var *regist_var(int var_type){
     // 型
     Type *type = read_type();
     if(!type) return NULL;
-    Type *base_type = get_base_type(type);
+    Type *base_type = get_base_type(type);  // 参照の先の型(base_type)
 
     // 変数名
     Var *var = calloc(1, sizeof(Var));
@@ -38,6 +38,7 @@ Var *regist_var(int var_type){
     var->len = var_name->len;
     var->offset = (sum_offset += 8);
     var->name = (char*)calloc(var_name->len+1, sizeof(char));
+    var->nest = nest;
     strncpy(var->name, var_name->str, var_name->len);
     if(var_type == LOCAL)
         vec_push(locals, var);
