@@ -180,5 +180,10 @@ try "int main(){ char *msg = \"hello %s!\\n\"; char *name = \"Yuta1004\"; printf
 try "int main(){ int x = 20; int *y = &x; int **z = &y; return **z; }" 20
 try "int main(){ int num[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}; int sum = 0; int idx = 0; for(; idx < 10; idx = idx + 1) sum = sum + num[idx]; return sum; }" 55
 
+## scope
+echo -e "\e[1m\nscope\e[m"
+try "int main() { int a = 10; { int a = 20; { int a = 30; printf(\"%d\\n\", a); } printf(\"%d\\n\", a); } printf(\"%d\\m\", a); }" 0
+
+
 echo ""
 exit 0

@@ -4,20 +4,31 @@
 #include <string.h>
 #include "yncc.h"
 
+#define _strncmp(str1, str2, str1_len, str2_len) \
+    ((str1_len == str2_len) && strncmp(str1, str2, str1_len) == 0)
 
 // 変数検索
 Var *find_var(Token *request){
-    // 検索
-    Vector *var_list[] = {locals, globals};
-    for(int idx = 0; idx < 2; ++ idx) {
-        for(int v_idx = 0; v_idx < var_list[idx]->len; ++ v_idx){
-            Var *var = (Var*)vec_get(var_list[idx], v_idx);
-            if(var->len == request->len && strncmp(var->name, request->str, request->len) == 0){
-                return var;
-            }
+    // local検索(今のネスト以下の浅さで最大のものを見つける)
+    Var *hit_var = NULL;
+    for(int v_idx = 0; v_idx < locals->len; ++ v_idx) {
+        Var *var = (Var*)vec_get(locals, v_idx);
+        if(_strncmp(var->name, request->str, var->len, request->len)) {
+            if(var->nest <= nest && (hit_var == NULL || (hit_var != NULL && hit_var->nest < var->nest)))
+                hit_var = var;
         }
     }
+    if(hit_var != NULL)
+        return hit_var;
 
+    // global検索
+    for(int v_idx = 0; v_idx < globals->len; ++ v_idx) {
+        Var *var = (Var*)vec_get(globals, v_idx);
+        if(_strncmp(var->name, request->str, var->len, request->len))
+            return var;
+    }
+
+    // マッチなし
     char *name = (char*)calloc(request->len+1, sizeof(char));
     strncpy(name, request->str, request->len);
     error("[ERROR] 定義されていない変数です -> %s", name);
