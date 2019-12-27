@@ -95,10 +95,12 @@ Node *block() {
         node->node_list = vec_new(10);
 
         // stmt*
+        ++ nest;
         Node *now_node = node;
         while(!consume("}")) {
             vec_push(node->node_list, block());
         }
+        -- nest;
         return node;
     }
     return stmt();
