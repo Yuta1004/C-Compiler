@@ -184,6 +184,10 @@ try "int main(){ int num[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}; int sum = 0; int
 echo -e "\e[1m\nscope\e[m"
 try "int main() { int a = 10; { int a = 20; { int a = 30; printf(\"%d\\n\", a); } printf(\"%d\\n\", a); } printf(\"%d\\m\", a); }" 0
 
+## scope
+echo -e "\e[1m\nfor-ext\e[m"
+try "int main() { int sum = 0; for(int a = 1; a <= 10; a = a+1) sum = sum+a; return sum; }" 55
+try "int main() { int sum = 0; for(int i = 1; i <= 5; i = i+1) for(int j = 1; j <= 5; j = j+1) sum = sum+j; return sum; }" 75
 
 echo ""
 exit 0

@@ -168,7 +168,10 @@ Node *stmt(){
 
         // expr? ; <Init>
         if(!consume(";")) {
-            node->left = expr();
+            if(token->kind == TOKEN_INT || token->kind == TOKEN_CHAR)
+                node->left = stmt();
+            else
+                node->left = expr();
             expect(";");
         }
         // expr? ; <Condition>
