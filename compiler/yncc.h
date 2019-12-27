@@ -108,7 +108,6 @@ Node *code[100];
 Vector *locals;
 Vector *globals;
 Vector *str_vec;
-Vector *man_nest;
 int label, sum_offset, nest;
 
 /* common.c */

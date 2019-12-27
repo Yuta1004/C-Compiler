@@ -12,7 +12,6 @@ int main(int argc, char** argv){
 
     // ネスト管理
     nest = 0;
-    man_nest = vec_new(5);
 
     // プログラムファイル読み込み
     program_body = read_file(argv[1]);
