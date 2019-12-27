@@ -14,7 +14,7 @@ Var *find_var(Token *request){
     for(int v_idx = 0; v_idx < locals->len; ++ v_idx) {
         Var *var = (Var*)vec_get(locals, v_idx);
         if(_strncmp(var->name, request->str, var->len, request->len)) {
-            if(var->nest_depth <= nest_depth && (hit_var == NULL || (hit_var != NULL && hit_var->nest_depth < var->nest_depth)))
+            if(var->nest_depth <= nest_depth && (hit_var == NULL || hit_var->nest_depth < var->nest_depth))
                 hit_var = var;
         }
     }
