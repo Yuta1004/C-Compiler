@@ -92,7 +92,8 @@ struct Var {
     int offset;      // ローカル変数だった時、RBPからのオフセット
     Type *type;      // 型
     Node *init_expr; // グローバル変数だった時、初期化式のノード
-    int nest;        // ネスト
+    int nest_id;     // ネストのID
+    int nest_depth;  // ネストの深さ
 };
 
 struct Type {
@@ -108,7 +109,7 @@ Node *code[100];
 Vector *locals;
 Vector *globals;
 Vector *str_vec;
-int label, sum_offset, nest;
+int label, sum_offset, nest_id, nest_depth;
 
 /* common.c */
 void error(char *fmt, ...);

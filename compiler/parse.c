@@ -95,12 +95,13 @@ Node *block() {
         node->node_list = vec_new(10);
 
         // stmt*
-        ++ nest;
+        ++ nest_id;
+        ++ nest_depth;
         Node *now_node = node;
         while(!consume("}")) {
             vec_push(node->node_list, block());
         }
-        -- nest;
+        -- nest_depth;
         return node;
     }
     return stmt();
@@ -126,7 +127,8 @@ Node *stmt(){
     // if
     if(token->kind == TOKEN_IF) {
         // if ( expr ) block
-        ++ nest;
+        ++ nest_id;
+        ++ nest_depth;
         token = token->next;
         expect("(");
         Node *node = calloc(1, sizeof(Node));
@@ -141,14 +143,15 @@ Node *stmt(){
             token = token->next;
             node->right->right = block();
         }
-        -- nest;
+        -- nest_depth;
         return node;
     }
 
     // while
     if(token->kind == TOKEN_WHILE) {
         // while ( expr ) block
-        ++ nest;
+        ++ nest_id;
+        ++ nest_depth;
         token = token->next;
         expect("(");
         Node *node = calloc(1, sizeof(Node));
@@ -156,14 +159,15 @@ Node *stmt(){
         node->left = expr();
         expect(")");
         node->right = block();
-        -- nest;
+        -- nest_depth;
         return node;
     }
 
     // for
     if(token->kind == TOKEN_FOR) {
         // for (
-        ++ nest;
+        ++ nest_id;
+        ++ nest_depth;
         token = token->next;
         Node *node = calloc(1, sizeof(Node));
         node->right = calloc(1, sizeof(Node));
@@ -194,7 +198,7 @@ Node *stmt(){
 
         // block
         node->right->left->right = block();
-        -- nest;
+        -- nest_depth;
         return node;
     }
 

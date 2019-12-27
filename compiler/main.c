@@ -11,7 +11,8 @@ int main(int argc, char** argv){
     }
 
     // ネスト管理
-    nest = 0;
+    nest_id = 0;
+    nest_depth = 0;
 
     // プログラムファイル読み込み
     program_body = read_file(argv[1]);
