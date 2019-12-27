@@ -60,7 +60,6 @@ int main(){
     /* Define Function */
     printf("\nDefine function\n");
     printf("Success!!\n");
-    return 0;
 
     /* Pointer */
     printf("\nPointer\n");
