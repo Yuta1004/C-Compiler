@@ -107,7 +107,8 @@ Node *code[100];
 Vector *locals;
 Vector *globals;
 Vector *str_vec;
-int label, sum_offset;
+Vector *man_nest;
+int label, sum_offset, nest;
 
 /* common.c */
 void error(char *fmt, ...);
