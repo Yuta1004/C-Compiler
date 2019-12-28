@@ -197,7 +197,7 @@ try "int main() { int a = 10; a *= 5; a /= 10; return a; }" 5
 try "int main() { int sum = 0; for(int n = 1; n <= 10; n += 1) { sum += n; } return sum; }" 55
 
 ## inc
-echo -e "\e[1m\ninc\e[m"
+echo -e "\e[1m\ndec\e[m"
 try "int main() { int a = 0; ++ a; ++ a; ++ a; return a; }" 3
 try "int main() { int a = 0; int b = ++ a; return a+b; }" 2
 try "int main() { int i; for(i = 0; i < 10; ++ i); return i; }" 10
