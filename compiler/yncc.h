@@ -53,6 +53,8 @@ typedef enum {
     ND_IF,              // if
     ND_WHILE,           // while
     ND_FOR,             // for
+    ND_BREAK,           // break
+    ND_CONTINUE,        // continue
     ND_NUM,             // 数字
     ND_STR,             // 文字列リテラル
 } NodeKind;
