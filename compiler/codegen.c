@@ -262,28 +262,28 @@ void gen_asm(Node *node){
         // 条件式
         gen_asm_with_pop(left);
         outasm("cmp rax, 1");
-        outasm("jne .L__if_else_%d", tmp_label);
+        outasm("jne .L_middle_%d", tmp_label);
         // 処理<true>
         gen_asm_with_pop(right->left);
-        outasm("jmp .L__if_end_%d", tmp_label);
+        outasm("jmp .L_bottom_%d", tmp_label);
         // 処理<false>
-        outlabel(".L__if_else_%d", tmp_label);
+        outlabel(".L_middle_%d", tmp_label);
         gen_asm_with_pop(right->right);
-        outlabel(".L__if_end_%d", tmp_label);
+        outlabel(".L_bottom_%d", tmp_label);
         outasm("push 0");
         return;
 
     case ND_WHILE:
         label ++;
-        outlabel(".L__while_start_%d", tmp_label);
+        outlabel(".L_top_%d", tmp_label);
         // 条件式
         gen_asm_with_pop(left);
         outasm("cmp rax, 1");
-        outasm("jne .L__while_end_%d", tmp_label);
+        outasm("jne .L_bottom_%d", tmp_label);
         // 処理
         gen_asm_with_pop(right);
-        outasm("jmp .L__while_start_%d", tmp_label);
-        outlabel(".L__while_end_%d", tmp_label);
+        outasm("jmp .L_top_%d", tmp_label);
+        outlabel(".L_bottom_%d", tmp_label);
         outasm("push 0");
         return;
 
@@ -291,17 +291,17 @@ void gen_asm(Node *node){
         label ++;
         // 初期化
         gen_asm_with_pop(left);
-        outlabel(".L__for_start_%d", tmp_label);
+        outlabel(".L_top_%d", tmp_label);
         // 条件式
         gen_asm_with_pop(right->left->left);
         outasm("cmp rax, 1");
-        outasm("jne .L__for_end_%d", tmp_label);
+        outasm("jne .L_bottom_%d", tmp_label);
         // 処理
         gen_asm_with_pop(right->left->right);
         // 変化式
         gen_asm_with_pop(right->right);
-        outasm("jmp .L__for_start_%d", tmp_label);
-        outlabel(".L__for_end_%d", tmp_label);
+        outasm("jmp .L_top_%d", tmp_label);
+        outlabel(".L_bottom_%d", tmp_label);
         outasm("push 0");
         return;
     }
