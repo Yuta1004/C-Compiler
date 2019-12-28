@@ -388,7 +388,8 @@ Node *mul(){
 }
 
 // 構文解析10
-// unary = "sizeof" unary | ("+" | "-")? primary | ("*" | "&") unary | unary "[" unary "]"
+// unary = "sizeof" unary | ("+" | "-")? primary | ("*" | "&") unary | unary "[" unary "]"  |
+//         ("++" | "--") primary
 Node *unary(){
     if(token->kind == TOKEN_SIZEOF) {
         token = token->next;
@@ -419,6 +420,22 @@ Node *unary(){
         node->left = unary();
         define_type(&node->type, PTR);
         define_type(&node->type->ptr_to, PTR);
+        goto check_array_access;
+    }
+
+    if(consume("++")) {
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_PRE_INC;
+        node->left = primary();
+        define_type(&node->type, node->left->type->ty);
+        goto check_array_access;
+    }
+
+    if(consume("--")) {
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_PRE_DEC;
+        node->left = primary();
+        define_type(&node->type, node->left->type->ty);
         goto check_array_access;
     }
 
