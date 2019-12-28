@@ -287,9 +287,12 @@ Node *expr(){
 // 構文解析5
 // assign = equality ("=" assign)?
 Node *assign(){
+    bool is_comp_assign = true;
     Node *node = equality();
+
     if(consume("=")){
         node = new_node(ND_ASSIGN, node, assign());
+        is_comp_assign = false;
     } else if(consume("+=")){
         node = new_node(ND_ASSIGN, node, new_node(ND_ADD, node, assign()));
     } else if(consume("-=")){
@@ -301,7 +304,10 @@ Node *assign(){
     } else {
         return node;
     }
+
     set_lr_max_type(node);
+    if(is_comp_assign)
+        set_lr_max_type(node->right);
     return node;
 }
 
