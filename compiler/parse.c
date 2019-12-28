@@ -5,6 +5,8 @@
 #include <ctype.h>
 #include "yncc.h"
 
+#define set_lr_max_type(node) ((node)->type = max_type((node)->left->type, (node)->right->type))
+
 /* プロトタイプ宣言 */
 void in_scope();
 void out_scope();
@@ -299,7 +301,7 @@ Node *assign(){
     } else {
         return node;
     }
-    node->type = max_type(node->left->type, node->right->type);
+    set_lr_max_type(node);
     return node;
 }
 
@@ -315,8 +317,7 @@ Node *equality(){
     } else {
         return node;
     }
-
-    node->type = max_type(node->left->type, node->right->type);
+    set_lr_max_type(node);
     return node;
 }
 
@@ -337,8 +338,7 @@ Node *relational(){
     } else {
         return node;
     }
-
-    node->type = max_type(node->left->type, node->right->type);
+    set_lr_max_type(node);
     return node;
 }
 
@@ -350,10 +350,10 @@ Node *add(){
     while(true) {
         if(consume("+")) {
             node = new_node(ND_ADD, node, mul());
-            node->type = max_type(node->left->type, node->right->type);
+            set_lr_max_type(node);
         } else if(consume("-")) {
             node = new_node(ND_SUB, node, mul());
-            node->type = max_type(node->left->type, node->right->type);
+            set_lr_max_type(node);
         } else {
             return node;
         }
@@ -368,13 +368,13 @@ Node *mul(){
     while(true) {
         if(consume("*")) {
             node = new_node(ND_MUL, node, unary());
-            node->type = max_type(node->left->type, node->right->type);
+            set_lr_max_type(node);
         } else if(consume("/")) {
             node = new_node(ND_DIV, node, unary());
-            node->type = max_type(node->left->type, node->right->type);
+            set_lr_max_type(node);
         } else if(consume("%")) {
             node = new_node(ND_DIV_REMAIN, node, unary());
-            node->type = max_type(node->left->type, node->right->type);
+            set_lr_max_type(node);
         } else {
             return node;
         }
@@ -394,7 +394,7 @@ Node *unary(){
 
     if(consume("-")) {
         Node *node = new_node(ND_SUB, new_num_node(0), primary());
-        node->type = max_type(node->left->type, node->right->type);
+        set_lr_max_type(node);
         return node;
     }
 
