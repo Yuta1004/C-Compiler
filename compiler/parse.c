@@ -423,7 +423,7 @@ Node *unary(){
         goto check_array_access;
     }
 
-    if(consume("++")) {
+    if(consume("++")) { // 前置
         node = calloc(1, sizeof(Node));
         node->kind = ND_PRE_INC;
         node->left = primary();
@@ -431,7 +431,7 @@ Node *unary(){
         goto check_array_access;
     }
 
-    if(consume("--")) {
+    if(consume("--")) { // 前置
         node = calloc(1, sizeof(Node));
         node->kind = ND_PRE_DEC;
         node->left = primary();
@@ -459,6 +459,23 @@ check_array_access:
         expect("]");
         return deref_par;
     }
+
+    if(consume("++")) { // 後置
+        Node *tmp = calloc(1, sizeof(Node));
+        tmp->kind = ND_POST_INC;
+        tmp->left = node;
+        define_type(&tmp->type, node->type->ty);
+        node = tmp;
+    }
+
+    if(consume("--")) { // 後置
+        Node *tmp = calloc(1, sizeof(Node));
+        tmp->kind = ND_POST_DEC;
+        tmp->left = node;
+        define_type(&tmp->type, node->type->ty);
+        node = tmp;
+    }
+
     return node;
 }
 
