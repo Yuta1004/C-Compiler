@@ -70,9 +70,8 @@ void gen_asm_with_pop(Node *node) {
 // 構文木 to アセンブリ
 void gen_asm(Node *node){
     if(node == NULL || node->kind == ND_NONE) return;
-    int tmp_label = label;
 
-    int val = node->val;
+    int val = node->val, tmp_label;
     Node *left = node->left;
     Node *right = node->right;
 
@@ -258,7 +257,7 @@ void gen_asm(Node *node){
         return;
 
     case ND_IF:
-        label ++;
+        tmp_label = ++ label;
         // 条件式
         gen_asm_with_pop(left);
         outasm("cmp rax, 1");
@@ -274,7 +273,7 @@ void gen_asm(Node *node){
         return;
 
     case ND_WHILE:
-        label ++;
+        tmp_label = ++ label;
         outlabel(".L_top_%d", tmp_label);
         // 条件式
         gen_asm_with_pop(left);
@@ -288,7 +287,7 @@ void gen_asm(Node *node){
         return;
 
     case ND_FOR:
-        label ++;
+        tmp_label = ++ label;
         // 初期化
         gen_asm_with_pop(left);
         outlabel(".L_top_%d", tmp_label);
