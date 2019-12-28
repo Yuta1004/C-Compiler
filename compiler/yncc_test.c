@@ -92,7 +92,20 @@ int main(){
     try(0, ({ /* abcdefghijklmn */ int a; a = 20; a - 20; }));
 
     /* For-ext */
+    printf("\nFor-ext\n");
     try(55, ({int sum = 0; for(int i = 0; i <= 10; i = i+1) sum = sum+i; sum; }));
+
+    /* Inc */
+    printf("\nInc\n");
+    try(10, ({ int a = 0; for(int i = 0; i < 10; ++ i) ++ a; a; }));
+    try(5, ({ int a = 2; int b = a ++; a+b; }));
+    try(8, ({ int a = 3; int b = ++ a; a+b; }));
+
+    /* Dec */
+    printf("\nDec\n");
+    try(0, ({ int num = 10; for(int i = 10; i > 0; --i) num --; num; }));
+    try(7, ({ int a = 4; int b = a --; a+b; }));
+    try(100, ({ int a = 51; int b = --a; a+b; }));
 
     /* Test Result */
     if(failed_cnt == 0) {
