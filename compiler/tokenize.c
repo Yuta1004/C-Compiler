@@ -5,6 +5,14 @@
 #include <ctype.h>
 #include <stdio.h>
 
+#define def_token_stmt(word, w_len, kind) \
+    if(strncmp(p, (word), (w_len)) == 0 && !is_alnum(*(p+(w_len)))){ \
+        cur = new_token((kind), cur, p); \
+        cur->len = (w_len); \
+        p += (w_len); \
+        continue; \
+    }
+
 // 新しいトークンを作成してcurに繋げる
 Token *new_token(TokenKind kind, Token *cur, char *str){
     Token *tok = calloc(1, sizeof(Token));     // Tokenサイズのメモリを1区間要求する(with ゼロクリア)
@@ -81,69 +89,15 @@ Token *tokenize(char *p){
             continue;
         }
 
-        // return
-        if(strncmp(p, "return", 6) == 0 && !is_alnum(*(p+6))){
-            cur = new_token(TOKEN_RETURN, cur, p);
-            cur->len = 6;
-            p += 6;
-            continue;
-        }
-
-        // if
-        if(strncmp(p, "if", 2) == 0 && !is_alnum(*(p+2))){
-            cur = new_token(TOKEN_IF, cur, p);
-            cur->len = 2;
-            p += 2;
-            continue;
-        }
-
-        // else
-        if(strncmp(p, "else", 4) == 0 && !is_alnum(*(p+4))){
-            cur = new_token(TOKEN_ELSE, cur, p);
-            cur->len = 4;
-            p += 4;
-            continue;
-        }
-
-        // while
-        if(strncmp(p, "while", 5) == 0 && !is_alnum(*(p+5))){
-            cur = new_token(TOKEN_WHILE, cur, p);
-            cur->len = 5;
-            p += 5;
-            continue;
-        }
-
-        // for
-        if(strncmp(p, "for", 3) == 0 && !is_alnum(*(p+3))){
-            cur = new_token(TOKEN_FOR ,cur, p);
-            cur->len = 3;
-            p += 3;
-            continue;
-        }
-
-        // int
-        if(strncmp(p, "int", 3) == 0 && !is_alnum(*(p+3))){
-            cur = new_token(TOKEN_INT, cur, p);
-            cur->len = 3;
-            p += 3;
-            continue;
-        }
-
-        // char
-        if(strncmp(p, "char", 4) == 0 && !is_alnum(*(p+4))){
-            cur = new_token(TOKEN_CHAR, cur, p);
-            cur->len = 4;
-            p += 4;
-            continue;
-        }
-
-        // sizeof
-        if(strncmp(p, "sizeof", 6) == 0 && !is_alnum(*(p+6))){
-            cur = new_token(TOKEN_SIZEOF, cur, p);
-            cur->len = 6;
-            p += 6;
-            continue;
-        }
+        // 予約語
+        def_token_stmt("return", 6, TOKEN_RETURN);
+        def_token_stmt("if", 2, TOKEN_IF);
+        def_token_stmt("else", 4, TOKEN_ELSE);
+        def_token_stmt("while", 5, TOKEN_WHILE);
+        def_token_stmt("for", 3, TOKEN_FOR);
+        def_token_stmt("int", 3, TOKEN_INT);
+        def_token_stmt("char", 4, TOKEN_CHAR);
+        def_token_stmt("sizeof", 6, TOKEN_SIZEOF);
 
         // 識別子
         if(('a' <= *p && *p <= 'z') || ('A' <= *p && *p <= 'Z')){
