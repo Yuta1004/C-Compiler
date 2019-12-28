@@ -41,9 +41,11 @@ Token *tokenize(char *p){
             continue;
         }
 
-        // ">=", "<=", "==", "!="
+        // ">=", "<=", "==", "!=" ...
         if(strncmp(p, "<=", 2) == 0 || strncmp(p, ">=", 2) == 0 ||
-           strncmp(p, "==", 2) == 0 || strncmp(p, "!=", 2) == 0){
+           strncmp(p, "==", 2) == 0 || strncmp(p, "!=", 2) == 0 ||
+           strncmp(p, "+=", 2) == 0 || strncmp(p, "-=", 2) == 0 ||
+           strncmp(p, "*=", 2) == 0 || strncmp(p, "/=", 2) == 0) {
             cur = new_token(TOKEN_RESERVED, cur, p);
             cur->len = 2;
             p += 2;
