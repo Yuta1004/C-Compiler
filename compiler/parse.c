@@ -288,6 +288,14 @@ Node *assign(){
     Node *node = equality();
     if(consume("=")){
         node = new_node(ND_ASSIGN, node, assign());
+    } else if(consume("+=")){
+        node = new_node(ND_ASSIGN, node, new_node(ND_ADD, node, assign()));
+    } else if(consume("-=")){
+        node = new_node(ND_ASSIGN, node, new_node(ND_SUB, node, assign()));
+    } else if(consume("*=")){
+        node = new_node(ND_ASSIGN, node, new_node(ND_MUL, node, assign()));
+    } else if(consume("/=")){
+        node = new_node(ND_ASSIGN, node, new_node(ND_DIV, node, assign()));
     } else {
         return node;
     }
