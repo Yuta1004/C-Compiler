@@ -225,6 +225,22 @@ void gen_asm(Node *node){
         outasm("mov rax, [rax]");
         outasm("push rax");
         return;
+
+    case ND_POST_INC:
+        gen_lval(left);
+        outasm("pop rax");
+        outasm("mov %s, [rax]", regs[1]);
+        outasm("push %s", regs[1]);
+        outasm("inc %s [rax]", size_stmt(left->type));
+        return;
+
+    case ND_POST_DEC:
+        gen_lval(left);
+        outasm("pop rax");
+        outasm("mov %s, [rax]", regs[1]);
+        outasm("push %s", regs[1]);
+        outasm("dec %s [rax]", size_stmt(left->type));
+        return;
     }
 
     // 予約語
