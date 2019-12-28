@@ -23,7 +23,7 @@ try() {
 
 # Test
 ## exprssion
-echo -e "\e[1m\nExprssion\e[m"
+echo -e "\e[1m\nexprssion\e[m"
 try "int main(){ return 0; }" 0
 try "int main(){ return 124; }" 124
 try "int main(){ return 200; }" 200
@@ -46,7 +46,7 @@ try "int main(){ return 10 % 3; }" 1
 try "int main(){ return 100 / 100; }" 1
 
 ## variable
-echo -e "\e[1m\nVariable\e[m"
+echo -e "\e[1m\nvariable\e[m"
 try "int main(){ int a; int b; int c; int d; a = 1; b = 2; c = 3; a = b*c/a; d = a+b+c; return d; }" 11
 try "int main(){ int a; int b; int c; int d; int e; a = 10; b = 20; c = a*b; d = (c+100)/(e=10); return d-e; }" 20
 try "int main(){ int one; int two; int sum; one = 1; two = 2; sum = one + two; return sum; }" 3
