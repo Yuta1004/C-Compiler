@@ -19,6 +19,8 @@ typedef enum {
     TOKEN_INT,          // int
     TOKEN_CHAR,         // char
     TOKEN_SIZEOF,       // sizeof
+    TOKEN_BREAK,        // break
+    TOKEN_CONTINUE,     // continue
     TOKEN_EOF,          // EOF
 } TokenKind;
 
