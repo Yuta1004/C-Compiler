@@ -257,50 +257,50 @@ void gen_asm(Node *node){
         return;
 
     case ND_IF:
-        tmp_label = ++ label;
+        tmp_label = ++ label_if;
         // 条件式
         gen_asm_with_pop(left);
         outasm("cmp rax, 1");
-        outasm("jne .L_middle_%d", tmp_label);
+        outasm("jne .L_if_middle_%d", tmp_label);
         // 処理<true>
         gen_asm_with_pop(right->left);
-        outasm("jmp .L_bottom_%d", tmp_label);
+        outasm("jmp .L_if_bottom_%d", tmp_label);
         // 処理<false>
-        outlabel(".L_middle_%d", tmp_label);
+        outlabel(".L_if_middle_%d", tmp_label);
         gen_asm_with_pop(right->right);
-        outlabel(".L_bottom_%d", tmp_label);
+        outlabel(".L_if_bottom_%d", tmp_label);
         outasm("push 0");
         return;
 
     case ND_WHILE:
-        tmp_label = ++ label;
-        outlabel(".L_top_%d", tmp_label);
+        tmp_label = ++ label_loop;
+        outlabel(".L_loop_top_%d", tmp_label);
         // 条件式
         gen_asm_with_pop(left);
         outasm("cmp rax, 1");
-        outasm("jne .L_bottom_%d", tmp_label);
+        outasm("jne .L_loop_bottom_%d", tmp_label);
         // 処理
         gen_asm_with_pop(right);
-        outasm("jmp .L_top_%d", tmp_label);
-        outlabel(".L_bottom_%d", tmp_label);
+        outasm("jmp .L_loop_top_%d", tmp_label);
+        outlabel(".L_loop_bottom_%d", tmp_label);
         outasm("push 0");
         return;
 
     case ND_FOR:
-        tmp_label = ++ label;
+        tmp_label = ++ label_loop;
         // 初期化
         gen_asm_with_pop(left);
-        outlabel(".L_top_%d", tmp_label);
+        outlabel(".L_loop_top_%d", tmp_label);
         // 条件式
         gen_asm_with_pop(right->left->left);
         outasm("cmp rax, 1");
-        outasm("jne .L_bottom_%d", tmp_label);
+        outasm("jne .L_loop_bottom_%d", tmp_label);
         // 処理
         gen_asm_with_pop(right->left->right);
         // 変化式
         gen_asm_with_pop(right->right);
-        outasm("jmp .L_top_%d", tmp_label);
-        outlabel(".L_bottom_%d", tmp_label);
+        outasm("jmp .L_loop_top_%d", tmp_label);
+        outlabel(".L_loop_bottom_%d", tmp_label);
         outasm("push 0");
         return;
     }

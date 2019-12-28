@@ -55,7 +55,6 @@ int main(int argc, char** argv){
 
     // アセンブリ出力
     outtxt(".text\n");
-    label = 0;
     for(int idx = 0; code[idx] != (Node*)-1; ++ idx){
         gen_asm(code[idx]);
     }
