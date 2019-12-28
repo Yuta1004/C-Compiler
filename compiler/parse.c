@@ -127,6 +127,8 @@ Node *block() {
 //        | "if" "(" expr ")" block ("else" block)?
 //        | "while" "(" expr ")" block
 //        | "for" "(" expr? ";" expr? ";" expr? ")" block
+//        | "break" ";"
+//        | "continue" ";"
 //        | type ident ("[" num "]")? ";"
 Node *stmt(){
     if(token->kind == TOKEN_RETURN){
@@ -247,6 +249,20 @@ Node *stmt(){
     if(var){
         expect(";");
         return NULL;
+    }
+
+    // "break" ";"
+    if(token->kind == TOKEN_BREAK) {
+        token = token->next;
+        expect(";");
+        return new_node(ND_BREAK, NULL, NULL);
+    }
+
+    // "continue" ";"
+    if(token->kind == TOKEN_CONTINUE) {
+        token = token->next;
+        expect(";");
+        return new_node(ND_CONTINUE, NULL, NULL);
     }
 
     // ;
