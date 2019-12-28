@@ -98,6 +98,8 @@ Token *tokenize(char *p){
         def_token_stmt("int", 3, TOKEN_INT);
         def_token_stmt("char", 4, TOKEN_CHAR);
         def_token_stmt("sizeof", 6, TOKEN_SIZEOF);
+        def_token_stmt("break", 5, TOKEN_BREAK);
+        def_token_stmt("continue", 8, TOKEN_CONTINUE);
 
         // 識別子
         if(('a' <= *p && *p <= 'z') || ('A' <= *p && *p <= 'Z')){
