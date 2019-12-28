@@ -304,6 +304,14 @@ void gen_asm(Node *node){
         outlabel(".L_loop_break_%d", tmp_label);
         outasm("push 0");
         return;
+
+    case ND_BREAK:
+        outasm("jmp .L_loop_break_%d", label_loop);
+        return;
+
+    case ND_CONTINUE:
+        outasm("jmp .L_loop_continue_%d", label_loop);
+        return;
     }
 
     gen_asm(left);

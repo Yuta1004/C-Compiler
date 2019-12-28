@@ -212,6 +212,18 @@ try "int main() { int i; for(i = 10; i > 0; -- i); return i; }" 0
 try "int main() { int a = 10; int b = a --; return a+b; }" 19
 try "int main() { int a = 5; -- a; a --; -- a; a --; a --; return a; }" 0
 
+## break
+echo -e "\e[1m\nbreak\e[m"
+try "int main() { int n = 0; for(; n < 10; ++ n) if(n == 5) break; return n; }" 5
+try "int main() { int sum = 0; for(int i = 0; i < 5; ++ i) for(int j = 0; j < 5; ++ j) { if(j == 2) break; sum += j; } return sum; }" 5
+try "int main() { int n = 1; int sum = 0; while(1) { sum += n; ++ n; if(sum >= 55) break; } return sum; }" 55
+
+## continue
+echo -e "\e[1m\ncontinue\e[m"
+try "int main() { int sum = 0; for(int n = 1; n <= 10; ++ n) { if(n == 5) continue; sum += n; } return sum; }" 50
+try "int main() { int sum = 0; for(int i = 0; i < 5; ++ i) for(int j = 0; j < 5; ++ j) { if(j == 2) continue; sum += j; } return sum; }" 40
+try "int main() { int sum = 1; int loop_cnt = 0; while(sum < 100) { ++ loop_cnt;  if(sum == 50) { sum = 80;  continue; } else { ++ sum; } } return loop_cnt; }" 70
+
 
 echo ""
 exit 0
