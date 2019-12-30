@@ -15,7 +15,7 @@ try() {
     actual="$?"
 
     if [ "$actual" == "$expected" ]; then
-        echo -e "\e[32mSuccess\e[m $input => $actual"
+        echo -e "\e[1;32mSuccess\e[m $input => $actual"
     else
         echo -e "\e[1;31mFail    input: $input => output: $actual ... expect: $expected\e[m"
     fi
