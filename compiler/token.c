@@ -63,6 +63,18 @@ void expect(char *op){
     }
 }
 
+// トークンが識別子かどかチェックする
+// もしそうでなければエラーを投げる
+Token *expect_ident(){
+    if(token->kind == TOKEN_IDENT){
+        Token *tmp = token;
+        token = token->next;
+        return tmp;
+    } else {
+        error_at(token->str, "トークンに識別子が要求されました");
+    }
+}
+
 // トークンが数字かチェックする
 // 数字ならその数を、そうでなければエラーを投げる
 int expect_number(){
@@ -83,7 +95,7 @@ Token *expect_kind(TokenKind kind){
         token = token->next;
         return tmp;
     } else {
-        error("異なる種類のトークンが要求されました");
+        error_at(token->str, "異なる種類のトークンが要求されました");
     }
 }
 

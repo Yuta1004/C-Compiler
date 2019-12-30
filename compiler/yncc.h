@@ -141,15 +141,15 @@ Type *get_base_type(Type *type);
 Token *tokenize();
 
 /* token.c */
-bool at_eof();
-int expect_number();
-bool consume(char *op);
 void expect(char *op);
-bool consume(char *op);
+Token *expect_ident();
+int expect_number();
 Token *expect_kind(TokenKind kind);
+bool consume(char *op);
 Token *consume_ident();
 Token *consume_number();
-Token *consume_kind();
+Token *consume_kind(TokenKind kind);
+bool at_eof();
 
 /* node.c */
 Node *new_node(NodeKind kind, Node *left, Node *right);
