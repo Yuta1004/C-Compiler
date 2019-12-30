@@ -108,8 +108,10 @@ struct Var {
 struct Type {
     enum{ NONE, INT, PTR, ARRAY, CHAR, STR, STRUCT } ty;
     struct Type *ptr_to;
-    size_t bytesize;
-    size_t alignment;
+    char *tag;
+    int len;
+    int bytesize;
+    int alignment;
 };
 
 struct Struct {
@@ -190,6 +192,7 @@ void decode_precalc_expr(char *s, Node *root);
 
 /* struct.c */
 bool def_struct(int type, char *tag);
+int get_struct_size(char *tag, int len);
 Var *struct_get_member(Token *tag, Token *member_n);
 
 #endif // YNCC_H

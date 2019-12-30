@@ -48,6 +48,16 @@ bool def_struct(int type, char *tag) {
     return true;
 }
 
+// 構造体のタグからそのサイズを返す
+int get_struct_size(char *tag, int len) {
+    for(int idx = 0; idx < struct_def_list->len; ++ idx) {
+        Struct *_struct = vec_get(struct_def_list, idx);
+        if(_strncmp(_struct->tag, tag, strlen(_struct->tag), len))
+            return _struct->bytesize;
+    }
+    return -1;
+}
+
 // メンバに応じたVar構造体を返す
 Var *member_to_var(char *name, int len, Type *type, int offset) {
     Var *var = calloc(1, sizeof(Var));
