@@ -130,6 +130,7 @@ Node *block() {
 //        | "break" ";"
 //        | "continue" ";"
 //        | type ident ("[" num "]")? ";"
+//        | "struct" ident "{" type ident ";" )* "}" ";"
 Node *stmt(){
     if(consume_kind(TOKEN_RETURN)){
         Node *node = calloc(1, sizeof(Node));
@@ -257,6 +258,20 @@ Node *stmt(){
     if(consume_kind(TOKEN_CONTINUE)) {
         expect(";");
         return new_node(ND_CONTINUE, NULL, NULL);
+    }
+
+    // "struct" ident "{" ... "}"
+    if(consume_kind(TOKEN_STRUCT)) {
+        // ident
+        Token *tag = expect_ident();
+        char *tag_c = malloc(tag->len+1);
+        strncpy(tag_c, tag->str, tag->len);
+        tag_c[tag->len] = 0;
+
+        // 構造体登録
+        regist_struct(tag_c);
+        expect(";");
+        return NULL;
     }
 
     // ;
