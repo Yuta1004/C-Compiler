@@ -87,7 +87,7 @@ Node *func(){
     // グローバル変数定義
     token = bef_token;
     Var *var = regist_var(GLOBAL);
-    var->init_expr = new_node(ND_NONE);
+    var->init_expr = new_none_node();
     var->init_expr->type = var->type;
     if(consume("=")) {
         free(var->init_expr);
@@ -140,7 +140,7 @@ Node *stmt(){
         // if ( expr ) block
         ++ scope_id;
         expect("(");
-        Node *node = new_node_lr(ND_IF, expr(), new_node(NONE));
+        Node *node = new_node_lr(ND_IF, expr(), new_none_node());
         expect(")");
         node->right->left = block();
 
@@ -159,7 +159,7 @@ Node *stmt(){
         // while ( expr ) block
         ++ scope_id;
         expect("(");
-        Node *node = new_node_lr(ND_WHILE, expr(), new_node(NONE));
+        Node *node = new_node_lr(ND_WHILE, expr(), new_none_node());
         expect(")");
         node->right = block();
         out_scope();
@@ -171,7 +171,7 @@ Node *stmt(){
         in_scope();
         // for (
         ++ scope_id;
-        Node *node = new_node_lr(ND_FOR, NULL, new_node(NONE));
+        Node *node = new_node_lr(ND_FOR, NULL, new_none_node());
         node->right->left = calloc(1, sizeof(Node));
         expect("(");
 

@@ -11,7 +11,7 @@ Node *new_node(NodeKind kind) {
 
 // ノード生成(left, right)
 Node *new_node_lr(NodeKind kind, Node *left, Node *right){
-    Node *node = calloc(1, sizeof(Node));
+    Node *node = new_node(kind);
     node->kind = kind;
     node->left = left;
     node->right = right;
@@ -21,17 +21,15 @@ Node *new_node_lr(NodeKind kind, Node *left, Node *right){
 // 数字ノード生成
 Node *new_num_node(int val){
     Type *type = new_type(INT);
-    Node *node = calloc(1, sizeof(Node));
+    Node *node = new_node(ND_NUM);
     node->type = type;
-    node->kind = ND_NUM;
     node->val = val;
     return node;
 }
 
 // 変数ノード生成
 Node *new_var_node(Var *var) {
-    Node *node = calloc(1, sizeof(Node));
-    node->kind = ND_LVAR;
+    Node *node = new_node(ND_LVAR);
     node->name = var->name;
     node->type = var->type;
     node->offset = var->offset;
@@ -40,7 +38,5 @@ Node *new_var_node(Var *var) {
 
 // Noneノード生成
 Node *new_none_node() {
-    Node *node = calloc(1, sizeof(Node));
-    node->kind = ND_NONE;
-    return node;
+    return new_node(NONE);
 }
