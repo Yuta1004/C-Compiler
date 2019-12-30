@@ -113,6 +113,7 @@ struct Type {
 };
 
 struct Struct {
+    char *tag;
     int offset;         // オフセット
     int bytesize;       // メモリサイズ
     Vector *members;     // メンバリスト Vector<Type>
