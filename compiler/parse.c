@@ -131,8 +131,7 @@ Node *block() {
 //        | "continue" ";"
 //        | type ident ("[" num "]")? ";"
 Node *stmt(){
-    if(token->kind == TOKEN_RETURN){
-        token = token->next;
+    if(consume_kind(TOKEN_RETURN)){
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_RETURN;
         node->left = expr();
@@ -141,11 +140,10 @@ Node *stmt(){
     }
 
     // if
-    if(token->kind == TOKEN_IF) {
+    if(consume_kind(TOKEN_IF)) {
         in_scope();
         // if ( expr ) block
         ++ scope_id;
-        token = token->next;
         expect("(");
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_IF;
@@ -164,11 +162,10 @@ Node *stmt(){
     }
 
     // while
-    if(token->kind == TOKEN_WHILE) {
+    if(consume_kind(TOKEN_WHILE)) {
         in_scope();
         // while ( expr ) block
         ++ scope_id;
-        token = token->next;
         expect("(");
         Node *node = calloc(1, sizeof(Node));
         node->kind = ND_WHILE;
@@ -180,11 +177,10 @@ Node *stmt(){
     }
 
     // for
-    if(token->kind == TOKEN_FOR) {
+    if(consume_kind(TOKEN_FOR)) {
         in_scope();
         // for (
         ++ scope_id;
-        token = token->next;
         Node *node = calloc(1, sizeof(Node));
         node->right = calloc(1, sizeof(Node));
         node->right->left = calloc(1, sizeof(Node));
@@ -252,15 +248,13 @@ Node *stmt(){
     }
 
     // "break" ";"
-    if(token->kind == TOKEN_BREAK) {
-        token = token->next;
+    if(consume_kind(TOKEN_BREAK)) {
         expect(";");
         return new_node(ND_BREAK, NULL, NULL);
     }
 
     // "continue" ";"
-    if(token->kind == TOKEN_CONTINUE) {
-        token = token->next;
+    if(consume_kind(TOKEN_CONTINUE)) {
         expect(";");
         return new_node(ND_CONTINUE, NULL, NULL);
     }
@@ -407,8 +401,7 @@ Node *mul(){
 // unary = "sizeof" unary | ("+" | "-")? primary | ("*" | "&") unary | unary "[" unary "]"  |
 //         ("++" | "--") primary
 Node *unary(){
-    if(token->kind == TOKEN_SIZEOF) {
-        token = token->next;
+    if(consume_kind(TOKEN_SIZEOF)) {
         Node *node = unary();
         int bytesize = node->type->bytesize;
         free(node);
