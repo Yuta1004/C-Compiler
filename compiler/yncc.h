@@ -130,6 +130,7 @@ void outlabel(char *fmt, ...);
 int is_alnum(char chr);
 
 /* type.c */
+Type *new_type();
 int type_to_size(Type *type);
 void define_type(Type **type_ptr, int type);
 Type *max_type(Type *a, Type *b);

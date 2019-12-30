@@ -2,6 +2,14 @@
 #include "yncc.h"
 #include <stdio.h>
 
+// Type構造体生成
+Type *new_type(int ty) {
+    Type *type = calloc(1, sizeof(Type));
+    type->ty = ty;
+    type->bytesize = type_to_size(type);
+    return type;
+}
+
 // 型のサイズを求める
 int type_to_size(Type *type) {
     if(type == NULL) return 1;
@@ -20,21 +28,18 @@ int type_to_size(Type *type) {
 
 // type_ptrに型を設定する
 void define_type(Type **type_ptr, int ty){
-    Type *tmp = calloc(1, sizeof(Type));
-    tmp->ty = ty;
-    tmp->bytesize = type_to_size(tmp);
+    Type *tmp = new_type(ty);
     *type_ptr = tmp;
 }
 
 // 大きい方の型の種類を返す
 Type *max_type(Type *a, Type *b){
-    if(a == NULL && b == NULL){
-        Type *tmp = calloc(1, sizeof(Type));
-        tmp->ty = -1;
-        return tmp;
-    }
-    if(a == NULL) return b;
-    if(b == NULL) return a;
+    if(a == NULL && b == NULL)
+        return new_type(-1);
+    if(a == NULL)
+        return b;
+    if(b == NULL)
+        return a;
 
     if(type_to_size(a) > type_to_size(b)){
         a->bytesize = type_to_size(a);  // 配列サイズ->型のサイズ
@@ -47,8 +52,7 @@ Type *max_type(Type *a, Type *b){
 // 型を読む
 // type = ("int" | "char") "*"*
 Type *read_type() {
-    Type *b_type = calloc(1, sizeof(Type));
-    b_type->bytesize = 1;
+    Type *b_type = new_type(NONE);
 
     // ("int" | "char")
     if(consume_kind(TOKEN_INT)) {
@@ -64,10 +68,8 @@ Type *read_type() {
     // "*"*
     Type *lead_type = b_type;
     while(consume("*")) {
-        Type *ptr_type = calloc(1, sizeof(Type));
-        ptr_type->ty = PTR;
+        Type *ptr_type = new_type(PTR);
         ptr_type->ptr_to = lead_type;
-        ptr_type->bytesize = 8;
         lead_type = ptr_type;
     }
     return lead_type;

@@ -229,5 +229,10 @@ try "int main() { int sum = 0; for(int i = 0; i < 5; ++ i) for(int j = 0; j < 5;
 try "int main() { int sum = 1; int loop_cnt = 0; while(sum < 100) { ++ loop_cnt;  if(sum == 50) { sum = 80;  continue; } else { ++ sum; } } return loop_cnt; }" 70
 
 
+## struct
+echo -e "\e[1m\nstruct\e[m"
+try "int main() { struct User { char *name; int age; }; }" 0
+try "int main() { struct User { char *name; int age; }; struct User user; user.name = \"nakagamiyuta\"; user.age = 18; printf(\"--- UserInfo ---\\n\"); printf(\"- Name: %s\\n\", user.name); printf(\"- Age: %d\\n\", user.age); }" 0
+
 echo ""
 exit 0

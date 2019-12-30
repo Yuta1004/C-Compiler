@@ -14,9 +14,7 @@ Node *new_node(NodeKind kind, Node *left, Node *right){
 
 // 数字ノード生成
 Node *new_num_node(int val){
-    Type *type = calloc(1, sizeof(Type));
-    type->ty = INT;
-    type->bytesize = 4;
+    Type *type = new_type(INT);
     Node *node = calloc(1, sizeof(Node));
     node->type = type;
     node->kind = ND_NUM;
