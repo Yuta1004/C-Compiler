@@ -10,8 +10,6 @@ bool regist_struct(char *tag) {
     if(!consume("{"))
         return false;
 
-    fprintf(stderr, "%s\n", tag);
-
     // (type ident ("," type ident)*)?
     int offset = 0;
     while(true) {
