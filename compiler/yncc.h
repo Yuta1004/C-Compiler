@@ -115,8 +115,8 @@ struct Type {
 struct Struct {
     int offset;         // オフセット
     int bytesize;       // メモリサイズ
-    Vector members;     // メンバリスト Vector<Type>
-    Vector names;       // メンバ名一覧 Vector<char*>
+    Vector *members;     // メンバリスト Vector<Type>
+    Vector *names;       // メンバ名一覧 Vector<char*>
 };
 
 /* グローバル変数 */
