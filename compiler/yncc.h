@@ -21,6 +21,7 @@ typedef enum {
     TOKEN_SIZEOF,       // sizeof
     TOKEN_BREAK,        // break
     TOKEN_CONTINUE,     // continue
+    TOKEN_STRUCT,       // struct
     TOKEN_EOF,          // EOF
 } TokenKind;
 

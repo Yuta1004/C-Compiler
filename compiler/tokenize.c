@@ -100,6 +100,7 @@ Token *tokenize(char *p){
         def_token_stmt("sizeof", 6, TOKEN_SIZEOF);
         def_token_stmt("break", 5, TOKEN_BREAK);
         def_token_stmt("continue", 8, TOKEN_CONTINUE);
+        def_token_stmt("struct", 6, TOKEN_STRUCT);
 
         // 識別子
         if(('a' <= *p && *p <= 'z') || ('A' <= *p && *p <= 'Z')){
