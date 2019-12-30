@@ -69,12 +69,13 @@ Var *member_to_var(char *name, int len, Type *type, int offset) {
 }
 
 // タグとメンバ名からVar構造体を返す, 呼び出し元で変数のoffsetをプラスする
-Var *struct_get_member(Token *tag, Token *member_n) {
+Var *struct_get_member(char *tag, int tag_len, char *member_n, int mn_len) {
     // locals検索
-    for(int idx = 0; idx < locals_struct->len; ++ idx) {
+    for(int idx = 0; idx < struct_def_list->len; ++ idx) {
         // タグ
-        Struct *_struct = vec_get(locals_struct, idx);
-        if(!_strncmp(_struct->tag, tag->str, strlen(_struct->tag), tag->len))
+        Struct *_struct = vec_get(struct_def_list, idx);
+        fprintf(stderr, "%s, %s, %d %d\n", _struct->tag, tag, strlen(_struct->tag), tag_len);
+        if(!_strncmp(_struct->tag, tag, strlen(_struct->tag), tag_len))
             continue;
 
         // メンバ
@@ -82,8 +83,8 @@ Var *struct_get_member(Token *tag, Token *member_n) {
         for(int m_idx = 0; m_idx < _struct->members->len; ++ idx) {
             Type *member_type = vec_get(_struct->members, m_idx);
             char *member_name = vec_get(_struct->names, m_idx);
-            if(_strncmp(member_name, member_n->str, strlen(member_name), member_n->len))
-                return member_to_var(member_n->str, member_n->len, member_type, offset);
+            if(_strncmp(member_name, member_n, strlen(member_name), mn_len))
+                return member_to_var(member_n, mn_len, member_type, offset);
             offset += member_type->bytesize + member_type->alignment;
         }
     }
