@@ -107,6 +107,7 @@ struct Type {
     enum{ NONE, INT, PTR, ARRAY, CHAR, STR } ty;
     struct Type *ptr_to;
     size_t bytesize;
+    size_t alignment;
 };
 
 /* グローバル変数 */
