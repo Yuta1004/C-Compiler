@@ -224,24 +224,24 @@ Node *stmt(){
         // 配列初期化式 or 普通の式
         if(init_expr->kind == ND_INIT_ARRAY) {
             // Blockノード初期化
-            Node *node = new_node(ND_BLOCK, NULL, NULL);
+            Node *node = new_node_lr(ND_BLOCK, NULL, NULL);
             node->node_list = vec_new(init_expr->node_list->len+1);
 
             // 各要素を配列への代入式へ変換する
             for(int idx = 0; idx < init_expr->node_list->len; ++ idx) {
-                Node *addr = new_node(ND_ADDR, var_node, NULL);                 // array
-                Node *add_expr = new_node(ND_ADD, addr, new_num_node(idx));     // array+idx
-                Node *left = new_node(ND_DEREF, add_expr, NULL);                // *(array+idx)
+                Node *addr = new_node_lr(ND_ADDR, var_node, NULL);                 // array
+                Node *add_expr = new_node_lr(ND_ADD, addr, new_num_node(idx));     // array+idx
+                Node *left = new_node_lr(ND_DEREF, add_expr, NULL);                // *(array+idx)
                 Node *right = (Node*)vec_get(init_expr->node_list, idx);        // right
                 define_type(&addr->type, PTR);
                 define_type(&addr->type->ptr_to, addr->left->type->ptr_to->ty);
                 add_expr->type = addr->type;
                 left->type = add_expr->type->ptr_to;
-                vec_push(node->node_list, new_node(ND_ASSIGN, left, right));    // *(array+idx) = right
+                vec_push(node->node_list, new_node_lr(ND_ASSIGN, left, right));    // *(array+idx) = right
             }
             return node;
         }
-        return new_node(ND_ASSIGN, var_node, init_expr);
+        return new_node_lr(ND_ASSIGN, var_node, init_expr);
     }
     if(var){
         expect(";");
@@ -251,13 +251,13 @@ Node *stmt(){
     // "break" ";"
     if(consume_kind(TOKEN_BREAK)) {
         expect(";");
-        return new_node(ND_BREAK, NULL, NULL);
+        return new_node_lr(ND_BREAK, NULL, NULL);
     }
 
     // "continue" ";"
     if(consume_kind(TOKEN_CONTINUE)) {
         expect(";");
-        return new_node(ND_CONTINUE, NULL, NULL);
+        return new_node_lr(ND_CONTINUE, NULL, NULL);
     }
 
     // "struct" ident "{" ... "}"
@@ -316,16 +316,16 @@ Node *assign(){
     Node *node = equality();
 
     if(consume("=")){
-        node = new_node(ND_ASSIGN, node, assign());
+        node = new_node_lr(ND_ASSIGN, node, assign());
         is_comp_assign = false;
     } else if(consume("+=")){
-        node = new_node(ND_ASSIGN, node, new_node(ND_ADD, node, assign()));
+        node = new_node_lr(ND_ASSIGN, node, new_node_lr(ND_ADD, node, assign()));
     } else if(consume("-=")){
-        node = new_node(ND_ASSIGN, node, new_node(ND_SUB, node, assign()));
+        node = new_node_lr(ND_ASSIGN, node, new_node_lr(ND_SUB, node, assign()));
     } else if(consume("*=")){
-        node = new_node(ND_ASSIGN, node, new_node(ND_MUL, node, assign()));
+        node = new_node_lr(ND_ASSIGN, node, new_node_lr(ND_MUL, node, assign()));
     } else if(consume("/=")){
-        node = new_node(ND_ASSIGN, node, new_node(ND_DIV, node, assign()));
+        node = new_node_lr(ND_ASSIGN, node, new_node_lr(ND_DIV, node, assign()));
     } else {
         return node;
     }
@@ -342,9 +342,9 @@ Node *equality(){
     Node *node = relational();
 
     if(consume("==")) {
-        node = new_node(ND_EQ, node, relational());
+        node = new_node_lr(ND_EQ, node, relational());
     } else if(consume("!=")) {
-        node = new_node(ND_NEQ, node, relational());
+        node = new_node_lr(ND_NEQ, node, relational());
     } else {
         return node;
     }
@@ -359,13 +359,13 @@ Node *relational(){
 
     // <, <= は両辺入れ替えて >, >= と同じように扱う(発想の勝利)
     if(consume(">")) {
-        node = new_node(ND_UPPERL, node, add());
+        node = new_node_lr(ND_UPPERL, node, add());
     } else if(consume(">=")) {
-        node = new_node(ND_UPPEREQL, node, add());
+        node = new_node_lr(ND_UPPEREQL, node, add());
     } else if(consume("<")) {
-        node = new_node(ND_UPPERL, add(), node);
+        node = new_node_lr(ND_UPPERL, add(), node);
     } else if(consume("<=")) {
-        node = new_node(ND_UPPEREQL, add(), node);
+        node = new_node_lr(ND_UPPEREQL, add(), node);
     } else {
         return node;
     }
@@ -380,10 +380,10 @@ Node *add(){
 
     while(true) {
         if(consume("+")) {
-            node = new_node(ND_ADD, node, mul());
+            node = new_node_lr(ND_ADD, node, mul());
             set_lr_max_type(node);
         } else if(consume("-")) {
-            node = new_node(ND_SUB, node, mul());
+            node = new_node_lr(ND_SUB, node, mul());
             set_lr_max_type(node);
         } else {
             return node;
@@ -398,13 +398,13 @@ Node *mul(){
 
     while(true) {
         if(consume("*")) {
-            node = new_node(ND_MUL, node, unary());
+            node = new_node_lr(ND_MUL, node, unary());
             set_lr_max_type(node);
         } else if(consume("/")) {
-            node = new_node(ND_DIV, node, unary());
+            node = new_node_lr(ND_DIV, node, unary());
             set_lr_max_type(node);
         } else if(consume("%")) {
-            node = new_node(ND_DIV_REMAIN, node, unary());
+            node = new_node_lr(ND_DIV_REMAIN, node, unary());
             set_lr_max_type(node);
         } else {
             return node;
@@ -424,7 +424,7 @@ Node *unary(){
     }
 
     if(consume("-")) {
-        Node *node = new_node(ND_SUB, new_num_node(0), primary());
+        Node *node = new_node_lr(ND_SUB, new_num_node(0), primary());
         set_lr_max_type(node);
         return node;
     }
@@ -554,7 +554,7 @@ Node *primary(){
         // 変数が配列を指していた場合、先頭アドレスへのポインタに変換する
         if(node->type->ty == ARRAY) {
             int bytesize = node->type->bytesize;
-            node = new_node(ND_ADDR, node, NULL);
+            node = new_node_lr(ND_ADDR, node, NULL);
             define_type(&node->type, PTR);
             define_type(&node->type->ptr_to, node->left->type->ptr_to->ty);
             node->type->bytesize = bytesize;

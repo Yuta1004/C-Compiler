@@ -4,7 +4,7 @@
 
 
 // ノード生成
-Node *new_node(NodeKind kind, Node *left, Node *right){
+Node *new_node_lr(NodeKind kind, Node *left, Node *right){
     Node *node = calloc(1, sizeof(Node));
     node->kind = kind;
     node->left = left;
