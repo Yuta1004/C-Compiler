@@ -153,6 +153,7 @@ Token *consume_kind(TokenKind kind);
 bool at_eof();
 
 /* node.c */
+Node *new_node(NodeKind kind);
 Node *new_node_lr(NodeKind kind, Node *left, Node *right);
 Node *new_num_node(int val);
 Node *new_var_node(Var *var);

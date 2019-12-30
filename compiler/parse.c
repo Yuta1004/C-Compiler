@@ -49,8 +49,7 @@ Node *func(){
     Token *bef_token = token;
 
     // ローカル変数初期化
-    Node *node = calloc(1, sizeof(Node));
-    node->kind = ND_FUNC;
+    Node *node = new_node(ND_FUNC);
     vec_free(locals);
     locals = vec_new(10);
     sum_offset = 0;
@@ -71,8 +70,7 @@ Node *func(){
         for(int idx = 0; idx < 6; ++ idx) {
             Var *var = regist_var(LOCAL);
             if(var) {                                      // 引数があるかチェック
-                Node *arg_node = calloc(1, sizeof(Node));
-                arg_node->kind = ND_LVAR;
+                Node *arg_node = new_node(ND_LVAR);
                 arg_node->offset = var->offset;
                 node->args[idx] = arg_node;
             }
@@ -89,8 +87,7 @@ Node *func(){
     // グローバル変数定義
     token = bef_token;
     Var *var = regist_var(GLOBAL);
-    var->init_expr = calloc(1, sizeof(Node));
-    var->init_expr->kind = ND_NONE;
+    var->init_expr = new_node(ND_NONE);
     var->init_expr->type = var->type;
     if(consume("=")) {
         free(var->init_expr);
@@ -105,8 +102,7 @@ Node *func(){
 Node *block() {
     // Block
     if(consume("{")) {
-        Node *node = calloc(1, sizeof(Node));
-        node->kind = ND_BLOCK;
+        Node *node = new_node(ND_BLOCK);
         node->node_list = vec_new(10);
 
         // stmt*
@@ -133,9 +129,7 @@ Node *block() {
 //        | "struct" ident "{" type ident ";" )* "}" ";"
 Node *stmt(){
     if(consume_kind(TOKEN_RETURN)){
-        Node *node = calloc(1, sizeof(Node));
-        node->kind = ND_RETURN;
-        node->left = expr();
+        Node *node = new_node_lr(ND_RETURN, expr(), NULL);
         expect(";");
         return node;
     }
@@ -146,10 +140,7 @@ Node *stmt(){
         // if ( expr ) block
         ++ scope_id;
         expect("(");
-        Node *node = calloc(1, sizeof(Node));
-        node->kind = ND_IF;
-        node->left = expr();
-        node->right = calloc(1, sizeof(Node));
+        Node *node = new_node_lr(ND_IF, expr(), new_node(NONE));
         expect(")");
         node->right->left = block();
 
@@ -168,9 +159,7 @@ Node *stmt(){
         // while ( expr ) block
         ++ scope_id;
         expect("(");
-        Node *node = calloc(1, sizeof(Node));
-        node->kind = ND_WHILE;
-        node->left = expr();
+        Node *node = new_node_lr(ND_WHILE, expr(), new_node(NONE));
         expect(")");
         node->right = block();
         out_scope();
@@ -182,10 +171,8 @@ Node *stmt(){
         in_scope();
         // for (
         ++ scope_id;
-        Node *node = calloc(1, sizeof(Node));
-        node->right = calloc(1, sizeof(Node));
+        Node *node = new_node_lr(ND_FOR, NULL, new_node(NONE));
         node->right->left = calloc(1, sizeof(Node));
-        node->kind = ND_FOR;
         expect("(");
 
         // expr? ; <Init>
@@ -290,7 +277,7 @@ Node *expr(){
     // 配列の初期化式
     if(consume("{")) {
         // ノード生成
-        Node *array_init_expr = calloc(1, sizeof(Node));
+        Node *array_init_expr = new_node(ND_INIT_ARRAY);
         array_init_expr->node_list = vec_new(10);
 
         // 初期化式
@@ -301,7 +288,6 @@ Node *expr(){
             vec_push(array_init_expr->node_list, expr());
         }
         array_init_expr->val = size;
-        array_init_expr->kind = ND_INIT_ARRAY;
         return array_init_expr;
     }
 
@@ -431,34 +417,26 @@ Node *unary(){
 
     Node *node = NULL;
     if(consume("*")) {
-        node = calloc(1, sizeof(Node));
-        node->kind = ND_DEREF;
-        node->left = unary();
+        node = new_node_lr(ND_DEREF, unary(), NULL);
         node->type = node->left->type->ptr_to;
         goto check_array_access;
     }
 
     if(consume("&")) {
-        node = calloc(1, sizeof(Node));
-        node->kind = ND_ADDR;
-        node->left = unary();
+        node = new_node_lr(ND_ADDR, unary(), NULL);
         define_type(&node->type, PTR);
         define_type(&node->type->ptr_to, PTR);
         goto check_array_access;
     }
 
     if(consume("++")) { // 前置
-        node = calloc(1, sizeof(Node));
-        node->kind = ND_PRE_INC;
-        node->left = primary();
+        node = new_node_lr(ND_PRE_INC, primary(), NULL);
         define_type(&node->type, node->left->type->ty);
         goto check_array_access;
     }
 
     if(consume("--")) { // 前置
-        node = calloc(1, sizeof(Node));
-        node->kind = ND_PRE_DEC;
-        node->left = primary();
+        node = new_node_lr(ND_PRE_DEC, primary(), NULL);
         define_type(&node->type, node->left->type->ty);
         goto check_array_access;
     }
@@ -471,13 +449,8 @@ Node *unary(){
     // "[" (ident | num ) "]"
 check_array_access:
     if(consume("[")) {
-        Node *deref_par = calloc(1, sizeof(Node));
-        Node *add = calloc(1, sizeof(Node));
-        deref_par->kind = ND_DEREF;
-        deref_par->left = add;
-        add->kind = ND_ADD;
-        add->left = node;
-        add->right = expr();
+        Node *add = new_node_lr(ND_ADD, node, expr());
+        Node *deref_par = new_node_lr(ND_DEREF, add, NULL);
         add->type = max_type(add->left->type->ptr_to, add->right->type->ptr_to);
         define_type(&deref_par->type, add->type->ty);
         expect("]");
@@ -485,17 +458,13 @@ check_array_access:
     }
 
     if(consume("++")) { // 後置
-        Node *tmp = calloc(1, sizeof(Node));
-        tmp->kind = ND_POST_INC;
-        tmp->left = node;
+        Node *tmp = new_node_lr(ND_POST_INC, node, NULL);
         define_type(&tmp->type, node->type->ty);
         node = tmp;
     }
 
     if(consume("--")) { // 後置
-        Node *tmp = calloc(1, sizeof(Node));
-        tmp->kind = ND_POST_DEC;
-        tmp->left = node;
+        Node *tmp = new_node_lr(ND_POST_DEC, node, NULL);
         define_type(&tmp->type, node->type->ty);
         node = tmp;
     }
@@ -525,8 +494,7 @@ Node *primary(){
         // 関数呼び出し
         if(consume("(")) {
             // 関数名
-            Node *node = calloc(1, sizeof(Node));
-            node->kind = ND_CALL_FUNC;
+            Node *node = new_node(ND_CALL_FUNC);
             node->name = (char*)calloc(next_token->len+1, sizeof(char));
             define_type(&node->type, INT);
             strncpy(node->name, next_token->str, next_token->len);
@@ -543,9 +511,8 @@ Node *primary(){
         }
 
         // 変数
-        Node *node = calloc(1, sizeof(Node));
+        Node *node = new_node(ND_LVAR);
         Var *result = find_var(next_token);
-        node->kind = ND_LVAR;
         node->offset = result->offset;
         node->type = result->type;
         node->name = result->name;
@@ -570,8 +537,7 @@ Node *primary(){
         int str_id = find_str(token->str);
         token = token->next;
 
-        Node *node = (Node*)calloc(1, sizeof(Node));
-        node->kind = ND_STR;
+        Node *node = new_node(ND_STR);
         node->val = str_id;
         define_type(&node->type, STR);
         return node;

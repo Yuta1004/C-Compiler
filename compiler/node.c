@@ -2,8 +2,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 // ノード生成
+Node *new_node(NodeKind kind) {
+    Node *node = calloc(1, sizeof(Node));
+    node->kind = kind;
+    return node;
+}
+
+// ノード生成(left, right)
 Node *new_node_lr(NodeKind kind, Node *left, Node *right){
     Node *node = calloc(1, sizeof(Node));
     node->kind = kind;
