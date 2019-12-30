@@ -28,6 +28,7 @@ int main(int argc, char** argv){
     locals = vec_new(10);
     globals_struct = vec_new(10);
     locals_struct = vec_new(10);
+    struct_def_list = vec_new(10);
     program();
 
     // ヘッダー

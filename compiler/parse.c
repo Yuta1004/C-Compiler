@@ -256,7 +256,7 @@ Node *stmt(){
         tag_c[tag->len] = 0;
 
         // 構造体登録
-        regist_struct(LOCAL, tag_c);
+        def_struct(LOCAL, tag_c);
         expect(";");
         return NULL;
     }

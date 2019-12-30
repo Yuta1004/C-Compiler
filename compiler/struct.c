@@ -4,25 +4,25 @@
 #include "vector.h"
 
 // Struct構造体生成
-Struct *new_struct(char *tag) {
+Struct *new_struct(char *tag, int dtype) {
     Struct *_struct = calloc(1, sizeof(Struct));
     _struct->tag = tag;
     _struct->members = vec_new(10);
     _struct->names = vec_new(10);
-    _struct->scope_id = scope_id;
+    _struct->dtype = dtype;
     return _struct;
 }
 
 // 構造体定義
 // "{" (type ident ("," type ident)*)? "}"
 // structキーワード, タグ名は既にパースされた前提
-bool regist_struct(int type, char *tag) {
+bool def_struct(int type, char *tag) {
     // {
     if(!consume("{"))
         return false;
 
     // (type ident ("," type ident)*)?
-    Struct *_struct = new_struct(tag);
+    Struct *_struct = new_struct(tag, type);
     while(true) {
         // type ident
         Type *type = read_type();
@@ -40,10 +40,7 @@ bool regist_struct(int type, char *tag) {
     }
 
     // struct_list追加
-    if(type == LOCAL)
-        vec_push(locals_struct, _struct);
-    else
-        vec_push(globals_struct, _struct);
+    vec_push(struct_def_list, _struct);
     expect("}");
     return true;
 }

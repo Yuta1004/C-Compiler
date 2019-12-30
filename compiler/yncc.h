@@ -114,9 +114,8 @@ struct Type {
 
 struct Struct {
     char *tag;
-    int offset;         // オフセット
+    int dtype;          // LOCAL or GLOBAL
     int bytesize;       // メモリサイズ
-    int scope_id;       // スコープID
     Vector *members;     // メンバリスト Vector<Type>
     Vector *names;       // メンバ名一覧 Vector<char*>
 };
@@ -129,6 +128,7 @@ Vector *locals;
 Vector *globals;
 Vector *locals_struct;
 Vector *globals_struct;
+Vector *struct_def_list;
 Vector *str_vec;
 Vector *man_scope;
 int label, label_if, label_loop, sum_offset, scope_id, scope_sum_id;
@@ -189,6 +189,6 @@ int precalc_expr(Node *root);
 void decode_precalc_expr(char *s, Node *root);
 
 /* struct.c */
-bool regist_struct(int type, char *tag);
+bool def_struct(int type, char *tag);
 
 #endif // YNCC_H
