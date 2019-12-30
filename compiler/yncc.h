@@ -65,6 +65,7 @@ typedef enum {
 typedef struct Node Node;
 typedef struct Type Type;
 typedef struct Var Var;
+typedef struct Struct Struct;
 
 /* 構造体 */
 struct Token {
@@ -111,12 +112,21 @@ struct Type {
     size_t alignment;
 };
 
+struct Struct {
+    int offset;         // オフセット
+    int bytesize;       // メモリサイズ
+    Vector members;     // メンバリスト Vector<Type>
+    Vector names;       // メンバ名一覧 Vector<char*>
+};
+
 /* グローバル変数 */
 Token *token;
 char *program_body;
 Node *code[100];
 Vector *locals;
 Vector *globals;
+Vector *locals_struct;
+Vector *globals_struct;
 Vector *str_vec;
 Vector *man_scope;
 int label, label_if, label_loop, sum_offset, scope_id, scope_sum_id;
