@@ -129,6 +129,8 @@ try "int main(){ return sizeof(100); }" 4
 try "int main(){ return sizeof(sizeof(100)); }" 4
 try "int main(){ return sizeof sizeof sizeof sizeof sizeof sizeof 10; }" 4
 try "int main(){ int x; print(1, sizeof(x)); return 0; }" 0
+try "int main(){ int nums[12]; return sizeof(nums)/sizeof(nums[0]); }" 12
+try "int nums[6]; int main(){ return sizeof(nums)/sizeof(nums[0]); }" 6
 
 ## array
 echo -e "\e[1m\narray\e[m"

@@ -545,9 +545,11 @@ Node *primary(){
 
         // 変数が配列を指していた場合、先頭アドレスへのポインタに変換する
         if(node->type->ty == ARRAY) {
+            int bytesize = node->type->bytesize;
             node = new_node(ND_ADDR, node, NULL);
             define_type(&node->type, PTR);
             define_type(&node->type->ptr_to, node->left->type->ptr_to->ty);
+            node->type->bytesize = bytesize;
         }
         return node;
     }
