@@ -26,6 +26,8 @@ int main(int argc, char** argv){
     // 構文木生成
     globals = vec_new(10);
     locals = vec_new(10);
+    globals_struct = vec_new(10);
+    locals_struct = vec_new(10);
     program();
 
     // ヘッダー

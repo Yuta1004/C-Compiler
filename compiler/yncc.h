@@ -188,6 +188,6 @@ int precalc_expr(Node *root);
 void decode_precalc_expr(char *s, Node *root);
 
 /* struct.c */
-bool regist_struct(char *tag);
+bool regist_struct(int type, char *tag);
 
 #endif // YNCC_H
