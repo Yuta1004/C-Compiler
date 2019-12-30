@@ -52,15 +52,29 @@ Type *max_type(Type *a, Type *b){
 // 型を読む
 // type = ("int" | "char") "*"*
 Type *read_type() {
+    Token *bef_token = token;
     Type *b_type = new_type(NONE);
 
-    // ("int" | "char")
+    // ("int" | "char" | "struct")
     if(consume_kind(TOKEN_INT)) {
         b_type->ty = INT;
         b_type->bytesize = 4;
     } else if(consume_kind(TOKEN_CHAR)) {
         b_type->ty = CHAR;
         b_type->bytesize = 1;
+    } else if(consume_kind(TOKEN_STRUCT)) {
+        Token *ident = expect_ident();
+        if(!consume("{")) {     // 構造体定義か調べる
+            b_type->ty = STRUCT;
+            b_type->tag = ident->str;
+            b_type->len = ident->len;
+            b_type->bytesize = get_struct_size(ident->str, ident->len);
+            if(b_type->bytesize < 0)
+                error_at(ident->str, "定義されていない構造体です");
+        } else {
+            token = bef_token;
+            return NULL;
+        }
     } else {
         return NULL;
     }
