@@ -190,5 +190,6 @@ void decode_precalc_expr(char *s, Node *root);
 
 /* struct.c */
 bool def_struct(int type, char *tag);
+Var *struct_get_member(Token *tag, Token *member_n);
 
 #endif // YNCC_H

@@ -3,6 +3,9 @@
 #include "yncc.h"
 #include "vector.h"
 
+#define _strncmp(str1, str2, str1_len, str2_len) \
+    ((str1_len == str2_len) && strncmp(str1, str2, str1_len) == 0)
+
 // Struct構造体生成
 Struct *new_struct(char *tag, int dtype) {
     Struct *_struct = calloc(1, sizeof(Struct));
@@ -43,4 +46,35 @@ bool def_struct(int type, char *tag) {
     vec_push(struct_def_list, _struct);
     expect("}");
     return true;
+}
+
+// メンバに応じたVar構造体を返す
+Var *member_to_var(char *name, int len, Type *type, int offset) {
+    Var *var = calloc(1, sizeof(Var));
+    var->name = name;
+    var->len = len;
+    var->type = type;
+    var->offset = offset;
+    return var;
+}
+
+// タグとメンバ名からVar構造体を返す, 呼び出し元で変数のoffsetをプラスする
+Var *struct_get_member(Token *tag, Token *member_n) {
+    // locals検索
+    for(int idx = 0; idx < locals_struct->len; ++ idx) {
+        // タグ
+        Struct *_struct = vec_get(locals_struct, idx);
+        if(!_strncmp(_struct->tag, tag->str, strlen(_struct->tag), tag->len))
+            continue;
+
+        // メンバ
+        int offset = 0;
+        for(int m_idx = 0; m_idx < _struct->members->len; ++ idx) {
+            Type *member_type = vec_get(_struct->members, m_idx);
+            char *member_name = vec_get(_struct->names, m_idx);
+            if(_strncmp(member_name, member_n->str, strlen(member_name), member_n->len))
+                return member_to_var(member_n->str, member_n->len, member_type, offset);
+            offset += member_type->bytesize + member_type->alignment;
+        }
+    }
 }
