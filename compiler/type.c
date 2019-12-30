@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "yncc.h"
+#include <stdio.h>
 
 // 型のサイズを求める
 int type_to_size(Type *type) {
@@ -36,8 +37,10 @@ Type *max_type(Type *a, Type *b){
     if(b == NULL) return a;
 
     if(type_to_size(a) > type_to_size(b)){
+        a->bytesize = type_to_size(a);  // 配列サイズ->型のサイズ
         return a;
     }
+    b->bytesize = type_to_size(b);  // 配列サイズ->型サイズ
     return b;
 }
 
