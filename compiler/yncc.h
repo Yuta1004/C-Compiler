@@ -106,7 +106,7 @@ struct Var {
 };
 
 struct Type {
-    enum{ NONE, INT, PTR, ARRAY, CHAR, STR } ty;
+    enum{ NONE, INT, PTR, ARRAY, CHAR, STR, STRUCT } ty;
     struct Type *ptr_to;
     size_t bytesize;
     size_t alignment;
