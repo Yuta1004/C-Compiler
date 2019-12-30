@@ -116,6 +116,7 @@ struct Struct {
     char *tag;
     int offset;         // オフセット
     int bytesize;       // メモリサイズ
+    int scope_id;       // スコープID
     Vector *members;     // メンバリスト Vector<Type>
     Vector *names;       // メンバ名一覧 Vector<char*>
 };

@@ -9,6 +9,7 @@ Struct *new_struct(char *tag) {
     _struct->tag = tag;
     _struct->members = vec_new(10);
     _struct->names = vec_new(10);
+    _struct->scope_id = scope_id;
     return _struct;
 }
 
