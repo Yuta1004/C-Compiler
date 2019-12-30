@@ -17,10 +17,11 @@ int type_to_size(Type *type) {
     }
 }
 
-// 型を指定する
+// type_ptrに型を設定する
 void define_type(Type **type_ptr, int ty){
     Type *tmp = calloc(1, sizeof(Type));
     tmp->ty = ty;
+    tmp->bytesize = type_to_size(tmp);
     *type_ptr = tmp;
 }
 
@@ -52,7 +53,7 @@ Type *read_type() {
         b_type->bytesize = 4;
     } else if(consume_kind(TOKEN_CHAR)) {
         b_type->ty = CHAR;
-        b_type->bytesize = 8;
+        b_type->bytesize = 1;
     } else {
         return NULL;
     }
@@ -63,7 +64,7 @@ Type *read_type() {
         Type *ptr_type = calloc(1, sizeof(Type));
         ptr_type->ty = PTR;
         ptr_type->ptr_to = lead_type;
-        ptr_type->bytesize = 1;
+        ptr_type->bytesize = 8;
         lead_type = ptr_type;
     }
     return lead_type;

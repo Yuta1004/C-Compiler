@@ -410,9 +410,9 @@ Node *unary(){
     if(token->kind == TOKEN_SIZEOF) {
         token = token->next;
         Node *node = unary();
-        int type = node->type->ty;
+        int bytesize = node->type->bytesize;
         free(node);
-        return new_num_node(type_to_size(node->type));
+        return new_num_node(bytesize);
     }
 
     if(consume("-")) {
