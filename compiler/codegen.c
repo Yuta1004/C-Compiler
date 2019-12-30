@@ -5,6 +5,8 @@
 #include <stdarg.h>
 #include "yncc.h"
 
+#define get_array_size(type) ((type)->bytesize / type_to_size(type))
+
 
 /* 計算途中で使用するレジスタ */
 static char *regs[] = {"rax", "r10", "r11", "rbx", "r12", "r13", "r14", "r15"};
@@ -112,7 +114,7 @@ void gen_asm(Node *node){
         outlabel("%s", left->name, right->kind);
         switch(right->kind){
         case ND_NONE:
-            outasm(".zero %d", type_to_size(right->type) * right->type->size);
+            outasm(".zero %d", right->type->bytesize);
             return;
 
         case ND_STR:
@@ -120,7 +122,7 @@ void gen_asm(Node *node){
             return;
 
         case ND_INIT_ARRAY:{
-            int size = (left->type->size > right->val) ? left->type->size : right->val;
+            int size = (get_array_size(left->type) > right->val) ? get_array_size(left->type) : right->val;
             for(int idx = 0; idx < size; ++ idx) {
                 if(idx < right->val)
                     outasm(".long %d", precalc_expr((Node*)vec_get(right->node_list, idx)));

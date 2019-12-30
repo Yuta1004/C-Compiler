@@ -61,26 +61,26 @@ Var *regist_var(int var_type){
     switch(var_type){
     case LOCAL:
         if(consume("[")) {
-            size_t size = expect_number();
+            size_t asize = expect_number();
             define_type(&base_type->ptr_to, base_type->ty);
             base_type->ty = ARRAY;
-            base_type->size = size;
-            var->offset = (sum_offset += (size*8) - 8);
+            base_type->bytesize = asize * type_to_size(type);
+            var->offset = (sum_offset += base_type->bytesize - 8);
             expect("]");
-            if(size <= 0) {
+            if(asize <= 0) {
                 error_at(token->str, "長さが0以下の配列は定義できません");
             }
         }
 
     case GLOBAL:
         if(consume("[")) {
-            Token *size = consume_number();
+            Token *asize = consume_number();
             define_type(&base_type->ptr_to, base_type->ty);
             base_type->ty = ARRAY;
-            if(size)
-                base_type->size = size->val;
+            if(asize)
+                base_type->bytesize = asize->val * type_to_size(type);
             expect("]");
-            if(size != 0 && size->val <= 0) {
+            if(asize != 0 && asize->val <= 0) {
                 error_at(token->str, "長さが0以下の配列は定義できません");
             }
         }

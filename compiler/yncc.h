@@ -106,7 +106,7 @@ struct Var {
 struct Type {
     enum{ NONE, INT, PTR, ARRAY, CHAR, STR } ty;
     struct Type *ptr_to;
-    size_t size;
+    size_t bytesize;
 };
 
 /* グローバル変数 */

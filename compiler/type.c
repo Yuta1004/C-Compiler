@@ -44,13 +44,15 @@ Type *max_type(Type *a, Type *b){
 // type = ("int" | "char") "*"*
 Type *read_type() {
     Type *b_type = calloc(1, sizeof(Type));
-    b_type->size = 1;
+    b_type->bytesize = 1;
 
     // ("int" | "char")
     if(consume_kind(TOKEN_INT)) {
         b_type->ty = INT;
+        b_type->bytesize = 4;
     } else if(consume_kind(TOKEN_CHAR)) {
         b_type->ty = CHAR;
+        b_type->bytesize = 8;
     } else {
         return NULL;
     }
@@ -61,7 +63,7 @@ Type *read_type() {
         Type *ptr_type = calloc(1, sizeof(Type));
         ptr_type->ty = PTR;
         ptr_type->ptr_to = lead_type;
-        ptr_type->size = 1;
+        ptr_type->bytesize = 1;
         lead_type = ptr_type;
     }
     return lead_type;
