@@ -21,6 +21,7 @@ Node *relational();
 Node *add();
 Node *mul();
 Node *unary();
+Node *accessor();
 Node *primary();
 
 void in_scope() {
@@ -399,8 +400,8 @@ Node *mul(){
 }
 
 // 構文解析10
-// unary = "sizeof" unary | ("+" | "-")? primary | ("*" | "&") unary | unary "[" unary "]"  |
-//         ("++" | "--") primary
+// unary = "sizeof" unary | ("+" | "-")? accessor | ("*" | "&") unary | unary "[" unary "]"  |
+//         ("++" | "--") accessor
 Node *unary(){
     if(consume_kind(TOKEN_SIZEOF)) {
         Node *node = unary();
@@ -410,7 +411,7 @@ Node *unary(){
     }
 
     if(consume("-")) {
-        Node *node = new_node_lr(ND_SUB, new_num_node(0), primary());
+        Node *node = new_node_lr(ND_SUB, new_num_node(0), accessor());
         set_lr_max_type(node);
         return node;
     }
@@ -419,60 +420,62 @@ Node *unary(){
     if(consume("*")) {
         node = new_node_lr(ND_DEREF, unary(), NULL);
         node->type = node->left->type->ptr_to;
-        goto check_array_access;
+        return node;
     }
 
     if(consume("&")) {
         node = new_node_lr(ND_ADDR, unary(), NULL);
         define_type(&node->type, PTR);
         define_type(&node->type->ptr_to, PTR);
-        goto check_array_access;
+        return node;
     }
 
     if(consume("++")) { // 前置
-        node = new_node_lr(ND_PRE_INC, primary(), NULL);
+        node = new_node_lr(ND_PRE_INC, accessor(), NULL);
         define_type(&node->type, node->left->type->ty);
-        goto check_array_access;
+        return node;
     }
 
     if(consume("--")) { // 前置
-        node = new_node_lr(ND_PRE_DEC, primary(), NULL);
+        node = new_node_lr(ND_PRE_DEC, accessor(), NULL);
         define_type(&node->type, node->left->type->ty);
-        goto check_array_access;
+        return node;
     }
 
-    if(node == NULL) {
-        node = primary();
-        goto check_array_access;
+    return accessor();
+}
+
+// 構文解析11
+// accessor = primary ("++" | "--") | primary "[" (ident | num ) "]"
+Node *accessor() {
+    Node *node = primary();
+
+    if(consume("++")) { // 後置
+        Node *tmp = new_node_lr(ND_POST_INC, node, NULL);
+        define_type(&tmp->type, node->type->ty);
+        return tmp;
+    }
+
+    if(consume("--")) { // 後置
+        Node *tmp = new_node_lr(ND_POST_DEC, node, NULL);
+        define_type(&tmp->type, node->type->ty);
+        return tmp;
     }
 
     // "[" (ident | num ) "]"
-check_array_access:
     if(consume("[")) {
         Node *add = new_node_lr(ND_ADD, node, expr());
         Node *deref_par = new_node_lr(ND_DEREF, add, NULL);
         add->type = max_type(add->left->type->ptr_to, add->right->type->ptr_to);
         define_type(&deref_par->type, add->type->ty);
         expect("]");
-        node = deref_par;
-    }
-
-    if(consume("++")) { // 後置
-        Node *tmp = new_node_lr(ND_POST_INC, node, NULL);
-        define_type(&tmp->type, node->type->ty);
-        node = tmp;
-    }
-
-    if(consume("--")) { // 後置
-        Node *tmp = new_node_lr(ND_POST_DEC, node, NULL);
-        define_type(&tmp->type, node->type->ty);
-        node = tmp;
+        return deref_par;
     }
 
     return node;
 }
 
-// 構文解析11
+// 構文解析12
 // primary = "(" (expr | block) ") | ident ("(" (expr ","?)* ")") | num | str | ident
 Node *primary(){
     // "(" expr | block ")"
