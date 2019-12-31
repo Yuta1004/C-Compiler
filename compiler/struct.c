@@ -74,7 +74,6 @@ Var *struct_get_member(char *tag, int tag_len, char *member_n, int mn_len) {
     for(int idx = 0; idx < struct_def_list->len; ++ idx) {
         // タグ
         Struct *_struct = vec_get(struct_def_list, idx);
-        fprintf(stderr, "%s, %s, %d %d\n", _struct->tag, tag, strlen(_struct->tag), tag_len);
         if(!_strncmp(_struct->tag, tag, strlen(_struct->tag), tag_len))
             continue;
 
