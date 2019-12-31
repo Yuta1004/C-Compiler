@@ -222,7 +222,7 @@ Node *stmt(){
                 Node *left = new_node_lr(ND_DEREF, add_expr, NULL);                // *(array+idx)
                 Node *right = (Node*)vec_get(init_expr->node_list, idx);        // right
                 define_type(&addr->type, PTR);
-                define_type(&addr->type->ptr_to, addr->left->type->ptr_to->ty);
+                copy_type(&addr->type->ptr_to, addr->left->type->ptr_to);
                 add_expr->type = addr->type;
                 left->type = add_expr->type->ptr_to;
                 vec_push(node->node_list, new_node_lr(ND_ASSIGN, left, right));    // *(array+idx) = right
@@ -432,13 +432,13 @@ Node *unary(){
 
     if(consume("++")) { // 前置
         node = new_node_lr(ND_PRE_INC, accessor(), NULL);
-        define_type(&node->type, node->left->type->ty);
+        copy_type(&node->type, node->left->type);
         return node;
     }
 
     if(consume("--")) { // 前置
         node = new_node_lr(ND_PRE_DEC, accessor(), NULL);
-        define_type(&node->type, node->left->type->ty);
+        copy_type(&node->type, node->left->type);
         return node;
     }
 
@@ -452,13 +452,13 @@ Node *accessor() {
 
     if(consume("++")) { // 後置
         Node *tmp = new_node_lr(ND_POST_INC, node, NULL);
-        define_type(&tmp->type, node->type->ty);
+        copy_type(&tmp->type, node->type);
         return tmp;
     }
 
     if(consume("--")) { // 後置
         Node *tmp = new_node_lr(ND_POST_DEC, node, NULL);
-        define_type(&tmp->type, node->type->ty);
+        copy_type(&tmp->type, node->type);
         return tmp;
     }
 
@@ -467,7 +467,7 @@ Node *accessor() {
         Node *add = new_node_lr(ND_ADD, node, expr());
         Node *deref_par = new_node_lr(ND_DEREF, add, NULL);
         add->type = max_type(add->left->type->ptr_to, add->right->type->ptr_to);
-        define_type(&deref_par->type, add->type->ty);
+        copy_type(&deref_par->type, add->type);
         expect("]");
         return deref_par;
     }
@@ -536,7 +536,7 @@ Node *primary(){
             int bytesize = node->type->bytesize;
             node = new_node_lr(ND_ADDR, node, NULL);
             define_type(&node->type, PTR);
-            define_type(&node->type->ptr_to, node->left->type->ptr_to->ty);
+            copy_type(&node->type->ptr_to, node->left->type->ptr_to);
             node->type->bytesize = bytesize;
         }
         return node;

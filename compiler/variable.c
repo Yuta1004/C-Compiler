@@ -62,7 +62,7 @@ Var *regist_var(int var_type){
     case LOCAL:
         if(consume("[")) {
             size_t asize = expect_number();
-            define_type(&base_type->ptr_to, base_type->ty);
+            copy_type(&base_type->ptr_to, base_type);
             base_type->ty = ARRAY;
             base_type->bytesize *= asize;
             var->offset = (sum_offset += base_type->bytesize - 8);
@@ -75,7 +75,7 @@ Var *regist_var(int var_type){
     case GLOBAL:
         if(consume("[")) {
             Token *asize = consume_number();
-            define_type(&base_type->ptr_to, base_type->ty);
+            copy_type(&base_type->ptr_to, base_type);
             base_type->ty = ARRAY;
             if(asize)
                 base_type->bytesize *= asize->val;
