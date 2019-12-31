@@ -465,21 +465,28 @@ Node *accessor() {
     // "[" (ident | num ) "]"
     if(consume("[")) {
         Node *add = new_node_lr(ND_ADD, node, expr());
-        Node *deref_par = new_node_lr(ND_DEREF, add, NULL);
+        node = new_node_lr(ND_DEREF, add, NULL);
         add->type = max_type(add->left->type->ptr_to, add->right->type->ptr_to);
-        copy_type(&deref_par->type, add->type);
+        copy_type(&node->type, add->type);
         expect("]");
-        return deref_par;
     }
 
     // ident "." ident
     if(consume(".")) {
+        // メンバ名取得
         Token *member_n = expect_ident();
         Var *member = struct_get_member(node->type->tag, node->type->len, member_n->str, member_n->len);
         if(!member)
             error_at(member_n->str, "構造体名またはメンバ名が正しくありません");
-        member->offset += node->offset;
-        return new_var_node(member);
+
+        // オフセット設定
+        if(node->kind == ND_DEREF) {
+            node->left = new_node_lr(ND_ADD, node->left, new_num_node(member->offset));
+            return node;
+        } else {
+            member->offset += node->offset;
+            return new_var_node(member);
+        }
     }
 
     return node;
