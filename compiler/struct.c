@@ -92,7 +92,7 @@ Var *struct_get_member(char *tag, int tag_len, char *member_n, int mn_len) {
 
         // メンバ
         int offset = 0;
-        for(int m_idx = 0; m_idx < _struct->members->len; ++ idx) {
+        for(int m_idx = 0; m_idx < _struct->members->len; ++ m_idx) {
             Type *member_type = vec_get(_struct->members, m_idx);
             char *member_name = vec_get(_struct->names, m_idx);
             offset += member_type->padsize;
@@ -101,4 +101,5 @@ Var *struct_get_member(char *tag, int tag_len, char *member_n, int mn_len) {
             offset += member_type->bytesize;
         }
     }
+    return NULL;
 }
