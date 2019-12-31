@@ -482,10 +482,9 @@ Node *accessor() {
         // オフセット設定
         if(node->kind == ND_DEREF) {
             node->left = new_node_lr(ND_ADD, node->left, new_num_node(member->offset));
-            return node;
         } else {
             member->offset += node->offset;
-            return new_var_node(member);
+            node = new_var_node(member);
         }
     }
 

@@ -24,6 +24,9 @@ run-program:
 	gcc -no-pie -o tmp tmp.s
 	./tmp
 
+lines:
+	wc -l $(SRCS)
+
 clean:
 	rm -f *.o *~ tmp*
 
