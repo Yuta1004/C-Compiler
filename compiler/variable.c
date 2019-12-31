@@ -64,7 +64,7 @@ Var *regist_var(int var_type){
             size_t asize = expect_number();
             define_type(&base_type->ptr_to, base_type->ty);
             base_type->ty = ARRAY;
-            base_type->bytesize = asize * type_to_size(base_type->ptr_to);
+            base_type->bytesize *= asize;
             var->offset = (sum_offset += base_type->bytesize - 8);
             expect("]");
             if(asize <= 0) {
@@ -78,7 +78,7 @@ Var *regist_var(int var_type){
             define_type(&base_type->ptr_to, base_type->ty);
             base_type->ty = ARRAY;
             if(asize)
-                base_type->bytesize = asize->val * type_to_size(base_type->ptr_to);
+                base_type->bytesize *= asize->val;
             expect("]");
             if(asize != 0 && asize->val <= 0) {
                 error_at(token->str, "長さが0以下の配列は定義できません");
