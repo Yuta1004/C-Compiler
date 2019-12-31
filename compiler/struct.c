@@ -25,6 +25,7 @@ bool def_struct(int type, char *tag) {
         return false;
 
     // (type ident ("," type ident)*)?
+    int max_alignment = 0;
     Struct *_struct = new_struct(tag, type);
     while(true) {
         // type ident
@@ -33,6 +34,8 @@ bool def_struct(int type, char *tag) {
         Token *ident = expect_ident();
         if(!ident) break;
         expect(";");
+        if(max_alignment < type->bytesize)
+            max_alignment = type->bytesize;
 
         // add vec
         char *name = malloc(ident->len);
@@ -41,6 +44,16 @@ bool def_struct(int type, char *tag) {
         vec_push(_struct->members, type);
         vec_push(_struct->names, name);
     }
+
+    // アラインメント
+    // (padding) [1] (padding) [2] ...
+    int offset = 0;
+    for(int idx = 0; idx < _struct->members->len; ++ idx) {
+        Type *member = vec_get(_struct->members, idx);
+        member->padsize = (max_alignment-offset%max_alignment) % max_alignment;
+        offset += member->padsize + member->bytesize;
+    }
+    _struct->bytesize = offset + (max_alignment-offset%max_alignment) % max_alignment;
 
     // struct_list追加
     vec_push(struct_def_list, _struct);
