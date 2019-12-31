@@ -454,7 +454,7 @@ check_array_access:
         add->type = max_type(add->left->type->ptr_to, add->right->type->ptr_to);
         define_type(&deref_par->type, add->type->ty);
         expect("]");
-        return deref_par;
+        node = deref_par;
     }
 
     if(consume("++")) { // 後置
