@@ -111,7 +111,7 @@ struct Type {
     char *tag;
     int len;
     int bytesize;
-    int alignment;
+    int padsize;
 };
 
 struct Struct {
