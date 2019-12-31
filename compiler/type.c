@@ -1,6 +1,7 @@
 #include <stdlib.h>
-#include "yncc.h"
 #include <stdio.h>
+#include <string.h>
+#include "yncc.h"
 
 // Type構造体生成
 Type *new_type(int ty) {
@@ -30,6 +31,12 @@ int type_to_size(Type *type) {
 void define_type(Type **type_ptr, int ty){
     Type *tmp = new_type(ty);
     *type_ptr = tmp;
+}
+
+// type_ptrに型をコピーする
+void copy_type(Type **dst, Type *src) {
+    *dst = new_type(NONE);
+    memmove(*dst, src, sizeof(Type));
 }
 
 // 大きい方の型の種類を返す

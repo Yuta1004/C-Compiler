@@ -147,6 +147,7 @@ int is_alnum(char chr);
 Type *new_type();
 int type_to_size(Type *type);
 void define_type(Type **type_ptr, int type);
+void copy_type(Type **dst, Type *src);
 Type *max_type(Type *a, Type *b);
 Type *read_type();
 Type *get_base_type(Type *type);
