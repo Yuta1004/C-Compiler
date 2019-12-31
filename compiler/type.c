@@ -22,6 +22,8 @@ int type_to_size(Type *type) {
     case PTR:
     case ARRAY:
         return 8;
+    case STRUCT:
+        return type->bytesize;
     default:
         return 1;
     }
