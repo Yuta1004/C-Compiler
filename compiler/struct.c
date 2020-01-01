@@ -84,12 +84,13 @@ Var *member_to_var(char *name, int len, Type *type, int offset) {
 
 // タグとメンバ名からVar構造体を返す, 呼び出し元で変数のoffsetをプラスする
 Var *struct_get_member(char *tag, int tag_len, char *member_n, int mn_len) {
-    // locals検索
+    Var *hit_var = NULL;
     for(int idx = 0; idx < struct_def_list->len; ++ idx) {
         // 目当ての構造体か
         Struct *_struct = vec_get(struct_def_list, idx);
         if( !_strncmp(_struct->tag, tag, strlen(_struct->tag), tag_len) || // タグ一致
-            vec_find(man_scope, (void*)(long)(_struct->scope_id)) == -1 // スコープ
+            vec_find(man_scope, (void*)(long)(_struct->scope_id)) == -1 || // スコープ
+            (hit_var != NULL && hit_var->scope_id >= _struct->scope_id)    // ネストの深さ
         ) { continue; };
 
         // メンバ
