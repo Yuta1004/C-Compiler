@@ -118,6 +118,7 @@ struct Struct {
     char *tag;
     int dtype;          // LOCAL or GLOBAL
     int bytesize;       // メモリサイズ
+    int scope_id;       // スコープID
     Vector *members;     // メンバリスト Vector<Type>
     Vector *names;       // メンバ名一覧 Vector<char*>
 };

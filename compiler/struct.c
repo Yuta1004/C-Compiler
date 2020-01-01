@@ -13,6 +13,7 @@ Struct *new_struct(char *tag, int dtype) {
     _struct->members = vec_new(10);
     _struct->names = vec_new(10);
     _struct->dtype = dtype;
+    _struct->scope_id = scope_id;
     return _struct;
 }
 
@@ -85,10 +86,11 @@ Var *member_to_var(char *name, int len, Type *type, int offset) {
 Var *struct_get_member(char *tag, int tag_len, char *member_n, int mn_len) {
     // locals検索
     for(int idx = 0; idx < struct_def_list->len; ++ idx) {
-        // タグ
+        // 目当ての構造体か
         Struct *_struct = vec_get(struct_def_list, idx);
-        if(!_strncmp(_struct->tag, tag, strlen(_struct->tag), tag_len))
-            continue;
+        if( !_strncmp(_struct->tag, tag, strlen(_struct->tag), tag_len) || // タグ一致
+            vec_find(man_scope, (void*)(long)(_struct->scope_id)) == -1 // スコープ
+        ) { continue; };
 
         // メンバ
         int offset = 0;
