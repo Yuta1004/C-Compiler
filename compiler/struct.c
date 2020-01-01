@@ -7,12 +7,12 @@
     ((str1_len == str2_len) && strncmp(str1, str2, str1_len) == 0)
 
 // Struct構造体生成
-Struct *new_struct(char *tag, int dtype) {
+Struct *new_struct(char *tag, int var_type) {
     Struct *_struct = calloc(1, sizeof(Struct));
     _struct->tag = tag;
     _struct->members = vec_new(10);
     _struct->names = vec_new(10);
-    _struct->dtype = dtype;
+    _struct->var_type = var_type;
     _struct->scope_id = scope_id;
     return _struct;
 }
@@ -20,14 +20,14 @@ Struct *new_struct(char *tag, int dtype) {
 // 構造体定義
 // "{" (type ident ("," type ident)*)? "}"
 // structキーワード, タグ名は既にパースされた前提
-bool def_struct(int type, char *tag) {
+bool def_struct(int var_type, char *tag) {
     // {
     if(!consume("{"))
         return false;
 
     // (type ident ("," type ident)*)?
     int max_alignment = 0;
-    Struct *_struct = new_struct(tag, type);
+    Struct *_struct = new_struct(tag, var_type);
     while(true) {
         // type ident
         Type *type = read_type();

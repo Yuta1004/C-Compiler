@@ -116,7 +116,7 @@ struct Type {
 
 struct Struct {
     char *tag;
-    int dtype;          // LOCAL or GLOBAL
+    int var_type;          // LOCAL or GLOBAL
     int bytesize;       // メモリサイズ
     int scope_id;       // スコープID
     Vector *members;     // メンバリスト Vector<Type>
