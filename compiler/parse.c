@@ -446,7 +446,7 @@ Node *unary(){
 }
 
 // 構文解析11
-// accessor = primary ("++" | "--") | primary "[" (ident | num ) "]" | ident "." ident
+// accessor = primary ("++" | "--") | primary "[" (ident | num ) "]" | primary ("." | "->") ident
 Node *accessor() {
     Node *node = primary();
 
@@ -471,11 +471,16 @@ Node *accessor() {
         expect("]");
     }
 
-    // ident "." ident
-    if(consume(".")) {
+    // primary ("." | "->") ident
+    bool dotacs = false;
+    if((dotacs=consume(".")) || consume("->")) {
         // メンバ名取得
+        Var *member;
         Token *member_n = expect_ident();
-        Var *member = struct_get_member(node->type->tag, node->type->len, member_n->str, member_n->len);
+        if(dotacs)
+            member = struct_get_member(node->type->tag, node->type->len, member_n->str, member_n->len);
+        else
+            member = struct_get_member(node->type->ptr_to->tag, node->type->ptr_to->len, member_n->str, member_n->len);
         if(!member)
             error_at(member_n->str, "構造体名またはメンバ名が正しくありません");
 
