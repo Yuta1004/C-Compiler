@@ -6,6 +6,7 @@
 
 #define _strncmp(str1, str2, str1_len, str2_len) \
     ((str1_len == str2_len) && strncmp(str1, str2, str1_len) == 0)
+#define max(a, b) ((a)>(b) ? (a) : (b))
 
 // 変数検索
 Var *find_var(Token *request){
@@ -47,7 +48,7 @@ Var *regist_var(int var_type){
     var->var_type = var_type;
     var->type = type;
     var->len = var_name->len;
-    var->offset = (sum_offset += 8);
+    var->offset = (sum_offset += max(type->bytesize, 8));
     var->name = (char*)calloc(var_name->len+1, sizeof(char));
     var->scope_id = scope_id;
     strncpy(var->name, var_name->str, var_name->len);
