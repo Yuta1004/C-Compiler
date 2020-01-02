@@ -15,6 +15,7 @@ Node *new_node_lr(NodeKind kind, Node *left, Node *right){
     node->kind = kind;
     node->left = left;
     node->right = right;
+    node->type = max_type(left?left->type:NULL, right?right->type:NULL);
     return node;
 }
 
