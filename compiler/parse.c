@@ -5,8 +5,6 @@
 #include <ctype.h>
 #include "yncc.h"
 
-#define set_lr_max_type(node) ((node)->type = max_type((node)->left->type, (node)->right->type))
-
 /* プロトタイプ宣言 */
 void in_scope();
 void out_scope();
@@ -317,9 +315,6 @@ Node *assign(){
         return node;
     }
 
-    set_lr_max_type(node);
-    if(is_comp_assign)
-        set_lr_max_type(node->right);
     return node;
 }
 
@@ -335,7 +330,7 @@ Node *equality(){
     } else {
         return node;
     }
-    set_lr_max_type(node);
+
     return node;
 }
 
@@ -356,7 +351,7 @@ Node *relational(){
     } else {
         return node;
     }
-    set_lr_max_type(node);
+
     return node;
 }
 
@@ -368,10 +363,8 @@ Node *add(){
     while(true) {
         if(consume("+")) {
             node = new_node_lr(ND_ADD, node, mul());
-            set_lr_max_type(node);
         } else if(consume("-")) {
             node = new_node_lr(ND_SUB, node, mul());
-            set_lr_max_type(node);
         } else {
             return node;
         }
@@ -386,13 +379,10 @@ Node *mul(){
     while(true) {
         if(consume("*")) {
             node = new_node_lr(ND_MUL, node, unary());
-            set_lr_max_type(node);
         } else if(consume("/")) {
             node = new_node_lr(ND_DIV, node, unary());
-            set_lr_max_type(node);
         } else if(consume("%")) {
             node = new_node_lr(ND_DIV_REMAIN, node, unary());
-            set_lr_max_type(node);
         } else {
             return node;
         }
@@ -412,7 +402,6 @@ Node *unary(){
 
     if(consume("-")) {
         Node *node = new_node_lr(ND_SUB, new_num_node(0), accessor());
-        set_lr_max_type(node);
         return node;
     }
 
