@@ -477,8 +477,13 @@ Node *accessor() {
         if(node->kind == ND_DEREF) {
             node->left = new_node_lr(ND_ADD, node->left, new_num_node(member->offset));
         } else {
-            member->offset += node->offset;
-            node = new_var_node(member);
+            Node *deref_node = new_node(ND_DEREF);
+            deref_node->left = new_node(ND_ADD);
+            deref_node->left->left = new_node_lr(ND_ADDR, node, NULL);
+            deref_node->left->right = new_num_node(member->offset);
+            copy_type(&deref_node->left->type, node->type);
+            copy_type(&deref_node->type, node->type);
+            node = deref_node;
         }
     }
 
