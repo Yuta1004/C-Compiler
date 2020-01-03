@@ -53,6 +53,19 @@ Node *func(){
     locals = vec_new(10);
     sum_offset = 0;
 
+    // 構造体(グローバル)
+    if(consume_kind(TOKEN_STRUCT)) {
+        Token *tag = expect_ident();
+        char *tag_c = malloc(tag->len+1);
+        strncpy(tag_c, tag->str, tag->len);
+        tag_c[tag->len] = 0;
+        if(def_struct(GLOBAL, tag_c)) {
+            expect(";");
+            return new_none_node();
+        }
+        token = bef_token;
+    }
+
     // 関数名
     read_type();
     Token *f_name_token = consume_ident();
