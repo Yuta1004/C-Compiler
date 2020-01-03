@@ -235,7 +235,8 @@ try "int main() { struct User { char *name; int age; }; }" 0
 try "int main() { struct User { char *name; int age; }; struct User user; user.name = \"nakagamiyuta\"; user.age = 18; printf(\"--- UserInfo ---\\n\"); printf(\"- Name: %s\\n\", user.name); printf(\"- Age: %d\\n\", user.age); }" 0
 try "int main() { struct TestStruct { int a; }; { struct TestStruct { int e; }; struct TestStruct test; test.e = 10; if(test.e != 10) return 1; } struct TestStruct test; test.a = 50; if(test.a != 50) return 1; return 0; }" 0
 try "int main() { struct Item { int id; }; struct Item items[10]; for(int idx = 0; idx < sizeof(items)/sizeof(items[0]); ++ idx) { items[idx].id = idx+1; } int sum = 0; for(int idx = 0; idx < 10; idx ++) { sum += items[idx].id; }; return sum; }" 55
-
+try "struct Data { int a; int b; int *c; }; int print(struct Data *d) { puts(\"Data\"); printf(\"- a : %d\\n\", d->a); printf(\"- b : %d\\n\", d->b); printf(\"- c : %d (%p)\\n\", *(d->c), d->c); } int main() { int num = 30; struct Data data1; data1.a = 10; data1.b = 20; data1.c = &num; print(&data1); }" 0
+try "int assert(int a, int b) { if(a != b) exit(1); } int main() { struct Data { int a; int b; int *c; }; int num = 30; struct Data d; struct Data *pd; pd = &d; d.a = 10; d.b = 20; d.c = &num; assert(pd->a, 10); assert(pd->b, 20); assert(*(pd->c), 30); }" 0
 
 echo ""
 exit 0
