@@ -453,14 +453,15 @@ Node *accessor() {
             if(!member)
                 error_at(member_n->str, "構造体名またはメンバ名が正しくありません");
 
-            // オフセット設定
+            // オフセット, 型設定
             Node *deref_node = new_node(ND_DEREF);
             deref_node->left = new_node(ND_ADD);
             deref_node->left->left = new_node_lr(ND_ADDR, node, NULL);
             deref_node->left->right = new_num_node(member->offset);
             copy_type(&deref_node->left->type, node->type);
+            copy_type(&deref_node->left->type->ptr_to, member->type->ptr_to);
             copy_type(&deref_node->type, member->type);
-            node = deref_node;
+            node = member->type->ty==ARRAY ? deref_node->left : deref_node;
             continue;
         }
         break;

@@ -35,9 +35,17 @@ bool def_struct(int var_type, char *tag, int len) {
         if(!type) break;
         Token *ident = expect_ident();
         if(!ident) break;
-        expect(";");
         if(max_alignment < type->bytesize)
             max_alignment = type->bytesize;
+
+        // "[" num "]"
+        if(consume("[")) {
+            size_t size = expect_number();
+            copy_type(&type->ptr_to, type);
+            type->ty = ARRAY;
+            type->bytesize *= size;
+            expect("]");
+        }
 
         // add vec
         char *name = malloc(ident->len);
@@ -45,6 +53,7 @@ bool def_struct(int var_type, char *tag, int len) {
         name[ident->len] = 0;
         vec_push(_struct->members, type);
         vec_push(_struct->names, name);
+        expect(";");
     }
 
     // アラインメント
