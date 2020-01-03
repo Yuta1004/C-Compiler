@@ -10,6 +10,7 @@
 Struct *new_struct(int var_type, char *tag, int len) {
     Struct *_struct = calloc(1, sizeof(Struct));
     _struct->tag = tag;
+    _struct->len = len;
     _struct->members = vec_new(10);
     _struct->names = vec_new(10);
     _struct->var_type = var_type;
@@ -66,7 +67,7 @@ bool def_struct(int var_type, char *tag, int len) {
 int get_struct_size(char *tag, int len) {
     for(int idx = 0; idx < struct_def_list->len; ++ idx) {
         Struct *_struct = vec_get(struct_def_list, idx);
-        if(_strncmp(_struct->tag, tag, strlen(_struct->tag), len))
+        if(_strncmp(_struct->tag, tag, _struct->len, len))
             return _struct->bytesize;
     }
     return -1;
@@ -88,7 +89,7 @@ Var *struct_get_member(char *tag, int tag_len, char *member_n, int mn_len) {
     for(int idx = 0; idx < struct_def_list->len; ++ idx) {
         // 目当ての構造体か
         Struct *_struct = vec_get(struct_def_list, idx);
-        if( !_strncmp(_struct->tag, tag, strlen(_struct->tag), tag_len) || // タグ一致
+        if( !_strncmp(_struct->tag, tag, _struct->len, tag_len) || // タグ一致
             vec_find(man_scope, (void*)(long)(_struct->scope_id)) == -1 || // スコープ
             (hit_var != NULL && hit_var->scope_id >= _struct->scope_id)    // ネストの深さ
         ) { continue; };

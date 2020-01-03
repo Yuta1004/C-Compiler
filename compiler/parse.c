@@ -56,10 +56,7 @@ Node *func(){
     // 構造体(グローバル)
     if(consume_kind(TOKEN_STRUCT)) {
         Token *tag = expect_ident();
-        char *tag_c = malloc(tag->len+1);
-        strncpy(tag_c, tag->str, tag->len);
-        tag_c[tag->len] = 0;
-        if(def_struct(GLOBAL, tag_c, tag->len)) {
+        if(def_struct(GLOBAL, tag->str, tag->len)) {
             expect(";");
             return new_none_node();
         }
@@ -261,14 +258,8 @@ Node *stmt(){
 
     // "struct" ident "{" ... "}"
     if(consume_kind(TOKEN_STRUCT)) {
-        // ident
         Token *tag = expect_ident();
-        char *tag_c = malloc(tag->len+1);
-        strncpy(tag_c, tag->str, tag->len);
-        tag_c[tag->len] = 0;
-
-        // 構造体登録
-        def_struct(LOCAL, tag_c, tag->len);
+        def_struct(LOCAL, tag->str, tag->len);
         expect(";");
         return NULL;
     }

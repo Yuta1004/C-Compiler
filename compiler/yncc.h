@@ -112,7 +112,8 @@ struct Type {
 
 struct Struct {
     char *tag;
-    int var_type;          // LOCAL or GLOBAL
+    int len;            // tagの長さ
+    int var_type;       // LOCAL or GLOBAL
     int bytesize;       // メモリサイズ
     int scope_id;       // スコープID
     Vector *members;     // メンバリスト Vector<Type>
