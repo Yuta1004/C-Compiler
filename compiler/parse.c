@@ -461,30 +461,27 @@ Node *accessor() {
     }
 
     // primary ("." | "->") ident
-    bool dotacs = false;
-    if((dotacs=consume(".")) || consume("->")) {
+    bool arrowacs = false;
+    if(consume(".") || (arrowacs=consume("->"))) {
         // メンバ名取得
         Var *member;
         Token *member_n = expect_ident();
-        if(dotacs)
-            member = struct_get_member(node->type->tag, node->type->len, member_n->str, member_n->len);
-        else
-            member = struct_get_member(node->type->ptr_to->tag, node->type->ptr_to->len, member_n->str, member_n->len);
+        if(arrowacs) {
+            node = new_node_lr(ND_DEREF, node, NULL);
+            node->type = node->left->type->ptr_to;
+        }
+        member = struct_get_member(node->type->tag, node->type->len, member_n->str, member_n->len);
         if(!member)
             error_at(member_n->str, "構造体名またはメンバ名が正しくありません");
 
         // オフセット設定
-        if(node->kind == ND_DEREF) {
-            node->left = new_node_lr(ND_ADD, node->left, new_num_node(member->offset));
-        } else {
-            Node *deref_node = new_node(ND_DEREF);
-            deref_node->left = new_node(ND_ADD);
-            deref_node->left->left = new_node_lr(ND_ADDR, node, NULL);
-            deref_node->left->right = new_num_node(member->offset);
-            copy_type(&deref_node->left->type, node->type);
-            copy_type(&deref_node->type, node->type);
-            node = deref_node;
-        }
+        Node *deref_node = new_node(ND_DEREF);
+        deref_node->left = new_node(ND_ADD);
+        deref_node->left->left = new_node_lr(ND_ADDR, node, NULL);
+        deref_node->left->right = new_num_node(member->offset);
+        copy_type(&deref_node->left->type, node->type);
+        copy_type(&deref_node->type, node->type);
+        node = deref_node;
     }
 
     return node;
