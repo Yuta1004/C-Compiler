@@ -297,12 +297,9 @@ Node *expr(){
 // 構文解析5
 // assign = equality ("=" assign)?
 Node *assign(){
-    bool is_comp_assign = true;
     Node *node = equality();
-
     if(consume("=")){
         node = new_node_lr(ND_ASSIGN, node, assign());
-        is_comp_assign = false;
     } else if(consume("+=")){
         node = new_node_lr(ND_ASSIGN, node, new_node_lr(ND_ADD, node, assign()));
     } else if(consume("-=")){
@@ -311,10 +308,7 @@ Node *assign(){
         node = new_node_lr(ND_ASSIGN, node, new_node_lr(ND_MUL, node, assign()));
     } else if(consume("/=")){
         node = new_node_lr(ND_ASSIGN, node, new_node_lr(ND_DIV, node, assign()));
-    } else {
-        return node;
     }
-
     return node;
 }
 
@@ -322,15 +316,11 @@ Node *assign(){
 // equality = relational ("==" relational | "!=" relational)*
 Node *equality(){
     Node *node = relational();
-
     if(consume("==")) {
         node = new_node_lr(ND_EQ, node, relational());
     } else if(consume("!=")) {
         node = new_node_lr(ND_NEQ, node, relational());
-    } else {
-        return node;
     }
-
     return node;
 }
 
@@ -338,8 +328,6 @@ Node *equality(){
 // relational = add (">" add | ">=" add | "<" add | "<=" add)*
 Node *relational(){
     Node *node = add();
-
-    // <, <= は両辺入れ替えて >, >= と同じように扱う(発想の勝利)
     if(consume(">")) {
         node = new_node_lr(ND_UPPERL, node, add());
     } else if(consume(">=")) {
@@ -348,10 +336,7 @@ Node *relational(){
         node = new_node_lr(ND_UPPERL, add(), node);
     } else if(consume("<=")) {
         node = new_node_lr(ND_UPPEREQL, add(), node);
-    } else {
-        return node;
     }
-
     return node;
 }
 
@@ -359,7 +344,6 @@ Node *relational(){
 // add = mul ("+" mul | "-" mul)*
 Node *add(){
     Node *node = mul();
-
     while(true) {
         if(consume("+")) {
             node = new_node_lr(ND_ADD, node, mul());
@@ -375,7 +359,6 @@ Node *add(){
 // mul = unary ("*" unary | "-" unary)*
 Node *mul(){
     Node *node = unary();
-
     while(true) {
         if(consume("*")) {
             node = new_node_lr(ND_MUL, node, unary());
@@ -401,34 +384,28 @@ Node *unary(){
     }
 
     if(consume("-")) {
-        Node *node = new_node_lr(ND_SUB, new_num_node(0), accessor());
-        return node;
+        return new_node_lr(ND_SUB, new_num_node(0), accessor());
     }
 
-    Node *node = NULL;
     if(consume("*")) {
-        node = new_node_lr(ND_DEREF, unary(), NULL);
+        Node *node = new_node_lr(ND_DEREF, unary(), NULL);
         node->type = node->left->type->ptr_to;
         return node;
     }
 
     if(consume("&")) {
-        node = new_node_lr(ND_ADDR, unary(), NULL);
+        Node *node = new_node_lr(ND_ADDR, unary(), NULL);
         define_type(&node->type, PTR);
         define_type(&node->type->ptr_to, PTR);
         return node;
     }
 
     if(consume("++")) { // 前置
-        node = new_node_lr(ND_PRE_INC, accessor(), NULL);
-        copy_type(&node->type, node->left->type);
-        return node;
+        return new_node_lr(ND_PRE_INC, accessor(), NULL);
     }
 
     if(consume("--")) { // 前置
-        node = new_node_lr(ND_PRE_DEC, accessor(), NULL);
-        copy_type(&node->type, node->left->type);
-        return node;
+        return new_node_lr(ND_PRE_DEC, accessor(), NULL);
     }
 
     return accessor();
@@ -440,15 +417,11 @@ Node *accessor() {
     Node *node = primary();
 
     if(consume("++")) { // 後置
-        Node *tmp = new_node_lr(ND_POST_INC, node, NULL);
-        copy_type(&tmp->type, node->type);
-        return tmp;
+        return new_node_lr(ND_POST_INC, node, NULL);
     }
 
     if(consume("--")) { // 後置
-        Node *tmp = new_node_lr(ND_POST_DEC, node, NULL);
-        copy_type(&tmp->type, node->type);
-        return tmp;
+        return new_node_lr(ND_POST_DEC, node, NULL);
     }
 
     // "[" (ident | num ) "]"
