@@ -59,7 +59,7 @@ Node *func(){
         char *tag_c = malloc(tag->len+1);
         strncpy(tag_c, tag->str, tag->len);
         tag_c[tag->len] = 0;
-        if(def_struct(GLOBAL, tag_c)) {
+        if(def_struct(GLOBAL, tag_c, tag->len)) {
             expect(";");
             return new_none_node();
         }
@@ -268,7 +268,7 @@ Node *stmt(){
         tag_c[tag->len] = 0;
 
         // 構造体登録
-        def_struct(LOCAL, tag_c);
+        def_struct(LOCAL, tag_c, tag->len);
         expect(";");
         return NULL;
     }

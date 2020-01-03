@@ -189,7 +189,7 @@ int precalc_expr(Node *root);
 void decode_precalc_expr(char *s, Node *root);
 
 /* struct.c */
-bool def_struct(int type, char *tag);
+bool def_struct(int type, char *tag, int len);
 int get_struct_size(char *tag, int len);
 Var *struct_get_member(char *tag, int tag_len, char *member_n, int mn_len);
 
