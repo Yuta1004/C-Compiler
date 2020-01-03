@@ -25,7 +25,8 @@ run-program: yncc program.c
 	./tmp
 
 lines:
-	wc -l $(SRCS)
+	@ wc -l $(SRCS) | head -n -1 | sort -k 1 -r -n
+	@ wc -l $(SRCS) | tail -n 1
 
 clean:
 	rm -f *.o *~ tmp*
