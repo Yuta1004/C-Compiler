@@ -237,6 +237,9 @@ try "int main() { struct TestStruct { int a; }; { struct TestStruct { int e; }; 
 try "int main() { struct Item { int id; }; struct Item items[10]; for(int idx = 0; idx < sizeof(items)/sizeof(items[0]); ++ idx) { items[idx].id = idx+1; } int sum = 0; for(int idx = 0; idx < 10; idx ++) { sum += items[idx].id; }; return sum; }" 55
 try "struct Data { int a; int b; int *c; }; int print(struct Data *d) { puts(\"Data\"); printf(\"- a : %d\\n\", d->a); printf(\"- b : %d\\n\", d->b); printf(\"- c : %d (%p)\\n\", *(d->c), d->c); } int main() { int num = 30; struct Data data1; data1.a = 10; data1.b = 20; data1.c = &num; print(&data1); }" 0
 try "int assert(int a, int b) { if(a != b) exit(1); } int main() { struct Data { int a; int b; int *c; }; int num = 30; struct Data d; struct Data *pd; pd = &d; d.a = 10; d.b = 20; d.c = &num; assert(pd->a, 10); assert(pd->b, 20); assert(*(pd->c), 30); }" 0
+try "int assert(int a, int b) { if(a != b) exit(1); } int main() { struct DataA { int a; int b; int c; }; struct DataB {  struct DataA a; int b; }; struct DataC {  struct DataB a; int b; }; struct DataC data; data.a.a.a = 10; data.a.a.b = 20; data.a.a.c = 30; data.a.b = 40; data.b = 50; assert(data.a.a.a, 10); assert(data.a.a.b, 20); assert(data.a.a.c, 30); assert(data.a.b, 40); assert(data.b, 50); }" 0
+try "int assert(int a, int b) { if(a != b) exit(1); } int main(){ struct DataA { int a; int b; }; struct DataB { struct DataA a; int b; }; struct DataB data[10]; for(int idx = 0; idx < 10; ++ idx) { data[idx].a.a = idx*10+1; data[idx].a.b = idx*10+2; data[idx].b = idx*10+3; } for(int idx = 0; idx < 10; ++ idx) { assert(data[idx].a.a, idx*10+1); assert(data[idx].a.b, idx*10+2); assert(data[idx].b, idx*10+3); } }" 0
+
 
 echo ""
 exit 0
