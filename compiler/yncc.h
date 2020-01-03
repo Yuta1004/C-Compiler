@@ -80,14 +80,10 @@ struct Node {
     NodeKind kind;              // ノードの種類
     Node *left;                 // 左辺ノードのポインタ
     Node *right;                // 右辺ノードのポインタ
-
     Vector *node_list;          // ノードに属するノードのリスト
-
     int val;                    // 数字ノードだった時、その値
-
     int offset;                 // ローカル変数ノードだった時、そのオフセット
     Type *type;                 // 変数ノードだった時、その型
-
     char *name;                 // グローバル変数定義 or 関数ノードだった時、その名前
     Node **args;                // 関数ノードだった時、その引数
 };
