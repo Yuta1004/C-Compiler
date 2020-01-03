@@ -38,7 +38,8 @@ void define_type(Type **type_ptr, int ty){
 // type_ptrに型をコピーする
 void copy_type(Type **dst, Type *src) {
     *dst = new_type(NONE);
-    memmove(*dst, src, sizeof(Type));
+    if(src != NULL)
+        memmove(*dst, src, sizeof(Type));
 }
 
 // 大きい方の型の種類を返す
