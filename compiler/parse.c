@@ -28,7 +28,8 @@ void in_scope() {
 }
 
 void out_scope() {
-    scope_id = ((int)(long)vec_pop(man_scope)) - 1;
+    vec_pop(man_scope);
+    scope_id = (int)(long)vec_get(man_scope, man_scope->len-1);
 }
 
 // 構文解析1
