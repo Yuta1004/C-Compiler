@@ -241,5 +241,11 @@ try "int assert(int a, int b) { if(a != b) exit(1); } int main() { struct DataA 
 try "int assert(int a, int b) { if(a != b) exit(1); } int main(){ struct DataA { int a; int b; }; struct DataB { struct DataA a; int b; }; struct DataB data[10]; for(int idx = 0; idx < 10; ++ idx) { data[idx].a.a = idx*10+1; data[idx].a.b = idx*10+2; data[idx].b = idx*10+3; } for(int idx = 0; idx < 10; ++ idx) { assert(data[idx].a.a, idx*10+1); assert(data[idx].a.b, idx*10+2); assert(data[idx].b, idx*10+3); } }" 0
 try "struct DataA { int a; int b; }; struct DataB { struct DataA a; int b; }; int assert(int a, int b) { if(a != b) exit(1); } int check(struct DataB *data, int idx) { assert(data->a.a, idx*10+1); assert(data->a.b, idx*10+2); assert(data->b, idx*10+3); } int main() { struct DataB data[10]; for(int idx = 0; idx < 10; ++ idx) { data[idx].a.a = idx*10+1; data[idx].a.b = idx*10+2; data[idx].b = idx*10+3; check(&data[idx], idx); } }" 0
 
+## str-ext
+try "int main() { printf(\"Name: \\\"yncc\\\"\\n\"); }" 0
+try "int main() { int label = 1204; printf(\".str%d:\\n\", label); }" 0
+try "int main() { char *str = \"yncc\"; printf(\"\\t\\t.string \\\"%s\\\\0\\\"\\n\", str); }" 0
+
+
 echo ""
 exit 0

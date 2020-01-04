@@ -80,8 +80,11 @@ Token *tokenize(char *p){
             cur = new_token(TOKEN_STR, cur, p);
 
             // 文字列読み込み -> 登録
-            int len = 0;
-            do ++ len; while(*(p+len) != '\"');
+            int len = 1;
+            while(*(p+len) != '\"') {
+                if(*(p+len) == '\\') len += 2;
+                else len += 1;
+            }
             char *str = (char*)calloc(len+1, sizeof(char));
             strncpy(str, p, len);
             vec_push(str_vec, str);
