@@ -18,7 +18,7 @@ test-sh: yncc
 
 test-c: yncc $(TARGET)
 	./yncc $(TARGET) > tmp.s
-	$(GCC) -no-pie -o tmp tmp.s
+	$(GCC) -g3 -no-pie -o tmp tmp.s
 	./tmp
 
 lines:
