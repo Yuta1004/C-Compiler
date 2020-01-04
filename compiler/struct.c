@@ -3,6 +3,8 @@
 #include "yncc.h"
 #include "vector.h"
 
+// TODO: 構造体初期化, コピー
+
 #define _strncmp(str1, str2, str1_len, str2_len) \
     ((str1_len == str2_len) && strncmp(str1, str2, str1_len) == 0)
 
