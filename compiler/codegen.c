@@ -170,7 +170,7 @@ void gen_asm(Node *node){
         outasm("push r13");
         outasm("push r14");
         outasm("push r15");
-        outasm("sub rsp, %d", 8*20);
+        outasm("sub rsp, %d", 2*1024);
 
         for(int idx = 0; idx < 6 && node->args[idx]; ++ idx)
             outasm("mov [rbp-%d], %s", idx*8+8, argregs[idx]);
