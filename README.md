@@ -19,7 +19,7 @@ cd compiler
 make
 vim program.c 
 ./yncc program.c > tmp.s
-gcc -o tmp tmp.s
+gcc -ni-pie -o tmp tmp.s
 ./tmp
 echo $?
 
