@@ -148,7 +148,6 @@ Node *stmt(){
     if(consume_kind(TOKEN_IF)) {
         in_scope();
         // if ( expr ) block
-        ++ scope_id;
         expect("(");
         Node *node = new_node_lr(ND_IF, expr(), new_none_node());
         expect(")");
@@ -167,7 +166,6 @@ Node *stmt(){
     if(consume_kind(TOKEN_WHILE)) {
         in_scope();
         // while ( expr ) block
-        ++ scope_id;
         expect("(");
         Node *node = new_node_lr(ND_WHILE, expr(), new_none_node());
         expect(")");
@@ -180,7 +178,6 @@ Node *stmt(){
     if(consume_kind(TOKEN_FOR)) {
         in_scope();
         // for (
-        ++ scope_id;
         Node *node = new_node_lr(ND_FOR, NULL, new_none_node());
         node->right->left = calloc(1, sizeof(Node));
         expect("(");
