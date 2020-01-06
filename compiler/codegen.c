@@ -288,6 +288,19 @@ void gen_asm(Node *node){
         outasm("push 0");
         return;
 
+    case ND_DO_WHILE:
+        tmp_label = ++ label_loop;
+        // 処理
+        outlabel(".L_loop_top_%d", tmp_label);
+        gen_asm_with_pop(left);
+        // 条件式
+        outlabel(".L_loop_continue_%d", tmp_label);
+        gen_asm_with_pop(right);
+        outasm("cmp rax, 1");
+        outasm("je .L_loop_top_%d", tmp_label);
+        outlabel(".L_loop_break_%d", tmp_label);
+        return;
+
     case ND_FOR:
         tmp_label = ++ label_loop;
         // 初期化

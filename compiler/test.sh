@@ -228,7 +228,6 @@ try "int main() { int sum = 0; for(int n = 1; n <= 10; ++ n) { if(n == 5) contin
 try "int main() { int sum = 0; for(int i = 0; i < 5; ++ i) for(int j = 0; j < 5; ++ j) { if(j == 2) continue; sum += j; } return sum; }" 40
 try "int main() { int sum = 1; int loop_cnt = 0; while(sum < 100) { ++ loop_cnt;  if(sum == 50) { sum = 80;  continue; } else { ++ sum; } } return loop_cnt; }" 70
 
-
 ## struct
 echo -e "\e[1m\nstruct\e[m"
 try "int main() { struct User { char *name; int age; }; }" 0
@@ -242,9 +241,16 @@ try "int assert(int a, int b) { if(a != b) exit(1); } int main(){ struct DataA {
 try "struct DataA { int a; int b; }; struct DataB { struct DataA a; int b; }; int assert(int a, int b) { if(a != b) exit(1); } int check(struct DataB *data, int idx) { assert(data->a.a, idx*10+1); assert(data->a.b, idx*10+2); assert(data->b, idx*10+3); } int main() { struct DataB data[10]; for(int idx = 0; idx < 10; ++ idx) { data[idx].a.a = idx*10+1; data[idx].a.b = idx*10+2; data[idx].b = idx*10+3; check(&data[idx], idx); } }" 0
 
 ## str-ext
+echo -e "\e[1m\nstr-ext\e[m"
 try "int main() { printf(\"Name: \\\"yncc\\\"\\n\"); }" 0
 try "int main() { int label = 1204; printf(\".str%d:\\n\", label); }" 0
 try "int main() { char *str = \"yncc\"; printf(\"\\t\\t.string \\\"%s\\\\0\\\"\\n\", str); }" 0
+
+## do-while
+echo -e "\e[1m\ndo-while\e[m"
+try "int main() { int sum = 0; do { sum ++; } while(0); return sum; }" 1
+try "int comp_cnt = 0; int compare(int num) { ++ comp_cnt; return num < 10; } int main() { int sum = 0; do { sum ++; } while(compare(sum)); return comp_cnt; }" 10
+
 
 
 echo ""
