@@ -22,6 +22,7 @@ typedef enum {
     TOKEN_BREAK,        // break
     TOKEN_CONTINUE,     // continue
     TOKEN_STRUCT,       // struct
+    TOKEN_DO,           // do
     TOKEN_EOF,          // EOF
 } TokenKind;
 
