@@ -132,6 +132,7 @@ Node *block() {
 //        | "return" expr ";"
 //        | "if" "(" expr ")" block ("else" block)?
 //        | "while" "(" expr ")" block
+//        | "do" block "while" "(" expr ")" ";"
 //        | "for" "(" expr? ";" expr? ";" expr? ")" block
 //        | "break" ";"
 //        | "continue" ";"
@@ -171,6 +172,20 @@ Node *stmt(){
         expect(")");
         node->right = block();
         out_scope();
+        return node;
+    }
+
+    // do-while
+    if(consume_kind(TOKEN_DO)) {
+        in_scope();
+        // "do" block
+        Node *node = new_node_lr(ND_DO_WHILE, block(), NULL);
+        // "while" "(" expr ")" ";"
+        expect_kind(TOKEN_WHILE);
+        expect("(");
+        node->right = expr();
+        expect(")");
+        expect(";");
         return node;
     }
 
