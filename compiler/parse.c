@@ -353,13 +353,8 @@ Node *bit_xor() {
 // bit_and = equality ("&" | bit_and)*
 Node *bit_and(){
     Node *node = equality();
-    while(true) {
-        if(consume("&")) {
-            node = new_node_lr(ND_BIT_AND, node, bit_and());
-            continue;
-        }
-        break;
-    }
+    while(consume("&"))
+        node = new_node_lr(ND_BIT_AND, node, bit_and());
     return node;
 }
 
