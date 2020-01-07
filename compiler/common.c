@@ -4,11 +4,11 @@
 #include <string.h>
 #include "yncc.h"
 
+#define _vfprintf(out, fmt) va_list va; va_start(va, (fmt)); vfprintf((out), fmt, va); va_end(va);
+
 // エラー出力関数
 void error(char *fmt, ...){
-    va_list vargs;
-    va_start(vargs, fmt);
-    vfprintf(stderr, fmt, vargs);
+    _vfprintf(stderr, fmt)
     fprintf(stderr, "\n");
     exit(1);
 }
@@ -32,47 +32,33 @@ void error_at(char *location, char *fmt, ...){
             ++ line_num;
     }
 
-    va_list va;
-    va_start(va, fmt);
-
     // 出力
     int indent = fprintf(stderr, "program:%d: ", line_num);
     fprintf(stderr, "%.*s\n", (int)(end - line), line);
     int pos = location - line + indent;
     fprintf(stderr, "%*s", pos, "");
     fprintf(stderr, "^ ");
-    vfprintf(stderr, fmt, va);
+    _vfprintf(stderr, fmt);
     fprintf(stderr, "\n");
-
-    va_end(va);
     exit(1);
 }
 
 // 普通の出力
 void outtxt(char *fmt, ...) {
-    va_list va;
-    va_start(va, fmt);
-    vfprintf(stdout, fmt, va);
-    va_end(va);
+    _vfprintf(stdout, fmt);
     printf("\n");
 }
 
 // ラベル出力
 void outlabel(char *fmt, ...){
-    va_list va;
-    va_start(va, fmt);
-    vfprintf(stdout, fmt, va);
-    va_end(va);
+    _vfprintf(stdout, fmt);
     printf(":\n");
 }
 
 // アセンブリ出力
 void outasm(char *fmt, ...) {
     printf("\t\t");
-    va_list va;
-    va_start(va, fmt);
-    vfprintf(stdout, fmt, va);
-    va_end(va);
+    _vfprintf(stdout, fmt);
     printf("\n");
 }
 

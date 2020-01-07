@@ -7,7 +7,6 @@
 
 #define get_array_size(type) ((type)->bytesize / type_to_size(type))
 
-
 /* 計算途中で使用するレジスタ */
 static char *regs[] = {"rax", "r10", "r11", "rbx", "r12", "r13", "r14", "r15"};
 static char *regs8[] = {"al", "r10b", "r11b", "bl", "r12b", "r13b", "r14b", "r15b"};
