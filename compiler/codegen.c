@@ -399,6 +399,10 @@ void gen_asm(Node *node){
         outasm("and rax, rbx");
         break;
 
+    case ND_BIT_XOR:
+        outasm("xor rax, rbx");
+        break;
+
     default:
         error("[ERROR] 構文木解析エラー %d", node->kind);
     }
