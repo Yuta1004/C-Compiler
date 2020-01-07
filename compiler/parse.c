@@ -15,6 +15,7 @@ Node *stmt();
 Node *expr();
 Node *assign();
 Node *equality();
+Node *bit_and();
 Node *relational();
 Node *add();
 Node *mul();
@@ -312,9 +313,9 @@ Node *expr(){
 }
 
 // 構文解析5
-// assign = equality ("=" assign)?
+// assign = log_or ("=" assign)?
 Node *assign(){
-    Node *node = equality();
+    Node *node = bit_and();
     if(consume("=")){
         node = new_node_lr(ND_ASSIGN, node, assign());
     } else if(consume("+=")){
@@ -330,19 +331,30 @@ Node *assign(){
 }
 
 // 構文解析6
-// log_or = log_and ("&&" | log_and)
+// log_or = log_and ("&&" | log_or)*
 
 // 構文解析7
-// log_and = bit_or ("||" | bit_or)
+// log_and = bit_or ("||" | log_and)*
 
 // 構文解析8
-// bit_or = bit_xor ("|" bit_xor)?
+// bit_or = bit_xor ("|" bit_or)*
 
 // 構文解析9
-// bit_xor = bit_and ("^" | bit_and)?
+// bit_xor = bit_and ("^" | bit_xor)*
 
 // 構文解析10
-// bit_and = bit_and ("&" | bit_and)?
+// bit_and = equality ("&" | bit_and)*
+Node *bit_and(){
+    Node *node = equality();
+    while(true) {
+        if(consume("&")) {
+            node = new_node_lr(ND_BIT_AND, node, bit_and());
+            continue;
+        }
+        break;
+    }
+    return node;
+}
 
 // 構文解析11
 // equality = relational ("==" relational | "!=" relational)*

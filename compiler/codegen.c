@@ -395,8 +395,12 @@ void gen_asm(Node *node){
         outasm("movzb rax, al");
         break;
 
+    case ND_BIT_AND:
+        outasm("and rax, rbx");
+        break;
+
     default:
-        error("[ERROR] 構文木解析エラー");
+        error("[ERROR] 構文木解析エラー %d", node->kind);
     }
 
     outasm("push rax");
