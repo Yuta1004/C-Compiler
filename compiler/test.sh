@@ -251,6 +251,12 @@ echo -e "\e[1m\ndo-while\e[m"
 try "int main() { int sum = 0; do { sum ++; } while(0); return sum; }" 1
 try "int comp_cnt = 0; int compare(int num) { ++ comp_cnt; return num < 10; } int main() { int sum = 0; do { sum ++; } while(compare(sum)); return comp_cnt; }" 10
 
+## bit
+echo -e "\e[1m\nbit\e[m"
+try "int assert(int num_a, int num_b) { if(num_a != num_b) exit(1); } int main() { assert(0 & 0, 0); assert(0 & 1, 0); assert(1 & 0, 0); assert(1 & 1, 1); return 0; }" 0
+try "int assert(int num_a, int num_b) { if(num_a != num_b) exit(1); } int main() { assert(0 | 0, 0); assert(0 | 1, 1); assert(1 | 0, 1); assert(1 | 1, 1); return 0; }" 0
+try "int assert(int num_a, int num_b) { if(num_a != num_b) exit(1); } int main() { assert(0 ^ 0, 0); assert(0 ^ 1, 1); assert(1 ^ 0, 1); assert(1 ^ 1, 0); return 0; }" 0
+
 
 
 echo ""
