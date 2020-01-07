@@ -60,6 +60,9 @@ typedef enum {
     ND_FOR,             // for
     ND_BREAK,           // break
     ND_CONTINUE,        // continue
+    ND_BIT_AND,         // &
+    ND_BIT_OR,          // |
+    ND_BIT_XOR,         // ^
     ND_NUM,             // 数字
     ND_STR,             // 文字列リテラル
 } NodeKind;
