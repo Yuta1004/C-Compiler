@@ -330,6 +330,21 @@ Node *assign(){
 }
 
 // 構文解析6
+// log_or = log_and ("&&" | log_and)
+
+// 構文解析7
+// log_and = bit_or ("||" | bit_or)
+
+// 構文解析8
+// bit_or = bit_xor ("|" bit_xor)?
+
+// 構文解析9
+// bit_xor = bit_and ("^" | bit_and)?
+
+// 構文解析10
+// bit_and = bit_and ("&" | bit_and)?
+
+// 構文解析11
 // equality = relational ("==" relational | "!=" relational)*
 Node *equality(){
     Node *node = relational();
@@ -341,7 +356,7 @@ Node *equality(){
     return node;
 }
 
-// 構文解析7
+// 構文解析12
 // relational = add (">" add | ">=" add | "<" add | "<=" add)*
 Node *relational(){
     Node *node = add();
@@ -357,7 +372,7 @@ Node *relational(){
     return node;
 }
 
-// 構文解析8
+// 構文解析13
 // add = mul ("+" mul | "-" mul)*
 Node *add(){
     Node *node = mul();
@@ -372,7 +387,7 @@ Node *add(){
     }
 }
 
-// 構文解析9
+// 構文解析14
 // mul = unary ("*" unary | "-" unary)*
 Node *mul(){
     Node *node = unary();
@@ -389,7 +404,7 @@ Node *mul(){
     }
 }
 
-// 構文解析10
+// 構文解析15
 // unary = "sizeof" unary | ("+" | "-")? accessor | ("*" | "&") unary | unary "[" unary "]"  |
 //         ("++" | "--") accessor
 Node *unary(){
@@ -428,7 +443,7 @@ Node *unary(){
     return accessor();
 }
 
-// 構文解析11
+// 構文解析16
 // accessor = primary ("++" | "--") | primary "[" (ident | num ) "]" | primary ("." | "->") ident
 Node *accessor() {
     Node *node = primary();
@@ -482,7 +497,7 @@ Node *accessor() {
     return node;
 }
 
-// 構文解析12
+// 構文解析17
 // primary = "(" (expr | block) ") | ident ("(" (expr ","?)* ")") | num | str | ident
 Node *primary(){
     // "(" expr | block ")"
@@ -556,6 +571,6 @@ Node *primary(){
     return new_num_node(expect_number());
 }
 
-// 構文解析12
+// 構文解析18
 // type = ("int" | "char") "*"*
 //   -> type.c
