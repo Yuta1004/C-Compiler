@@ -256,6 +256,7 @@ echo -e "\e[1m\nbit\e[m"
 try "int assert(int num_a, int num_b) { if(num_a != num_b) exit(1); } int main() { assert(0 & 0, 0); assert(0 & 1, 0); assert(1 & 0, 0); assert(1 & 1, 1); return 0; }" 0
 try "int assert(int num_a, int num_b) { if(num_a != num_b) exit(1); } int main() { assert(0 | 0, 0); assert(0 | 1, 1); assert(1 | 0, 1); assert(1 | 1, 1); return 0; }" 0
 try "int assert(int num_a, int num_b) { if(num_a != num_b) exit(1); } int main() { assert(0 ^ 0, 0); assert(0 ^ 1, 1); assert(1 ^ 0, 1); assert(1 ^ 1, 0); return 0; }" 0
+try "int assert(int num_a, int num_b) { if(num_a != num_b) exit(1); } int main() { int a = 1; int b = 0; b |= a; assert(a, 1); assert(b, 1); a &= b; assert(a, 1); assert(b, 1); a ^= b; assert(a, 0); assert(b, 1); b &= a; assert(a, 0); assert(b, 0); }" 0
 
 ## comp
 echo -e "\e[1m\ncomp\e[m"

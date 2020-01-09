@@ -330,6 +330,12 @@ Node *assign(){
         node = new_node_lr(ND_ASSIGN, node, new_node_lr(ND_MUL, node, assign()));
     } else if(consume("/=")){
         node = new_node_lr(ND_ASSIGN, node, new_node_lr(ND_DIV, node, assign()));
+    } else if(consume("&=")){
+        node = new_node_lr(ND_ASSIGN, node, new_node_lr(ND_BIT_AND, node, assign()));
+    } else if(consume("|=")){
+        node = new_node_lr(ND_ASSIGN, node, new_node_lr(ND_BIT_OR, node, assign()));
+    } else if(consume("^=")){
+        node = new_node_lr(ND_ASSIGN, node, new_node_lr(ND_BIT_XOR, node, assign()));
     }
     return node;
 }
