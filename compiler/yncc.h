@@ -63,6 +63,8 @@ typedef enum {
     ND_BIT_AND,         // &
     ND_BIT_OR,          // |
     ND_BIT_XOR,         // ^
+    ND_BOOL_AND,        // &&
+    ND_BOOL_OR,         // ||
     ND_NUM,             // 数字
     ND_STR,             // 文字列リテラル
 } NodeKind;
