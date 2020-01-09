@@ -333,10 +333,10 @@ Node *assign(){
 }
 
 // 構文解析6
-// log_or = log_and ("&&" | log_or)*
+// log_or = log_and ("||" | log_or)*
 
 // 構文解析7
-// log_and = bit_or ("||" | log_and)*
+// log_and = bit_or ("&&" | log_and)*
 
 // 構文解析8
 // bit_or = bit_xor ("|" bit_or)*
