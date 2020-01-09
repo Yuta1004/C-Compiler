@@ -257,6 +257,11 @@ try "int assert(int num_a, int num_b) { if(num_a != num_b) exit(1); } int main()
 try "int assert(int num_a, int num_b) { if(num_a != num_b) exit(1); } int main() { assert(0 | 0, 0); assert(0 | 1, 1); assert(1 | 0, 1); assert(1 | 1, 1); return 0; }" 0
 try "int assert(int num_a, int num_b) { if(num_a != num_b) exit(1); } int main() { assert(0 ^ 0, 0); assert(0 ^ 1, 1); assert(1 ^ 0, 1); assert(1 ^ 1, 0); return 0; }" 0
 
+## comp
+echo -e "\e[1m\ncomp\e[m"
+try "int main() { if(0 && 0) exit(1); if(0 && 1) exit(1); if(1 && 0) exit(1); if(1 && 1){} else exit(1); if(100 && 200){} else exit(1); if(12 && 0) exit(1); exit(0); }" 0
+try "int main() { if(0 || 0) exit(1); if(0 || 1){} else exit(1); if(1 || 0){} else exit(1); if(1 || 1){} else exit(1); if(100 || 200){} else exit(1); if(12 || 0){} else exit(1); exit(0); }" 0
+
 
 
 echo ""
