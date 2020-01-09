@@ -406,6 +406,15 @@ void gen_asm(Node *node){
         outasm("or rax, rbx");
         break;
 
+    case ND_BOOL_AND:                   // A && B
+        outasm("cmp rax, 0");           // A > 0
+        outasm("setg al");
+        outasm("cmp rbx, 0");           // B > 0
+        outasm("setg %s", regs8[1]);
+        outasm("and al, %s", regs8[1]);
+        outasm("movzb rax, al");
+        break;
+
     default:
         error("[ERROR] 構文木解析エラー %d", node->kind);
     }
