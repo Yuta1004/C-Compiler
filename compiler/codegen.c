@@ -371,26 +371,26 @@ void gen_asm(Node *node){
         break;
 
     case ND_EQ:
-        outasm("cmp rbx, rax");   // rdiとraxを比較 -> 結果はフラグレジスタへ
+        outasm("cmp rax, rbx");   // rdiとraxを比較 -> 結果はフラグレジスタへ
         outasm("sete al");        // 比較結果(==)をalに入れる(raxの下位8ビットにあたるレジスタ)
         outasm("movzb rax, al");  // raxレジスタの上位56ビットをゼロクリア
         break;
 
     case ND_NEQ:
-        outasm("cmp rbx, rax");
+        outasm("cmp rax, rbx");
         outasm("setne al");       // 比較結果(!=)をalに入れる
         outasm("movzb rax, al");
         break;
 
     case ND_UPPERL:
-        outasm("cmp rbx, rax");
-        outasm("setl al");        // 比較結果(>)をalに入れる
+        outasm("cmp rax, rbx");
+        outasm("setg al");        // 比較結果(>)をalに入れる
         outasm("movzb rax, al");
         break;
 
     case ND_UPPEREQL:
-        outasm("cmp rbx, rax");
-        outasm("setle al");       // 比較結果(>=)をalに入れる
+        outasm("cmp rax, rbx");
+        outasm("setge al");       // 比較結果(>=)をalに入れる
         outasm("movzb rax, al");
         break;
 
