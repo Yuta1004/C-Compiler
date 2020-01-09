@@ -15,6 +15,7 @@ Node *stmt();
 Node *expr();
 Node *assign();
 Node *equality();
+Node *log_or();
 Node *log_and();
 Node *bit_or();
 Node *bit_xor();
@@ -318,7 +319,7 @@ Node *expr(){
 // 構文解析5
 // assign = log_or ("=" assign)?
 Node *assign(){
-    Node *node = log_and();
+    Node *node = log_or();
     if(consume("=")){
         node = new_node_lr(ND_ASSIGN, node, assign());
     } else if(consume("+=")){
@@ -335,6 +336,12 @@ Node *assign(){
 
 // 構文解析6
 // log_or = log_and ("||" | log_or)*
+Node *log_or() {
+    Node *node = log_and();
+    while(consume("||"))
+        node = new_node_lr(ND_BOOL_OR, node, log_or());
+    return node;
+}
 
 // 構文解析7
 // log_and = bit_or ("&&" | log_and)*
