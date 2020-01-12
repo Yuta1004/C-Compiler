@@ -331,11 +331,10 @@ void gen_asm(Node *node){
     gen_asm(left);
     gen_asm(right);
 
-    outasm("pop rbx");
-    outasm("pop rax");
-
-    bool is_left_ptr = (left->type != NULL && left->type->ty == PTR);
-    bool is_right_ptr = (right->type != NULL && right->type->ty == PTR);
+    if(left != NULL)  outasm("pop rbx");
+    if(right != NULL) outasm("pop rax");
+    bool is_left_ptr = (left != NULL && left->type != NULL && left->type->ty == PTR);
+    bool is_right_ptr = (right != NULL && right->type != NULL && right->type->ty == PTR);
 
     // 式
     switch(node->kind){
@@ -424,6 +423,10 @@ void gen_asm(Node *node){
     case ND_BIT_SHIFT_R:
         outasm("mov ecx, ebx");
         outasm("sar rax, cl");
+        break;
+
+    case ND_BIT_NOT:
+        outasm("not rax");
         break;
 
     default:

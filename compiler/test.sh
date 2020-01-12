@@ -261,6 +261,10 @@ try "int main() { int a = 1; a = a << 2; a = a >> 1; a = a << 5; return a; }" 64
 try "int main() { int a = 1; a <<= 2; a >>= 1; a <<= 5; return a; }" 64
 try "int main() { int a = (1 << 5) - 1; return a; }" 31
 try "int main() { int a = 1; int cl = 7; a <<= cl; return a; }" 128
+try "int main() { int a = (1 << 6) - 1; return ~a; }" 192
+try "int main() { int a = 1204; return a+~a; }" 255
+try "int main() { int a = 0; int b = ~a; return ~b; }" 0
+try "int main() { int a = 1204; return a^a; }" 0
 
 ## comp
 echo -e "\e[1m\ncomp\e[m"

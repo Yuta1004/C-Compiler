@@ -467,17 +467,13 @@ Node *mul(){
 
 // 構文解析15
 // unary = "sizeof" unary | ("+" | "-")? accessor | ("*" | "&") unary | unary "[" unary "]"  |
-//         ("++" | "--") accessor
+//         ("++" | "--") accessor | "~" accessor
 Node *unary(){
     if(consume_kind(TOKEN_SIZEOF)) {
         Node *node = unary();
         int bytesize = node->type->bytesize;
         free(node);
         return new_num_node(bytesize);
-    }
-
-    if(consume("-")) {
-        return new_node_lr(ND_SUB, new_num_node(0), accessor());
     }
 
     if(consume("*")) {
@@ -493,13 +489,17 @@ Node *unary(){
         return node;
     }
 
-    if(consume("++")) { // 前置
-        return new_node_lr(ND_PRE_INC, accessor(), NULL);
-    }
+    if(consume("-"))
+        return new_node_lr(ND_SUB, new_num_node(0), accessor());
 
-    if(consume("--")) { // 前置
+    if(consume("++")) // 前置
+        return new_node_lr(ND_PRE_INC, accessor(), NULL);
+
+    if(consume("--")) // 前置
         return new_node_lr(ND_PRE_DEC, accessor(), NULL);
-    }
+
+    if(consume("~"))  // 論理否定
+        return new_node_lr(ND_BIT_NOT, accessor(), NULL);
 
     return accessor();
 }
