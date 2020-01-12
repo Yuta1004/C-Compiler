@@ -65,6 +65,7 @@ typedef enum {
     ND_BIT_XOR,         // ^
     ND_BIT_SHIFT_L,     // <<
     ND_BIT_SHIFT_R,     // >>
+    ND_BIT_NOT,         // ~
     ND_BOOL_AND,        // &&
     ND_BOOL_OR,         // ||
     ND_NUM,             // 数字
