@@ -21,6 +21,7 @@ Node *bit_or();
 Node *bit_xor();
 Node *bit_and();
 Node *relational();
+Node *bit_shift();
 Node *add();
 Node *mul();
 Node *unary();
@@ -398,19 +399,34 @@ Node *equality(){
 }
 
 // 構文解析12
-// relational = add (">" add | ">=" add | "<" add | "<=" add)*
+// relational = bit_shift (">" bit_shift | ">=" bit_shift | "<" bit_shift | "<=" bit_shift)*
 Node *relational(){
-    Node *node = add();
+    Node *node = bit_shift();
     if(consume(">")) {
-        node = new_node_lr(ND_UPPERL, node, add());
+        node = new_node_lr(ND_UPPERL, node, bit_shift());
     } else if(consume(">=")) {
-        node = new_node_lr(ND_UPPEREQL, node, add());
+        node = new_node_lr(ND_UPPEREQL, node, bit_shift());
     } else if(consume("<")) {
-        node = new_node_lr(ND_UPPERL, add(), node);
+        node = new_node_lr(ND_UPPERL, bit_shift(), node);
     } else if(consume("<=")) {
-        node = new_node_lr(ND_UPPEREQL, add(), node);
+        node = new_node_lr(ND_UPPEREQL, bit_shift(), node);
     }
     return node;
+}
+
+// 構文解析13
+// bit_shift = add ("<<" add | ">>" add)*
+Node *bit_shift() {
+    Node *node = add();
+    while(true) {
+        if(consume("<<")) {
+            node = new_node_lr(ND_BIT_SHIFT_L, node, add());
+        } else if(consume(">>")) {
+            node = new_node_lr(ND_BIT_SHIFT_R, node, add());
+        } else {
+            return node;
+        }
+    }
 }
 
 // 構文解析13

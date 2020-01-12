@@ -416,6 +416,16 @@ void gen_asm(Node *node){
         outasm("movzb rax, al");
         break;
 
+    case ND_BIT_SHIFT_L:
+        outasm("mov ecx, ebx");
+        outasm("sal rax, cl");
+        break;
+
+    case ND_BIT_SHIFT_R:
+        outasm("mov ecx, ebx");
+        outasm("sar rax, cl");
+        break;
+
     default:
         error("[ERROR] 構文木解析エラー %d", node->kind);
     }
