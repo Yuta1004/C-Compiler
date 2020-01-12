@@ -49,6 +49,10 @@ Token *tokenize(char *p){
             continue;
         }
 
+        // <<=, >>=
+        def_token_stmt("<<=", 3, TOKEN_RESERVED);
+        def_token_stmt(">>=", 3, TOKEN_RESERVED);
+
         // ">=", "<=", "==", "!=" ...
         if(strncmp(p, "<=", 2) == 0 || strncmp(p, ">=", 2) == 0 ||
            strncmp(p, "==", 2) == 0 || strncmp(p, "!=", 2) == 0 ||
