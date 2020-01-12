@@ -259,6 +259,8 @@ try "int assert(int num_a, int num_b) { if(num_a != num_b) exit(1); } int main()
 try "int assert(int num_a, int num_b) { if(num_a != num_b) exit(1); } int main() { int a = 1; int b = 0; b |= a; assert(a, 1); assert(b, 1); a &= b; assert(a, 1); assert(b, 1); a ^= b; assert(a, 0); assert(b, 1); b &= a; assert(a, 0); assert(b, 0); }" 0
 try "int main() { int a = 1; a = a << 2; a = a >> 1; a = a << 5; return a; }" 64
 try "int main() { int a = 1; a <<= 2; a >>= 1; a <<= 5; return a; }" 64
+try "int main() { int a = (1 << 5) - 1; return a; }" 31
+try "int main() { int a = 1; int cl = 7; a <<= cl; return a; }" 128
 
 ## comp
 echo -e "\e[1m\ncomp\e[m"
