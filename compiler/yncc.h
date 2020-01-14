@@ -77,6 +77,7 @@ typedef struct Node Node;
 typedef struct Type Type;
 typedef struct Var Var;
 typedef struct Struct Struct;
+typedef struct Typedef Typedef;
 
 /* 構造体 */
 struct Token {
@@ -132,6 +133,12 @@ struct Struct {
     Vector *names;       // メンバ名一覧 Vector<char*>
 };
 
+struct Typedef {
+    char *tag;
+    int len;            // tagの長さ
+    Type *type;
+};
+
 /* グローバル変数 */
 Token *token;
 char *program_body;
@@ -162,7 +169,7 @@ void copy_type(Type **dst, Type *src);
 Type *max_type(Type *a, Type *b);
 Type *read_type();
 Type *get_base_type(Type *type);
-void do_typedef(Type *type);
+void do_typedef(char *tag, int len, Type *type);
 
 /* tokenize.c */
 #include <stdbool.h>

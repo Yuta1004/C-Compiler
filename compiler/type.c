@@ -112,6 +112,10 @@ Type *get_base_type(Type *type) {
 }
 
 // typedef処理
-void do_typedef(Type *type) {
-    vec_push(man_typedef, type);
+void do_typedef(char *tag, int len, Type *type) {
+    Typedef *typedef_info = malloc(sizeof(Typedef));
+    typedef_info->tag = tag;
+    typedef_info->len = len;
+    typedef_info->type = type;
+    vec_push(man_typedef, typedef_info);
 }
