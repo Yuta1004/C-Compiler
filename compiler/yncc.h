@@ -143,6 +143,7 @@ Vector *globals_struct;
 Vector *struct_def_list;
 Vector *str_vec;
 Vector *man_scope;
+Vector *man_typedef;
 int label, label_if, label_loop, sum_offset, scope_id, scope_sum_id;
 
 /* common.c */

@@ -30,6 +30,7 @@ int main(int argc, char** argv){
     globals_struct = vec_new(10);
     locals_struct = vec_new(10);
     struct_def_list = vec_new(10);
+    man_typedef = vec_new(5);
     program();
 
     // ヘッダー
@@ -71,5 +72,6 @@ int main(int argc, char** argv){
     vec_free(struct_def_list);
     vec_free(str_vec);
     vec_free(man_scope);
+    vec_free(man_typedef);
     return 0;
 }
