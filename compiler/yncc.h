@@ -119,6 +119,7 @@ struct Type {
     int len;
     int bytesize;
     int padsize;
+    int scope_id;
 };
 
 struct Struct {
