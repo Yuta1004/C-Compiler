@@ -48,8 +48,18 @@ void program(){
 // 構文解析2
 // func = type ident "(" (type ident ","?)* ")" block
 //      | type ident "*"* ("[" num "]")? ("=" equality)? ";"
+//      | "typedef" type ";"
 Node *func(){
     Token *bef_token = token;
+
+    // typedef
+    if(consume_kind(TOKEN_TYPEDEF)) {
+        Type *type = read_type();
+        do_typedef(token->str, token->len, type);
+        token = token->next;
+        expect(";");
+        return NULL;
+    }
 
     // ローカル変数初期化
     Node *node = new_node(ND_FUNC);
