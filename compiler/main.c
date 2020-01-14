@@ -61,6 +61,14 @@ int main(int argc, char** argv){
     for(int idx = 0; code[idx] != (Node*)-1; ++ idx){
         gen_asm(code[idx]);
     }
+
+    // 後処理
+    vec_free(locals);
+    vec_free(globals);
+    vec_free(locals_struct);
+    vec_free(globals_struct);
+    vec_free(struct_def_list);
     vec_free(str_vec);
+    vec_free(man_scope);
     return 0;
 }
