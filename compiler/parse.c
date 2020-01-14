@@ -41,11 +41,8 @@ void out_scope() {
 // 構文解析1
 // program = func*
 void program(){
-    int idx = 0;
-    for(; !at_eof(); ++ idx){
-        code[idx] = func();
-    }
-    code[idx] = (Node*)-1;
+    while(!at_eof())
+        vec_push(codes, func());
 }
 
 // 構文解析2

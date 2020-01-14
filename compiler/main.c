@@ -24,6 +24,7 @@ int main(int argc, char** argv){
     token = tokenize(program_body);
 
     // 構文木生成
+    codes = vec_new(50);
     globals = vec_new(10);
     locals = vec_new(10);
     globals_struct = vec_new(10);
@@ -58,8 +59,8 @@ int main(int argc, char** argv){
 
     // アセンブリ出力
     outtxt(".text\n");
-    for(int idx = 0; code[idx] != (Node*)-1; ++ idx){
-        gen_asm(code[idx]);
+    for(int idx = 0; idx < codes->len; ++ idx){
+        gen_asm(vec_get(codes, idx));
     }
 
     // 後処理

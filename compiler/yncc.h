@@ -135,7 +135,7 @@ struct Struct {
 /* グローバル変数 */
 Token *token;
 char *program_body;
-Node *code[100];
+Vector *codes;
 Vector *locals;
 Vector *globals;
 Vector *locals_struct;
