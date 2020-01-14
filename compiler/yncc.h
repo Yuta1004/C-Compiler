@@ -160,7 +160,7 @@ void error_at(char *location, char *fmt, ...);
 void outtxt(char *fmt, ...);
 void outasm(char *fmt, ...);
 void outlabel(char *fmt, ...);
-int is_alnum(char chr);
+bool is_alnum(char chr);
 bool _strncmp(char *str1, char *str2, int str1_len, int str2_len);
 
 /* type.c */

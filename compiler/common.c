@@ -64,7 +64,7 @@ void outasm(char *fmt, ...) {
 
 
 // 文字がトークンを構成出来るか調べる
-int is_alnum(char chr){
+bool is_alnum(char chr){
     return ('a' <= chr && chr <= 'z') ||
            ('A' <= chr && chr <= 'Z') ||
            ('1' <= chr && chr <= '9') ||
