@@ -60,7 +60,7 @@ Type *max_type(Type *a, Type *b){
 }
 
 // 型を読む
-// type = ("int" | "char") "*"*
+// type = ("int" | "char" | "struct") "*"*
 Type *read_type() {
     Token *bef_token = token;
     Type *b_type = new_type(NONE);
