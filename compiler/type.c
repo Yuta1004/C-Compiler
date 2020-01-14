@@ -60,13 +60,13 @@ Type *max_type(Type *a, Type *b){
 }
 
 // 型を読む
-// type = ("int" | "char" | "struct") "*"*
+// type = ("int" | "char" | "struct" | ident) "*"*
 Type *read_type() {
     Token *bef_token = token;
     Type *b_type = new_type(NONE);
     b_type->scope_id = scope_id;
 
-    // ("int" | "char" | "struct")
+    // ("int" | "char" | "struct" | ident)
     if(consume_kind(TOKEN_INT)) {
         b_type->ty = INT;
         b_type->bytesize = 4;
@@ -86,8 +86,18 @@ Type *read_type() {
             token = bef_token;
             return NULL;
         }
-    } else {
-        return NULL;
+    } else {    // typedefされた型
+        for(int idx = 0; idx < man_typedef->len; ++ idx) {
+            Typedef *tinfo = vec_get(man_typedef, idx);
+            if(_strncmp(token->str, tinfo->tag, token->len, tinfo->len)) {
+                free(b_type);
+                b_type = tinfo->type;
+                token = token->next;
+                break;
+            }
+        }
+        if(b_type->ty == NONE)
+            return NULL;
     }
 
     // "*"*
