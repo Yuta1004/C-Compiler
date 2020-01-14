@@ -114,6 +114,7 @@ Token *tokenize(char *p){
         def_token_stmt("continue", 8, TOKEN_CONTINUE);
         def_token_stmt("struct", 6, TOKEN_STRUCT);
         def_token_stmt("do", 2, TOKEN_DO);
+        def_token_stmt("typedef", 7, TOKEN_TYPEDEF);
 
         // 識別子
         if(('a' <= *p && *p <= 'z') || ('A' <= *p && *p <= 'Z')){
