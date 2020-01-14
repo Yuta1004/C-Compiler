@@ -4,8 +4,6 @@
 #include <string.h>
 #include "yncc.h"
 
-#define _strncmp(str1, str2, str1_len, str2_len) \
-    ((str1_len == str2_len) && strncmp(str1, str2, str1_len) == 0)
 #define max(a, b) ((a)>(b) ? (a) : (b))
 
 // 変数検索

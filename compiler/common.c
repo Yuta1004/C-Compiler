@@ -70,3 +70,8 @@ int is_alnum(char chr){
            ('1' <= chr && chr <= '9') ||
            (chr == '_');
 }
+
+// strncmp(with文字列長比較)
+bool _strncmp(char *str1, char *str2, int str1_len, int str2_len) {
+    return ((str1_len == str2_len) && strncmp(str1, str2, str1_len) == 0);
+}

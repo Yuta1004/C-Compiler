@@ -1,6 +1,7 @@
 #ifndef YNCC_H
 #define YNCC_H
 
+#include <stdbool.h>
 #include <stdlib.h>
 #include "vector.h"
 
@@ -160,6 +161,7 @@ void outtxt(char *fmt, ...);
 void outasm(char *fmt, ...);
 void outlabel(char *fmt, ...);
 int is_alnum(char chr);
+bool _strncmp(char *str1, char *str2, int str1_len, int str2_len);
 
 /* type.c */
 Type *new_type();
