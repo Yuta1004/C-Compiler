@@ -64,6 +64,7 @@ Type *max_type(Type *a, Type *b){
 Type *read_type() {
     Token *bef_token = token;
     Type *b_type = new_type(NONE);
+    b_type->scope_id = scope_id;
 
     // ("int" | "char" | "struct")
     if(consume_kind(TOKEN_INT)) {
@@ -108,4 +109,9 @@ Type *get_base_type(Type *type) {
         }
         now_pos = now_pos->ptr_to;
     }
+}
+
+// typedef処理
+void do_typedef(Type *type) {
+    vec_push(man_typedef, type);
 }

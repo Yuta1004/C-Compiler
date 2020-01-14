@@ -162,6 +162,7 @@ void copy_type(Type **dst, Type *src);
 Type *max_type(Type *a, Type *b);
 Type *read_type();
 Type *get_base_type(Type *type);
+void do_typedef(Type *type);
 
 /* tokenize.c */
 #include <stdbool.h>

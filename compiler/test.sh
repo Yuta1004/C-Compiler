@@ -273,6 +273,9 @@ try "int main() { if(0 || 0) exit(1); if(0 || 1){} else exit(1); if(1 || 0){} el
 try "int main() { int t = 1; int f = 0; if(t && !f || f) exit(0); exit(1); }" 0
 try "int main() { int t = 1; return !t; }" 0
 
+## typedef
+echo -e "\e[1m\ntypedef\e[m"
+try "typedef int INT; int main() { INT a = 10; printf(\"%d\\n\", a); return a; }" 10
 
 
 echo ""
