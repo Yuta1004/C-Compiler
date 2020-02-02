@@ -3,32 +3,9 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
+
 #include "vector.h"
-
-/* 型定義 */
-typedef enum {
-    TOKEN_NONE,
-    TOKEN_RESERVED,     // 記号
-    TOKEN_NUM,          // 数字
-    TOKEN_IDENT,        // 識別子
-    TOKEN_STR,          // 文字列リテラル
-    TOKEN_RETURN,       // return
-    TOKEN_IF,           // if
-    TOKEN_ELSE,         // else
-    TOKEN_WHILE,        // while
-    TOKEN_FOR,          // for
-    TOKEN_INT,          // int
-    TOKEN_CHAR,         // char
-    TOKEN_SIZEOF,       // sizeof
-    TOKEN_BREAK,        // break
-    TOKEN_CONTINUE,     // continue
-    TOKEN_STRUCT,       // struct
-    TOKEN_DO,           // do
-    TOKEN_TYPEDEF,      // typedef
-    TOKEN_EOF,          // EOF
-} TokenKind;
-
-typedef struct Token Token;
+#include "token/token.h"
 
 typedef enum {
     ND_NONE,
@@ -80,15 +57,6 @@ typedef struct Var Var;
 typedef struct Struct Struct;
 typedef struct Typedef Typedef;
 
-/* 構造体 */
-struct Token {
-    TokenKind kind;     // トークンの種類
-    Token *next;        // 次のトークンのポインタ
-    int val;            // 値
-    char *str;          // トークン文字列
-    int len;            // トークン文字列の長さ
-};
-
 struct Node {
     NodeKind kind;              // ノードの種類
     Node *left;                 // 左辺ノードのポインタ
@@ -100,6 +68,8 @@ struct Node {
     char *name;                 // グローバル変数定義 or 関数ノードだった時、その名前
     Node **args;                // 関数ノードだった時、その引数
 };
+
+#include "parse/parse.h"
 
 #define LOCAL 0
 #define GLOBAL 1
@@ -172,21 +142,6 @@ Type *max_type(Type *a, Type *b);
 Type *read_type();
 Type *get_base_type(Type *type);
 void do_typedef(char *tag, int len, Type *type);
-
-/* tokenize.c */
-#include <stdbool.h>
-Token *tokenize();
-
-/* token.c */
-void expect(char *op);
-Token *expect_ident();
-int expect_number();
-Token *expect_kind(TokenKind kind);
-bool consume(char *op);
-Token *consume_ident();
-Token *consume_number();
-Token *consume_kind(TokenKind kind);
-bool at_eof();
 
 /* node.c */
 Node *new_node(NodeKind kind);
