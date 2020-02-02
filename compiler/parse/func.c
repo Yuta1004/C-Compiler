@@ -1,4 +1,7 @@
+#include <stdlib.h>
+
 #include "../yncc.h"
+#include "../vector.h"
 #include "parse.h"
 
 // func = type ident "(" (type ident ","?)* ")" block
