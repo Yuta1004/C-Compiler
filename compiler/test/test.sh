@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Setup
-gcc -c -o test_func.o test_func.c
+gcc -c -o test/test_func.o test/test_func.c
 
 # Try Function
 try() {
@@ -10,7 +10,7 @@ try() {
 
     echo "$input" > program.c
     ./yncc program.c > tmp.s
-    gcc -no-pie -O0 -g -o tmp tmp.s test_func.o
+    gcc -no-pie -O0 -g -o tmp tmp.s test/test_func.o
     ./tmp
     actual="$?"
 
