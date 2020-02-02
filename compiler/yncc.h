@@ -195,9 +195,6 @@ Node *new_num_node(int val);
 Node *new_var_node(Var *var);
 Node *new_none_node();
 
-/* parse.c */
-void program();
-
 /* variable.c */
 Var *find_var(Token *request);
 Var *regist_var(int var_type);
