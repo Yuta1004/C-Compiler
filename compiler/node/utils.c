@@ -1,6 +1,5 @@
-#include "yncc.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include "../yncc.h"
+#include "node.h"
 
 // ノード生成
 Node *new_node(NodeKind kind) {
