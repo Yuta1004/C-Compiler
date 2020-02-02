@@ -1,11 +1,13 @@
 #ifndef PARSE_H
 #define PARSE_H
 
+#include "../yncc.h"
+
 // スコープ管理
 void in_scope();
 void out_scope();
 
-
+// パース
 /* 上位 (優先度:低) */
 Node *func();
 Node *block();
@@ -27,4 +29,4 @@ Node *accessor();
 Node *primary();
 /* 下位 (優先度:高) */
 
-#endif 
+#endif

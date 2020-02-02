@@ -1,3 +1,4 @@
+#include "../yncc.h"
 #include "parse.h"
 
 void in_scope() {
