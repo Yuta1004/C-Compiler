@@ -1,8 +1,9 @@
-#include "yncc.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "../yncc.h"
+#include "token.h"
 
 // トークンが期待する文字かチェックする
 // もし期待する文字なら1つトークンを進める
@@ -103,3 +104,4 @@ Token *expect_kind(TokenKind kind){
 bool at_eof(){
     return token->kind == TOKEN_EOF;
 }
+

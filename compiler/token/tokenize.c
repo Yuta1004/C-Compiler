@@ -1,9 +1,11 @@
-#include "yncc.h"
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdio.h>
+
+#include "../yncc.h"
+#include "token.h"
 
 #define def_token_stmt(word, w_len, kind) \
     if(strncmp(p, (word), (w_len)) == 0 && !is_alnum(*(p+(w_len)))){ \
@@ -144,3 +146,4 @@ Token *tokenize(char *p){
     new_token(TOKEN_EOF, cur, NULL);
     return head.next;
 }
+
