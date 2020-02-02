@@ -9,6 +9,7 @@ void out_scope();
 
 // パース
 /* 上位 (優先度:低) */
+void program();
 Node *func();
 Node *block();
 Node *stmt();
