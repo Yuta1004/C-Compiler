@@ -9,3 +9,4 @@ test_func
 
 *.o
 program.c
+!compier/parse/program.c
