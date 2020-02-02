@@ -55,10 +55,6 @@ struct Typedef {
     Type *type;
 };
 
-#include "node/node.h"
-#include "token/token.h"
-#include "parse/parse.h"
-
 /* グローバル変数 */
 Token *token;
 char *program_body;
