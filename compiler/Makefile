@@ -24,6 +24,6 @@ lines:
 	@ wc -l $(SRCS) | tail -n 1
 
 clean:
-	rm -f *.o *~ tmp*
+	rm -f *~ tmp* *.o **/*.o
 
 .PHONY: test clean
