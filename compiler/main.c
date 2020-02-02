@@ -3,6 +3,7 @@
 #include "yncc.h"
 #include "vector.h"
 #include "file.h"
+#include "parse/parse.h"
 
 int main(int argc, char** argv){
     if(argc < 2){
