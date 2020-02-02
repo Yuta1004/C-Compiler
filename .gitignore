@@ -10,3 +10,5 @@ test_func
 *.o
 program.c
 !compiler/parse/program.c
+
+.vscode/
