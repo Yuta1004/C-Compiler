@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "yncc.h"
-#include "vector.h"
+#include "vector/vector.h"
 
 // TODO: 構造体初期化, コピー
 

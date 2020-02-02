@@ -11,7 +11,7 @@ typedef struct Typedef Typedef;
 #include <stdbool.h>
 #include <stdlib.h>
 
-#include "vector.h"
+#include "vector/vector.h"
 #include "node/node.h"
 #include "token/token.h"
 #include "parse/parse.h"

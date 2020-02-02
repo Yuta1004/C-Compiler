@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #include "yncc.h"
-#include "vector.h"
+#include "vector/vector.h"
 #include "file.h"
 
 int main(int argc, char** argv){

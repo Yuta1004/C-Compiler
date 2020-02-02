@@ -1,5 +1,5 @@
 #include "../yncc.h"
-#include "../vector.h"
+#include "../vector/vector.h"
 #include "parse.h"
 
 // program = func*

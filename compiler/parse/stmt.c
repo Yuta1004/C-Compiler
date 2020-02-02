@@ -1,7 +1,7 @@
 #include <stdlib.h>
 
 #include "../yncc.h"
-#include "../vector.h"
+#include "../vector/vector.h"
 #include "parse.h"
 
 // stmt =   expr? ";"

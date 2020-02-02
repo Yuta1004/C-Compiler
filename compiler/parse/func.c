@@ -2,7 +2,7 @@
 #include <string.h>
 
 #include "../yncc.h"
-#include "../vector.h"
+#include "../vector/vector.h"
 #include "parse.h"
 
 // func = type ident "(" (type ident ","?)* ")" block
