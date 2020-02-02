@@ -1,6 +1,10 @@
 #ifndef PARSE_H
 #define PARSE_H
 
+// スコープ管理
+void in_scope();
+void out_scope();
+
 
 /* 上位 (優先度:低) */
 Node *func();
